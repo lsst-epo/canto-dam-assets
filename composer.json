@@ -1,0 +1,43 @@
+{
+  "name": "lsst-epo/canto-dam-assets",
+  "description": "This plugin is intended to be used with the Canto Digital Asset Management (DAM) web system",
+  "type": "craft-plugin",
+  "version": "1.0.0-beta.1",
+  "require": {
+    "php": ">=8.0.2",
+    "craftcms/cms": "^4.4.0",
+    "nystudio107/craft-plugin-vite": "^4.0.0"
+  },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main"
+  },
+  "autoload": {
+    "psr-4": {
+      "lsst\\cantodamassets\\": "src/"
+    }
+  },
+  "extra": {
+    "handle": "_canto-dam-assets",
+    "name": "Canto DAM Assets",
+    "developer": "Eric Rosas",
+    "documentationUrl": "",
+    "class": "lsst\\cantodamassets\\CantoDamAssets"
+  },
+  "scripts": {
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --ansi --fix",
+    "phpstan": "phpstan --memory-limit=1G"
+  },
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "8.0.2"
+    },
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
+  }
+}
+
