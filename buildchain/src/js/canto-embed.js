@@ -429,7 +429,7 @@ function addEventListener() {
           height: 'toggle'
         });
       } else if ($(e.currentTarget).hasClass("has-sub-folder")) {
-        subTreeId = $(e.currentTarget).data("id");
+        let subTreeId = $(e.currentTarget).data("id");
         $(e.currentTarget).addClass("current-tree-node");
         $(e.currentTarget).find(".folder-loading").removeClass("hidden");
         $(e.currentTarget).find(".icon-s-Folder_open-20px").addClass("hidden");
