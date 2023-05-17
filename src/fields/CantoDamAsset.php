@@ -49,7 +49,18 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public function getContentColumnType(): array|string
     {
-        return Schema::TYPE_STRING;
+        return [
+            'cantoId' => Schema::TYPE_STRING,
+            'cantoAssetData' => Schema::TYPE_TEXT,
+        ];
+    }
+
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): array
+    {
+        return [
+            'cantoId' => $value['cantoId'] ?? null,
+            'cantoAssetData' => $value['cantoAssetData'] ?? null,
+        ];
     }
 
     public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
@@ -92,8 +103,14 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return null;
     }
 
+    /**
+     * @inerhitDoc
+     */
     public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
     {
+        // By default this method will allow searching on the primary content column for this field type,
+        // which is `cantoId`, but this stub method is left in place in case we need to do some other kind
+        // of custom searching in the future
         parent::modifyElementsQuery($query, $value);
     }
 }
