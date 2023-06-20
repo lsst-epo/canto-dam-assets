@@ -72,6 +72,16 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     {
         $view = Craft::$app->getView();
         $id = Html::id($this->handle);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        // Variables to pass down to our field JavaScript to let it namespace properly
+        $jsonVars = [
+            'id' => $id,
+            'name' => $this->handle,
+            'namespace' => $namespacedId,
+            'prefix' => Craft::$app->getView()->namespaceInputId(''),
+        ];
+        $jsonVars = Json::encode($jsonVars);
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
         // Render the input template
         return $view->renderTemplate(
             '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
