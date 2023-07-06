@@ -35,7 +35,6 @@
       $(() => {
         /* -- this.options gives us access to the $jsonVars that our FieldType passed down to us */
         settings(this.options);
-        console.log(this.options);
 
         // Beginning of Canto's Universal Connector code:
         window.onmessage = function (event) {
@@ -55,7 +54,11 @@
           } else if (data && data.type == "closeModal") {
             $("#fields-dam-preview-image").remove();
             $("#fields-rosas-clicker").html("Choose a Different DAM Asset");
-            $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${data.thumbnailUrl}/>`);
+            if (data.cantoId !== 0) {
+              let cantoAsset = data.cantoAssetData[0];
+              $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${cantoAsset.directUri}>`);
+            }
+            // @TODO: save the cantoId & cantoAssetData into the hidden field data
             $("#fields-dam-asset-preview").show();
             $modal.hide();
 
@@ -178,34 +181,10 @@ let modalMarkup = $(`
 let $modal = new Garnish.Modal(modalMarkup, {'autoShow': false});
 
 $("#fields-remove-dam-asset").click(function (e) {
-  let fieldId = e.target.dataset.field;
-  let elementId = e.target.dataset.element;
-//  let assetId = e.target.dataset.asset;
-  $.ajax({
-    type: "POST",
-    url: "/canto-dam-integrator/dam-asset-removal",
-    dataType: "json",
-    data: {
-      "elementId": elementId,
-      "fieldId": fieldId
-    },
-    success: function (data) {
-      let res = JSON.parse(data);
-      if (res.status == "success") {
-        $("#fields-rosas-clicker").html("Add a DAM Asset");
-        $("#fields-dam-asset-preview").hide();
-      } else {
-        console.log("logging data!!!");
-        console.log(data);
-        alert("An error occurred while attempting to remove the image, please try again later.");
-      }
-    },
-    error: function (request) {
-      console.log("logging request!!!");
-      console.log(request);
-      alert("An error occurred while attempting to remove the image, please try again later.");
-    }
-  });
+  // Hide the preview, and change the button name
+  $("#fields-rosas-clicker").html("Add a DAM Asset");
+  $("#fields-dam-asset-preview").hide();
+  // @TODO: empty out the hidden field data
 });
 
 $("#fields-rosas-clicker").click(function (e) {

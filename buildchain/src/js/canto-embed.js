@@ -237,6 +237,7 @@ cantoAPI.insertImage = function (imageArray) {
   }).then(response => {
     return response.json();
   }).then(resp => {
+    // Not sure why the size is being set from the imageArray, but leaving the code in
     for (let i = 0; i < resp.length; i++) {
       for (let j = 0; j < imageArray.length; j++) {
         if (resp[i].id == imageArray[j].id) {
@@ -244,25 +245,18 @@ cantoAPI.insertImage = function (imageArray) {
         }
       }
     }
-    fetch("/canto-dam-integrator/dam-asset-upload", {
-      method: "post",
-      headers: {"Content-Type": "application/json; charset=utf-8"},
-      body: JSON.stringify({
-        cantoId: resp[0].id,
-        fieldId: window.frameElement.getAttribute("data-field"),
-        elementId: window.frameElement.getAttribute("data-element"),
-        entryType: window.frameElement.getAttribute("data-type")
-      }),
-    }).then(response => {
-      return response.json();
-    }).then(resp => {
-      let targetWindow = parent;
-      let data = {};
-      data.type = "closeModal";
-      data.thumbnailUrl = JSON.parse(resp)["asset_thumbnail"];
-      targetWindow.postMessage(data, '*');
-    });
-    data.assetList = resp;
+    // Get the id of the canto asset, or 0 if it is a collection of images
+    let id = 0;
+    if (resp.length === 1) {
+      id = resp[0].id;
+    }
+    // Compose the payload to send as an event
+    let data = {
+      type: "closeModal",
+      cantoId: id,
+      cantoAssetData: resp,
+    };
+    // Let our canto-field.js know what asset(s) were picked
     let targetWindow = parent;
     targetWindow.postMessage(data, '*');
   });
