@@ -19,7 +19,6 @@ export default defineConfig(({command}) => ({
         app: 'src/js/app.ts',
         'canto-embed': 'src/js/canto-embed.js',
         'canto-field': 'src/js/canto-field.js',
-        'test': 'src/js/test.js',
       },
       output: {
         sourcemap: true
