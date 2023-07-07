@@ -36,8 +36,17 @@
         /* -- this.options gives us access to the $jsonVars that our FieldType passed down to us */
         settings(this.options);
 
+        $("#fields-remove-dam-asset").click((e) => {
+          // Hide the preview, and change the button name
+          $("#fields-rosas-clicker").html("Add a DAM Asset");
+          $("#fields-dam-asset-preview").hide();
+          // @TODO: empty out the hidden field data
+          $(`#fields-${this.options.id}cantoId`).val(null);
+          $(`#fields-${this.options.id}cantoAssetData`).val([]);
+        });
+
         // Beginning of Canto's Universal Connector code:
-        window.onmessage = function (event) {
+        window.onmessage = (event) => {
           var data = event.data;
           if (data && data.type == "getTokenInfo") {
             var receiver = document.getElementById('cantoUCFrame').contentWindow;
@@ -58,7 +67,9 @@
               let cantoAsset = data.cantoAssetData[0];
               $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${cantoAsset.directUri}>`);
             }
-            // @TODO: save the cantoId & cantoAssetData into the hidden field data
+            // Save the cantoId & cantoAssetData into the hidden field data
+            $(`#fields-${this.options.id}cantoId`).val(data.cantoId);
+            $(`#fields-${this.options.id}cantoAssetData`).val(JSON.stringify(data.cantoAssetData));
             $("#fields-dam-asset-preview").show();
             $modal.hide();
 
@@ -141,7 +152,7 @@ if ($("#fields-dam-asset-preview").attr("data-thumbnailurl") == null ||
 } else {
   let url = $("#fields-dam-asset-preview").attr("data-thumbnailurl");
   $("#fields-rosas-clicker").html("Choose a Different DAM Asset");
-  $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${url}/>`);
+  $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${url}>`);
 }
 
 /*--------------------------load iframe content---------------------------------------*/
@@ -179,13 +190,6 @@ let modalMarkup = $(`
                 </div>
                 `);
 let $modal = new Garnish.Modal(modalMarkup, {'autoShow': false});
-
-$("#fields-remove-dam-asset").click(function (e) {
-  // Hide the preview, and change the button name
-  $("#fields-rosas-clicker").html("Add a DAM Asset");
-  $("#fields-dam-asset-preview").hide();
-  // @TODO: empty out the hidden field data
-});
 
 $("#fields-rosas-clicker").click(function (e) {
   $modal.show();

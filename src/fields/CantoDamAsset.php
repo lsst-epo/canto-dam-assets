@@ -11,6 +11,7 @@ use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use lsst\cantodamassets\CantoDamAssets;
+use lsst\cantodamassets\models\CantoFieldData;
 use yii\db\Schema;
 
 /**
@@ -65,11 +66,19 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
+        if ($value === null) {
+            $value = new CantoFieldData();
+        }
+        if (is_array($value)) {
+            $value['cantoAssetData'] = Json::decodeIfJson($value['cantoAssetData']);
+            $value = new CantoFieldData($value);
+        }
         return $value;
     }
 
     protected function inputHtml(mixed $value, ElementInterface $element = null): string
     {
+        /** @var  CantoFieldData $value */
         $view = Craft::$app->getView();
         $id = Html::id($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
@@ -82,6 +91,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         ];
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
+        // In case we want to try to transform this image
+        $previewUrl = $value->cantoAssetData[0]['previewUri'] ?? null;
         // Render the input template
         return $view->renderTemplate(
             '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
@@ -93,6 +104,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'id' => $id,
                 'element' => Json::encode($element),
                 'namespacedId' => $view->namespaceInputId($id),
+                'previewUrl' => $previewUrl,
                 'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken()
             ]
         );
