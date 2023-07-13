@@ -31,7 +31,7 @@
   Plugin.prototype = {
 
     init: function () {
-
+      
       $(() => {
         /* -- this.options gives us access to the $jsonVars that our FieldType passed down to us */
         settings(this.options);
@@ -68,8 +68,8 @@
               $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${cantoAsset.directUri}>`);
             }
             // Save the cantoId & cantoAssetData into the hidden field data
-            $(`#fields-${this.options.id}cantoId`).val(data.cantoId);
-            $(`#fields-${this.options.id}cantoAssetData`).val(JSON.stringify(data.cantoAssetData));
+            $('#' + Craft.namespaceId('cantoId')).val(data.cantoId);
+            $('#' + Craft.namespaceId('cantoAssetData')).val(JSON.stringify(data.cantoAssetData));
             $("#fields-dam-asset-preview").show();
             $modal.hide();
 

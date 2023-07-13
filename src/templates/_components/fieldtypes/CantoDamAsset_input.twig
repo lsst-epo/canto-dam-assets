@@ -11,14 +11,14 @@
 {% set cantoFieldId = id ?? field.getInputId() %}
 
 {{ forms.hidden({
-    id: cantoFieldId ~ "cantoId",
-    name: name ~ "[cantoId]",
+    id: cantoFieldId | namespaceInputId("cantoId"),
+    name: name | namespaceInputName("cantoId"),
     value: value.cantoId,
 }) }}
 
 {{ forms.hidden({
-    id: cantoFieldId ~ "cantoAssetData",
-    name: name ~ "[cantoAssetData]",
+    id: cantoFieldId | namespaceInputId("cantoAssetData"),
+    name: name | namespaceInputName("cantoAssetData"),
     value: value.cantoAssetData,
 }) }}
 
