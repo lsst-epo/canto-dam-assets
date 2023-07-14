@@ -492,8 +492,6 @@ function addEventListener() {
 }
 
 function getImageInit(scheme) {
-  console.log("inside of getImageInit()!");
-  console.log("schema: ", scheme);
   cantoAPI.getListByScheme(scheme, imageListDisplay);
 }
 

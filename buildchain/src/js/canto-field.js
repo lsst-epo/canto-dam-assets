@@ -31,7 +31,7 @@
   Plugin.prototype = {
 
     init: function () {
-      
+
       $(() => {
         /* -- this.options gives us access to the $jsonVars that our FieldType passed down to us */
         settings(this.options);
@@ -130,7 +130,6 @@
       url: "https://oauth." + env + ":443/oauth/api/oauth2/tenant/" + tokenInfo.refreshToken,
       success: function (data) {
         tokenInfo.tenant = data;
-        console.log("in test.js loading UC!");
         $("#cantoUCFrame").attr("src", "/admin/_canto-dam-assets/canto-embed.twig");
       },
       error: function () {
@@ -161,7 +160,6 @@ function loadIframeContent(fieldId, elementId, type, accessToken) {
   let tokenInfo = {accessToken: accessToken};
   let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
 
-  console.log("Inside of script.js about to load UC!");
   var cantoContentPage = "/admin/_canto-dam-assets/canto-embed.twig";
   if (tokenInfo.accessToken) {
     // $("#cantoUCFrame").attr("data-test", val);
@@ -199,34 +197,3 @@ $("#fields-rosas-clicker").click(function (e) {
   let accessToken = e.target.dataset.access;
   loadIframeContent(fieldId, elementId, type, accessToken);
 });
-
-/**
- * =====================================================================================================================
- * jQuery plugin and other helper functions originally from test.js
- * =====================================================================================================================
- **/
-
-function calcImageSize(num) {
-  var size = Math.round(Number(num) / 1024);
-  return size < 1024 ? size + "KB" : Math.round(size / 1024) + "MB";
-}
-
-// $("#uploadBtn").change(e => {
-//     console.log("uploaded!");
-//     console.log(e);
-// });
-
-function replaceCantoTagByImage(id, assetArray) {
-  var body = $("body");
-  var cantoTag = body.find("canto" + "#" + id);
-  var imageHtml = "";
-  for (var i = 0; i < assetArray.length; i++) {
-    imageHtml += '<div class="canto-block">';
-    imageHtml += '<img class="canto-preview-img" src="' + assetArray[i].previewUri + '">';
-    imageHtml += '<div class="canto-preview-name">Name: ' + assetArray[i].displayName + '</div>';
-    imageHtml += '<div class="canto-preview-size">Size: ' + calcImageSize(assetArray[i].size) + '</div>';
-    imageHtml += '<a class="canto-preview-size" href="' + assetArray[i].directUri + '">Download</a>';
-    imageHtml += '</div>';
-  }
-  cantoTag.replaceWith(imageHtml);
-}
