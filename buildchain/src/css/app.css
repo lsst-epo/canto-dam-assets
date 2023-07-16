@@ -30,7 +30,8 @@
  * override them.
  *
  */
-@import "./components/custom.css";
+@import "./components/canto-embed.css";
+@import "./components/canto-field.css";
 
 /**
  * This injects all of Tailwind's utility classes, generated based on your
