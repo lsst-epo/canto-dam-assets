@@ -93,6 +93,9 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
         // In case we want to try to transform this image
         $previewUrl = $value->cantoAssetData[0]['previewUri'] ?? null;
+        // The name to subtitle the preview
+        $assetCount = count($value->cantoAssetData);
+        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
         // Render the input template
         return $view->renderTemplate(
             '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
@@ -105,6 +108,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'element' => Json::encode($element),
                 'namespacedId' => $view->namespaceInputId($id),
                 'previewUrl' => $previewUrl,
+                'previewName' => $previewName,
+                'assetCount' => $assetCount,
                 'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken()
             ]
         );
