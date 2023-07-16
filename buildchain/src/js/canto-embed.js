@@ -237,11 +237,12 @@ cantoAPI.insertImage = function (imageArray) {
   }).then(response => {
     return response.json();
   }).then(resp => {
-    // Not sure why the size is being set from the imageArray, but leaving the code in
+    // Add the size and name back into the response
     for (let i = 0; i < resp.length; i++) {
       for (let j = 0; j < imageArray.length; j++) {
         if (resp[i].id == imageArray[j].id) {
           resp[i].size = imageArray[j].size;
+          resp[i].name = imageArray[j].name;
         }
       }
     }
@@ -370,6 +371,7 @@ function addEventListener() {
         obj.id = $(selectedArray[i]).data("id");
         obj.scheme = $(selectedArray[i]).data("scheme");
         obj.size = $(selectedArray[i]).data("size");
+        obj.name = $(selectedArray[i]).data("name");
         assetArray.push(obj);
       }
       cantoAPI.insertImage(assetArray);
@@ -688,12 +690,14 @@ function imageNewDetail(detailData) {
   });
   $("#cantoViewBody").find('#imagePreviewModal #insertBtn').off('click').on('click', function () {
     $("#cantoViewBody").find(".loading-icon").removeClass("hidden");
-    let assetArray = [];
-    let obj = {};
-    obj.id = detailData.id;
-    obj.scheme = detailData.scheme;
-    obj.size = detailData.size;
-    assetArray.push(obj);
+    let assetArray = [
+      {
+        id: detailData.id,
+        scheme: detailData.scheme,
+        size: detailData.size,
+        name: detailData.name,
+      }
+    ];
     cantoAPI.insertImage(assetArray);
   });
 }
