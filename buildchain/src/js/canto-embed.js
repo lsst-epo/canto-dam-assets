@@ -277,7 +277,7 @@ $(document).ready(function () {
       setToken(tokenInfo);
     } else {
       setToken({
-        accessToken: parent.document.querySelector("#cantoUCFrame").dataset.access
+        accessToken: parent.document.querySelector(".canto-uc-subiframe").dataset.access
       });
     }
     treeviewDataHandler();
