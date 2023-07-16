@@ -866,7 +866,7 @@ function uploadFileToCanto(e) {
     formData.append("x-amz-meta-id", "");
     formData.append("x-amz-meta-album_id", "");
     formData.append("file", e.files[0]);
-    let statusBar = parent.document.querySelector("#modal-status-bar");
+    let statusBar = parent.document.querySelector(".modal-status-bar");
 
     fetch(data.url, {
       method: "post",
@@ -890,7 +890,7 @@ function uploadFileToCanto(e) {
 
   function checkStatusInterval(filename) {
     let url = `https://${_tenants}/api/v1/upload/status?hours=1`;
-    let statusBar = parent.document.querySelector("#modal-status-bar");
+    let statusBar = parent.document.querySelector(".modal-status-bar");
     statusChecker = setInterval(() => {
 
       fetch(url, {
@@ -921,4 +921,4 @@ function uploadFileToCanto(e) {
 
 }
 
-parent.document.querySelector("#modal-status-bar").style.display = "none";
+parent.document.querySelector(".modal-status-bar").style.display = "none";
