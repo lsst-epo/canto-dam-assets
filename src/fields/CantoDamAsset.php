@@ -85,6 +85,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
             'id' => $id,
+            'fieldId' => $this->id,
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),

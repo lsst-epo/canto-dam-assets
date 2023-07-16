@@ -68,56 +68,6 @@
           }
         }
 
-        // The modal for the Canto picker
-        const cantoUCFrame = fieldNamespaceIdSelector('cantoUCFrame');
-        let modalMarkup = $(`
-                <div class="modal"> <!-- modal body -->
-                    <div class="body modal-test" style="padding: 0;"> <!-- modal-content -->
-                        <header class="header" style="padding: 48px 48px 24px; margin: -24px -24px 0px;">
-                            <h2>Canto Assets</h2>
-                        </header>
-                        <iframe id="${cantoUCFrame.slice(1)}" class="canto-uc-subiframe" src=""></iframe>
-                        <div class="modal-status-bar">Uploading Image...</div>
-                    </div>
-                </div>
-                `);
-        let $modal = new Garnish.Modal(modalMarkup, {'autoShow': false});
-
-        /*--------------------------load iframe content---------------------------------------*/
-        function loadIframeContent(fieldId, elementId, type, accessToken) {
-//  let timeStamp = new Date().getTime();
-          let tokenInfo = {accessToken: accessToken};
-          let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
-
-          var cantoContentPage = "/admin/_canto-dam-assets/canto-embed.twig";
-          if (tokenInfo.accessToken) {
-            $(cantoUCFrame).attr("data-element", elementId);
-            $(cantoUCFrame).attr("data-field", fieldId);
-            $(cantoUCFrame).attr("data-type", type);
-            $(cantoUCFrame).attr("data-access", tokenInfo.accessToken);
-            $(cantoUCFrame).attr("src", cantoContentPage);
-          } else {
-            $(cantoUCFrame).attr("data-element", elementId);
-            $(cantoUCFrame).attr("data-field", fieldId);
-            $(cantoUCFrame).attr("data-type", type);
-            $(cantoUCFrame).attr("src", cantoLoginPage);
-          }
-        }
-
-        function getTenant(tokenInfo) {
-          $.ajax({
-            type: "GET",
-            url: "https://oauth." + env + ":443/oauth/api/oauth2/tenant/" + tokenInfo.refreshToken,
-            success: function (data) {
-              tokenInfo.tenant = data;
-              $(cantoUCFrame).attr("src", "/admin/_canto-dam-assets/canto-embed.twig");
-            },
-            error: function () {
-              alert("Get tenant error");
-            }
-          });
-        }
-
         function getTokenByVerifycode(verifyCode) {
           $.ajax({
             type: "POST",
@@ -142,7 +92,7 @@
         }
 
         // Handle adding or changing an asset
-        $(fieldNamespaceIdSelector('chooseAsset')).click(function (e) {
+        $(fieldNamespaceIdSelector('chooseAsset')).click((e) => {
           $modal.show();
           let fieldId = e.target.dataset.field;
           let elementId = e.target.dataset.element;
@@ -161,8 +111,12 @@
         });
 
         // Beginning of Canto's Universal Connector code:
-        window.onmessage = (event) => {
-          var data = event.data;
+        window.addEventListener("message", (event) => {
+          const data = event.data;
+          // Onlu listen in if we are the target for this fieldId
+          if ($(cantoUCFrame).attr("data-field") != this.options.fieldId) {
+            return;
+          }
           if (data && data.type == "getTokenInfo") {
             var receiver = document.getElementById(cantoUCFrame.slice(1)).contentWindow;
             tokenInfo.formatDistrict = formatDistrict;
@@ -194,7 +148,7 @@
 
           }
 
-        };
+        });
       });
     }
 
@@ -214,6 +168,56 @@
   function settings(options) {
     env = options.env;
     formatDistrict = options.extensions;
+  }
+
+  // The modal for the Canto picker
+  const cantoUCFrame = '#cantoUCFrame';
+  let modalMarkup = $(`
+                <div class="modal"> <!-- modal body -->
+                    <div class="body modal-test" style="padding: 0;"> <!-- modal-content -->
+                        <header class="header" style="padding: 48px 48px 24px; margin: -24px -24px 0px;">
+                            <h2>Canto Assets</h2>
+                        </header>
+                        <iframe id="${cantoUCFrame.slice(1)}" class="canto-uc-subiframe" src=""></iframe>
+                        <div class="modal-status-bar">Uploading Image...</div>
+                    </div>
+                </div>
+                `);
+  let $modal = new Garnish.Modal(modalMarkup, {'autoShow': false});
+
+  /*--------------------------load iframe content---------------------------------------*/
+  function loadIframeContent(fieldId, elementId, type, accessToken) {
+//  let timeStamp = new Date().getTime();
+    let tokenInfo = {accessToken: accessToken};
+    let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
+
+    var cantoContentPage = "/admin/_canto-dam-assets/canto-embed.twig";
+    if (tokenInfo.accessToken) {
+      $(cantoUCFrame).attr("data-element", elementId);
+      $(cantoUCFrame).attr("data-field", fieldId);
+      $(cantoUCFrame).attr("data-type", type);
+      $(cantoUCFrame).attr("data-access", tokenInfo.accessToken);
+      $(cantoUCFrame).attr("src", cantoContentPage);
+    } else {
+      $(cantoUCFrame).attr("data-element", elementId);
+      $(cantoUCFrame).attr("data-field", fieldId);
+      $(cantoUCFrame).attr("data-type", type);
+      $(cantoUCFrame).attr("src", cantoLoginPage);
+    }
+  }
+
+  function getTenant(tokenInfo) {
+    $.ajax({
+      type: "GET",
+      url: "https://oauth." + env + ":443/oauth/api/oauth2/tenant/" + tokenInfo.refreshToken,
+      success: function (data) {
+        tokenInfo.tenant = data;
+        $(cantoUCFrame).attr("src", "/admin/_canto-dam-assets/canto-embed.twig");
+      },
+      error: function () {
+        alert("Get tenant error");
+      }
+    });
   }
 
 })(jQuery, window, document);
