@@ -36,13 +36,14 @@
         /* -- this.options gives us access to the $jsonVars that our FieldType passed down to us */
         settings(this.options);
 
+        const fieldNamespaceIdSelector = (fieldName) => `#fields-` + Craft.namespaceId(fieldName, this.options.id);
+
         $("#fields-remove-dam-asset").click((e) => {
           // Hide the preview, and change the button name
           $("#fields-rosas-clicker").html("Add a DAM Asset");
           $("#fields-dam-asset-preview").hide();
-          // @TODO: empty out the hidden field data
-          $(`#fields-${this.options.id}cantoId`).val(null);
-          $(`#fields-${this.options.id}cantoAssetData`).val([]);
+          $(fieldNamespaceIdSelector('cantoId')).val(null);
+          $(fieldNamespaceIdSelector('cantoAssetData')).val([]);
         });
 
         // Beginning of Canto's Universal Connector code:
@@ -63,13 +64,11 @@
           } else if (data && data.type == "closeModal") {
             $("#fields-dam-preview-image").remove();
             $("#fields-rosas-clicker").html("Choose a Different DAM Asset");
-            if (data.cantoId !== 0) {
-              let cantoAsset = data.cantoAssetData[0];
-              $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${cantoAsset.directUri}>`);
-            }
+            let cantoAsset = data.cantoAssetData[0];
+            $("#fields-dam-asset-preview").prepend(`<img id="fields-dam-preview-image" style="max-height:200px; max-width:200px;" src=${cantoAsset.directUri}>`);
             // Save the cantoId & cantoAssetData into the hidden field data
-            $('#' + Craft.namespaceId('cantoId')).val(data.cantoId);
-            $('#' + Craft.namespaceId('cantoAssetData')).val(JSON.stringify(data.cantoAssetData));
+            $(fieldNamespaceIdSelector('cantoId')).val(data.cantoId);
+            $(fieldNamespaceIdSelector('cantoAssetData')).val(JSON.stringify(data.cantoAssetData));
             $("#fields-dam-asset-preview").show();
             $modal.hide();
 
