@@ -4,7 +4,7 @@
     "src": "src/fonts/icomoon.eot"
   },
   "src/fonts/icomoon.svg": {
-    "file": "assets/icomoon-9dcb22af.svg",
+    "file": "assets/icomoon-bc1681f9.svg",
     "src": "src/fonts/icomoon.svg"
   },
   "src/fonts/icomoon.ttf": {
@@ -20,7 +20,7 @@
     "src": "src/fonts/icomoon_flight_01.eot"
   },
   "src/fonts/icomoon_flight_01.svg": {
-    "file": "assets/icomoon_flight_01-d817416c.svg",
+    "file": "assets/icomoon_flight_01-ebe3313e.svg",
     "src": "src/fonts/icomoon_flight_01.svg"
   },
   "src/fonts/icomoon_flight_01.ttf": {
@@ -32,7 +32,7 @@
     "src": "src/fonts/icomoon_flight_01.woff"
   },
   "src/js/app.css": {
-    "file": "assets/app-fc24d5ec.css",
+    "file": "assets/app-33c7c834.css",
     "src": "src/js/app.css"
   },
   "src/js/app.ts": {
@@ -40,26 +40,26 @@
       "assets/icomoon_flight_01-1a8cae7d.eot",
       "assets/icomoon_flight_01-52dbb8ac.ttf",
       "assets/icomoon_flight_01-5ef695f8.woff",
-      "assets/icomoon_flight_01-d817416c.svg",
+      "assets/icomoon_flight_01-ebe3313e.svg",
       "assets/icomoon-59ef1723.eot",
       "assets/icomoon-e9b5396f.ttf",
       "assets/icomoon-96885745.woff",
-      "assets/icomoon-9dcb22af.svg"
+      "assets/icomoon-bc1681f9.svg"
     ],
     "css": [
-      "assets/app-fc24d5ec.css"
+      "assets/app-33c7c834.css"
     ],
-    "file": "assets/app-c592e40e.js",
+    "file": "assets/app-a0bcaee2.js",
     "isEntry": true,
     "src": "src/js/app.ts"
   },
   "src/js/canto-embed.js": {
-    "file": "assets/canto-embed-4ae70bb3.js",
+    "file": "assets/canto-embed-cddfa706.js",
     "isEntry": true,
     "src": "src/js/canto-embed.js"
   },
   "src/js/canto-field.js": {
-    "file": "assets/canto-field-21f2dac2.js",
+    "file": "assets/canto-field-8f4d4971.js",
     "isEntry": true,
     "src": "src/js/canto-field.js"
   }
