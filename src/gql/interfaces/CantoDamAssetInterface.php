@@ -1,24 +1,56 @@
 <?php
 
-namespace lsst\cantodamassets\gql\types\generators;
+namespace lsst\cantodamassets\gql\interfaces;
 
-use craft\gql\base\GeneratorInterface;
+use craft\gql\base\InterfaceType as BaseInterfaceType;
 use craft\gql\GqlEntityRegistry;
-use craft\gql\TypeLoader;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
-use lsst\cantodamassets\fields\CantoDamAsset;
-use lsst\cantodamassets\gql\types\CantoDamAssetType;
+use lsst\cantodamassets\gql\types\generators\CantoDamAssetGenerator;
 
-class CantoDamAssetGenerator implements GeneratorInterface
+class CantoDamAssetInterface extends BaseInterfaceType
 {
-
-    public static function generateTypes($context = null): array
+    public static function getTypeGenerator(): string
     {
-        /** @var CantoDamAsset $context */
-        $typeName = self::getName($context);
+        return CantoDamAssetGenerator::class;
+    }
 
-        $cantoDamAssetFields = [
-            // static fields
+    /**
+     * @inheritdoc
+     */
+    public static function getType($fields = null): Type
+    {
+        if ($type = GqlEntityRegistry::getEntity(self::class)) {
+            return $type;
+        }
+
+        $type = GqlEntityRegistry::createEntity(self::class, new InterfaceType([
+            'name' => static::getName(),
+            'fields' => self::class . '::getFieldDefinitions',
+            'description' => 'This is the interface implemented by CantoDamAsset.',
+            'resolveType' => function (array $value) {
+                return GqlEntityRegistry::getEntity(CantoDamAssetGenerator::getName());
+            },
+        ]));
+        CantoDamAssetGenerator::generateTypes();
+
+        return $type;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getName(): string
+    {
+        return 'CantoDamAssetInterface';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getFieldDefinitions(): array
+    {
+        return array_merge(parent::getFieldDefinitions(), [
             'displayName' => [
                 'name' => 'displayName',
                 'description' => 'The display name of the Canto asset',
@@ -54,26 +86,6 @@ class CantoDamAssetGenerator implements GeneratorInterface
                 'description' => 'The size of the Canto asset',
                 'type' => Type::int(),
             ],
-        ];
-        $cantoFieldDataType = GqlEntityRegistry::getEntity($typeName)
-            ?: GqlEntityRegistry::createEntity($typeName, new CantoDamAssetType([
-                'name' => $typeName,
-                'description' => 'This entity has all the CantoDamAsset properties',
-                'fields' => function () use ($cantoDamAssetFields) {
-                    return $cantoDamAssetFields;
-                },
-            ]));
-
-        TypeLoader::registerType($typeName, function () use ($cantoFieldDataType) {
-            return $cantoFieldDataType;
-        });
-
-        return [$cantoFieldDataType];
-    }
-
-    public static function getName($context = null): string
-    {
-        /** @var CantoDamAsset $context */
-        return $context === null ? 'CantoFieldData' : $context->handle . '_CantoFieldData';
+        ]);
     }
 }

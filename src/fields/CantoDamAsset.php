@@ -12,7 +12,7 @@ use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
-use lsst\cantodamassets\gql\types\generators\CantoDamAssetGenerator;
+use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;
 use lsst\cantodamassets\models\CantoFieldData;
 use yii\db\Schema;
 
@@ -33,11 +33,10 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public function getContentGqlType(): Type|array
     {
-        $typeArray = CantoDamAssetGenerator::generateTypes($this);
         return [
             'name' => $this->handle,
             'description' => 'Canto Dam Asset field',
-            'type' => array_shift($typeArray),
+            'type' => Type::listOf(CantoDamAssetInterface::getType()),
         ];
     }
 
