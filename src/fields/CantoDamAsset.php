@@ -10,7 +10,9 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
+use lsst\cantodamassets\gql\types\generators\CantoDamAssetGenerator;
 use lsst\cantodamassets\models\CantoFieldData;
 use yii\db\Schema;
 
@@ -27,6 +29,16 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     public static function valueType(): string
     {
         return 'mixed';
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        $typeArray = CantoDamAssetGenerator::generateTypes($this);
+        return [
+            'name' => $this->handle,
+            'description' => 'Canto Dam Asset field',
+            'type' => array_shift($typeArray),
+        ];
     }
 
     public function attributeLabels(): array
@@ -96,7 +108,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $previewUrl = $value->cantoAssetData[0]['previewUri'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
-        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
+        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
         // Render the input template
         return $view->renderTemplate(
             '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
