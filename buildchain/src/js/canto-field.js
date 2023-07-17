@@ -134,7 +134,7 @@
             const assetCount = data.cantoAssetData.length;
             $(damAssetPreview).attr("data-assetCount", assetCount);
             $(damAssetPreview).attr("data-thumbnailUrl", cantoAsset.directUri);
-            $(damAssetPreview).attr("data-thumbnailName", cantoAsset.name);
+            $(damAssetPreview).attr("data-thumbnailName", cantoAsset.displayName);
             displayImagePreview();
             // Save the cantoId & cantoAssetData into the hidden field data
             $(fieldNamespaceIdSelector('cantoId')).val(data.cantoId);

@@ -242,7 +242,6 @@ cantoAPI.insertImage = function (imageArray) {
       for (let j = 0; j < imageArray.length; j++) {
         if (resp[i].id == imageArray[j].id) {
           resp[i].size = imageArray[j].size;
-          resp[i].name = imageArray[j].name;
         }
       }
     }
@@ -371,7 +370,6 @@ function addEventListener() {
         obj.id = $(selectedArray[i]).data("id");
         obj.scheme = $(selectedArray[i]).data("scheme");
         obj.size = $(selectedArray[i]).data("size");
-        obj.name = $(selectedArray[i]).data("name");
         assetArray.push(obj);
       }
       cantoAPI.insertImage(assetArray);
