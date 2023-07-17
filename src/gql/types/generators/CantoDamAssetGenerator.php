@@ -25,7 +25,7 @@ class CantoDamAssetGenerator implements GeneratorInterface
                 'type' => Type::string(),
             ],
             'directUri' => [
-                'name' => 'value',
+                'name' => 'directUri',
                 'description' => 'The URI to the Canto asset',
                 'type' => Type::string(),
             ],
