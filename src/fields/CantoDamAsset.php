@@ -13,6 +13,7 @@ use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;
+use lsst\cantodamassets\gql\resolvers\CantoDamAssetResolver;
 use lsst\cantodamassets\models\CantoFieldData;
 use yii\db\Schema;
 
@@ -37,6 +38,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'name' => $this->handle,
             'description' => 'Canto Dam Asset field',
             'type' => Type::listOf(CantoDamAssetInterface::getType()),
+            'resolve' => CantoDamAssetResolver::class . '::resolve',
         ];
     }
 

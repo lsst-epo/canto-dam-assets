@@ -2,8 +2,10 @@
 
 namespace lsst\cantodamassets\gql\resolvers;
 
+use craft\base\ElementInterface;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
+use lsst\cantodamassets\models\CantoFieldData;
 
 class CantoDamAssetResolver extends Resolver
 {
@@ -12,8 +14,10 @@ class CantoDamAssetResolver extends Resolver
      */
     public static function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {
-        $result = 'woof';
-
-        return $result;
+        /** @var ElementInterface $source */
+        $fieldName = $resolveInfo->fieldName;
+        /** @var CantoFieldData $cantoFieldData */
+        $cantoFieldData = $source->{$fieldName};
+        return $cantoFieldData->cantoAssetData ?? null;
     }
 }
