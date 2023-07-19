@@ -224,9 +224,7 @@ cantoAPI.insertImage = function (imageArray) {
   let data = {};
   data.type = "cantoInsertImage";
   data.assetList = [];
-
   let url = `https://${_tenants}/api_binary/v1/batch/directuri`;
-
   fetch(url, {
     method: "post",
     headers: {
@@ -236,29 +234,37 @@ cantoAPI.insertImage = function (imageArray) {
     body: JSON.stringify(imageArray)
   }).then(response => {
     return response.json();
-  }).then(resp => {
-    // Add the size and name back into the response
-    for (let i = 0; i < resp.length; i++) {
-      for (let j = 0; j < imageArray.length; j++) {
-        if (resp[i].id == imageArray[j].id) {
-          resp[i].size = imageArray[j].size;
-        }
-      }
-    }
+  }).then(directUriResponse => {
     // Get the id of the canto asset, or 0 if it is a collection of images
     let id = 0;
-    if (resp.length === 1) {
-      id = resp[0].id;
+    if (directUriResponse.length === 1) {
+      id = directUriResponse[0].id;
     }
-    // Compose the payload to send as an event
-    let data = {
-      type: "closeModal",
-      cantoId: id,
-      cantoAssetData: resp,
-    };
-    // Let our canto-field.js know what asset(s) were picked
-    let targetWindow = parent;
-    targetWindow.postMessage(data, '*');
+    // Now fetch the asset detail
+    let url = `https://${_tenants}/api/v1/batch/content`;
+    fetch(url, {
+      method: "post",
+      headers: {
+        "Authorization": `${_tokenType} ${_accessToken}`,
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(imageArray)
+    }).then(response => {
+      return response.json();
+    }).then(contentResponse => {
+      // Compose the payload to send as an event
+      let data = {
+        type: "closeModal",
+        cantoId: id,
+        cantoAssetData: {
+          ...contentResponse,
+          ...directUriResponse
+        },
+      };
+      // Let our canto-field.js know what asset(s) were picked
+      let targetWindow = parent;
+      targetWindow.postMessage(data, '*');
+    });
   });
 };
 
