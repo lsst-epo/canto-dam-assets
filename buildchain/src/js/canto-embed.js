@@ -260,7 +260,6 @@ cantoAPI.insertImage = function (imageArray) {
           ...directUriResponse[i]
         });
       }
-      console.log(mergedAssetData);
       // Compose the payload to send as an event
       let data = {
         type: "closeModal",
