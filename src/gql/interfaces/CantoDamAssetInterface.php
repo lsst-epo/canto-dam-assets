@@ -47,7 +47,10 @@ class CantoDamAssetInterface extends BaseInterfaceType
         $camelizeArray = static function (array $array) {
             $result = [];
             array_walk($array, static function ($value, $key) use (&$result) {
-                $result[Inflector::camelize($key)] = $value;
+                $result[$key] = [
+                    'name' => Inflector::camelize($key),
+                    'type' => $value,
+                ];
             });
             return $result;
         };
