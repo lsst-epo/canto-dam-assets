@@ -252,14 +252,20 @@ cantoAPI.insertImage = function (imageArray) {
     }).then(response => {
       return response.json();
     }).then(contentResponse => {
+      // Merge the arrays of asset data together
+      const mergedAssetData = [];
+      for (let i = 0; i < directUriResponse.length; i++) {
+        mergedAssetData.push({
+          ...contentResponse.docResult[i],
+          ...directUriResponse[i]
+        });
+      }
+      console.log(mergedAssetData);
       // Compose the payload to send as an event
       let data = {
         type: "closeModal",
         cantoId: id,
-        cantoAssetData: {
-          ...contentResponse,
-          ...directUriResponse
-        },
+        cantoAssetData: mergedAssetData,
       };
       // Let our canto-field.js know what asset(s) were picked
       let targetWindow = parent;
