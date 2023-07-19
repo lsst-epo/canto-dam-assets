@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\gql\interfaces;
 
+use Craft;
 use craft\gql\base\InterfaceType as BaseInterfaceType;
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\InterfaceType;
@@ -43,7 +44,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
 
     public static function getFieldDefinitions(): array
     {
-        return array_merge(parent::getFieldDefinitions(),
+        return Craft::$app->getGql()->prepareFieldDefinitions(array_merge(parent::getFieldDefinitions(),
             // Fields from the cantoAPI.getDetail() API endpoint
             [
                 'metadata' => new ObjectType([
@@ -245,7 +246,8 @@ class CantoDamAssetInterface extends BaseInterfaceType
                     'description' => 'The size of the Canto asset',
                     'type' => Type::int(),
                 ],
-            ]);
+            ]),
+            CantoDamAssetGenerator::getName());
     }
 
     /**
