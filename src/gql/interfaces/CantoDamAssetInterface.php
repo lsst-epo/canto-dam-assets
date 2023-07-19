@@ -43,23 +43,12 @@ class CantoDamAssetInterface extends BaseInterfaceType
 
     public static function getFieldDefinitions(): array
     {
-        // Used to convert the Canto-returned keys into GraphQL compliant field names
-        $camelizeArray = static function (array $array) {
-            $result = [];
-            array_walk($array, static function ($value, $key) use (&$result) {
-                $result[$key] = [
-                    'name' => Inflector::camelize($key),
-                    'type' => $value,
-                ];
-            });
-            return $result;
-        };
         return array_merge(parent::getFieldDefinitions(),
             // Fields from the cantoAPI.getDetail() API endpoint
             [
                 'metadata' => new ObjectType([
                     'name' => 'CantoMetadataType',
-                    'fields' => $camelizeArray([
+                    'fields' => self::camelizeArray([
                         'Bits Per Pixel' => Type::string(),
                         'File Type Detail' => Type::string(),
                         'File Type Extension' => Type::string(),
@@ -144,7 +133,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                 'tag' => Type::listOf(Type::string()),
                 'additional' => new ObjectType([
                     'name' => 'CantoAdditionalType',
-                    'fields' => $camelizeArray([
+                    'fields' => self::camelizeArray([
                         'Description' => Type::string(),
                         'Uploaded by' => Type::string(),
                         'WebDAM Group ID' => Type::string(),
@@ -197,7 +186,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                 'name' => Type::string(),
                 'default' => new ObjectType([
                     'name' => 'CantoDefaultType',
-                    'fields' => $camelizeArray([
+                    'fields' => self::camelizeArray([
                         'Size' => Type::string(),
                         'Uploaded by' => Type::string(),
                         'Dimensions' => Type::string(),
@@ -257,5 +246,23 @@ class CantoDamAssetInterface extends BaseInterfaceType
                     'type' => Type::int(),
                 ],
             ]);
+    }
+
+    /**
+     * Used to convert the Canto-returned keys into GraphQL compliant field names
+     *
+     * @param $array
+     * @return array
+     */
+    private static function camelizeArray($array): array
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            $result[$key] = [
+                'name' => Inflector::camelize($key),
+                'type' => $value,
+            ];
+        }
+        return $result;
     }
 }
