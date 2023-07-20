@@ -129,6 +129,34 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         );
     }
 
+    public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
+    {
+        /** @var  CantoFieldData $value */
+        $view = Craft::$app->getView();
+        // In case we want to try to transform this image
+        $previewUrl = $value->cantoAssetData[0]['previewUri'] ?? null;
+        // The name to subtitle the preview
+        $assetCount = count($value->cantoAssetData);
+        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
+        $className = $value->cantoId == 0 ? "canto-asset-preview-stack" : "";
+
+        return $view->renderTemplate(
+            '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_preview.twig',
+            [
+                'name' => $this->handle,
+                'value' => $value,
+                'className' => $className,
+                'fieldId' => $this->id,
+                'elementId' => $element->id ?? null,
+                'element' => Json::encode($element),
+                'previewUrl' => $previewUrl,
+                'previewName' => $previewName,
+                'assetCount' => $assetCount,
+            ]
+        );
+
+    }
+
     public function getElementValidationRules(): array
     {
         return [];

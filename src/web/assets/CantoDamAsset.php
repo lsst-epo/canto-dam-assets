@@ -15,14 +15,7 @@ class CantoDamAsset extends AssetBundle
         CpAsset::class,
     ];
     public $js = [
-        /*
-                'script.js',
-                'test.js'
-        */
     ];
     public $css = [
-        /*
-                'base.css'
-        */
     ];
 }
