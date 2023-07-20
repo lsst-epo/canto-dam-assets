@@ -4,6 +4,7 @@ namespace lsst\cantodamassets\models;
 
 use craft\base\Model;
 use craft\validators\ArrayValidator;
+use Illuminate\Support\Collection;
 
 /**
  * Canto DAM Field Data
@@ -11,7 +12,13 @@ use craft\validators\ArrayValidator;
 class CantoFieldData extends Model
 {
     public ?string $cantoId = null;
-    public array $cantoAssetData = [];
+    public Collection|array $cantoAssetData = [];
+
+    public function init(): void
+    {
+        parent::init();
+        $this->cantoAssetData = new Collection($this->cantoAssetData);
+    }
 
     /**
      * @inheritDoc
