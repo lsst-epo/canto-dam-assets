@@ -17,6 +17,10 @@ Built distribution files:
 ## Prerequisites
 
 - Must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or the equivalent) installed
+- For HMR during local development, you'll need the following variable set in your `.env` file:
+```
+VITE_PLUGIN_DEVSERVER=1
+```
 
 ## Commands
 
