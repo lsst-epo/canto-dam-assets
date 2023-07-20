@@ -2,7 +2,9 @@
 
 This buildchain is a self-contained build system for the `canto-dam-assets` JavaScript bundle.
 
-It builds & bundles all of the `canto-dam-assets` TypeScript/JavaScript code along with CSS and any other static resources via Vite via a Docker container.
+## Overview
+
+The buildchain builds & bundles all of the `canto-dam-assets` TypeScript/JavaScript code along with CSS and any other static resources via Vite via a Docker container.
 
 Source files:
 
