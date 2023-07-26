@@ -17,8 +17,18 @@ Built distribution files:
 ## Prerequisites
 
 - Must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or the equivalent) installed
-- For HMR during local development, you'll need the following variable set in your `.env` file:
+- So your project can access the buildchain container over the [internal Docker network](https://docs.docker.com/compose/networking/), you'll need the following variable set in your `.env` file:
+```dotenv
+DOCKER_NETWORK=myproject_default
 ```
+The network your project uses is typically the project name with `_default` appended to it, but it can be explicitly set in the `docker-composer.yaml` like this:
+```yaml
+networks:
+  default:
+    name: someproject_default
+```
+- For HMR during local development, you'll need the following variable set in your `.env` file:
+```dotenv
 VITE_PLUGIN_DEVSERVER=1
 ```
 
