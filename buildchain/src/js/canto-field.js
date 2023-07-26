@@ -171,7 +171,7 @@
   }
 
   // The modal for the Canto picker
-  const cantoUCFrame = '#cantoUCFrame';
+  const cantoUCFrame = '#cantoDamAssetsUCFrame';
   let modalMarkup = $(`
                 <div class="modal"> <!-- modal body -->
                     <div class="body modal-test" style="padding: 0;"> <!-- modal-content -->
