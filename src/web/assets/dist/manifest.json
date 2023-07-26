@@ -54,7 +54,7 @@
     "src": "src/js/app.ts"
   },
   "src/js/canto-embed.js": {
-    "file": "assets/canto-embed-03531a3f.js",
+    "file": "assets/canto-embed-3d60cde1.js",
     "isEntry": true,
     "src": "src/js/canto-embed.js"
   },
