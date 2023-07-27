@@ -16,20 +16,29 @@ Built distribution files:
 
 ## Prerequisites
 
-- Must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or the equivalent) installed
-- So your project can access the buildchain container over the [internal Docker network](https://docs.docker.com/compose/networking/), you'll need the following variable set in your `.env` file:
+To run the buildchain for development purposes:
+
+- You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or the equivalent) installed
+
+To use the HMR for development in local dev:
+
+- For HMR during local development, you'll need the following variable set in your project's `.env` file:
 ```dotenv
-DOCKER_NETWORK=myproject_default
+VITE_PLUGIN_DEVSERVER=1
 ```
+The Vite plugin looks for this environment variable to determine whether it should check for a running Vite dev server.
+
+- So your project can access the buildchain container over the [internal Docker network](https://docs.docker.com/compose/networking/), you'll need to set the `DOCKER_NETWORK` environment variable before running any buildchain `make` commands:
+```bash
+env DOCKER_NETWORK=myproject_default make dev
+```
+...or use any other method for [setting environment variables](https://www.twilio.com/blog/how-to-set-environment-variables.html). This environment variable needs to be set in the shell where you run the buildchain's various `make` commands from, so setting it in your project's `.env` file won't work.
+
 The network your project uses is typically the project name with `_default` appended to it, but it can be explicitly set in the `docker-composer.yaml` like this:
 ```yaml
 networks:
   default:
     name: someproject_default
-```
-- For HMR during local development, you'll need the following variable set in your `.env` file:
-```dotenv
-VITE_PLUGIN_DEVSERVER=1
 ```
 
 ## Commands
