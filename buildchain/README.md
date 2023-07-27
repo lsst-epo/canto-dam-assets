@@ -26,7 +26,7 @@ To use the HMR for development in local dev:
 ```dotenv
 VITE_PLUGIN_DEVSERVER=1
 ```
-The Vite plugin looks for this environment variable to determine whether it should check for a running Vite dev server.
+The [`craft-plugin-vite`](https://github.com/nystudio107/craft-plugin-vite) library looks for this environment variable to determine whether it should check for a running Vite dev server.
 
 - So your project can access the buildchain container over the [internal Docker network](https://docs.docker.com/compose/networking/), you'll need to set the `DOCKER_NETWORK` environment variable before running any buildchain `make` commands:
 ```bash
