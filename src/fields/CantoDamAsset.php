@@ -37,6 +37,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return [
             'name' => $this->handle,
             'description' => 'Canto Dam Asset field',
+            'args' => $this->getGqlArguments(),
             'type' => Type::listOf(CantoDamAssetInterface::getType()),
             'resolve' => CantoDamAssetResolver::class . '::resolve',
         ];
@@ -181,5 +182,96 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         // which is `cantoId`, but this stub method is left in place in case we need to do some other kind
         // of custom searching in the future
         parent::modifyElementsQuery($query, $value);
+    }
+
+    protected function getGqlArguments(): array
+    {
+        return [
+            'except' => [
+                'name' => 'except',
+                'description' => 'Get all items except for those with the specified indexes.',
+                'type' => Type::listOf(Type::int()),
+            ],
+            'nth' => [
+                'name' => 'nth',
+                'description' => 'Return a collection consisting of every n-th element.',
+                'type' => Type::int(),
+            ],
+            'last' => [
+                'name' => 'last',
+                'description' => 'Get the last N items from the collection.',
+                'type' => Type::int(),
+            ],
+            'random' => [
+                'name' => 'random',
+                'description' => 'Get the specified number of items randomly from the collection.',
+                'type' => Type::int(),
+            ],
+            'reverse' => [
+                'name' => 'reverse',
+                'description' => 'Reverse the list',
+                'type' => Type::boolean(),
+            ],
+            'first' => [
+                'name' => 'first',
+                'description' => 'Get the first N items from the collection.',
+                'type' => Type::int(),
+            ],
+            'shuffle' => [
+                'name' => 'shuffle',
+                'description' => 'Shuffle the items in the collection.',
+                'type' => Type::boolean(),
+            ],
+            'skip' => [
+                'name' => 'skip',
+                'description' => 'Skip the first N items.',
+                'type' => Type::int(),
+            ],
+            'sortBy' => [
+                'name' => 'sortBy',
+                'description' => 'Sort the collection using the sort string(s). You can use the `field.subField` syntax and provide multiple sort commands as a list of strings.',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'sortByDesc' => [
+                'name' => 'sortByDesc',
+                'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax and provide multiple sort commands as a list of strings.',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'where' => [
+                'name' => 'where',
+                'description' => 'Get all items by the given key value pair. The argument expects 1 to 3 values. (See https://laravel.com/docs/10.x/collections#method-where).',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'whereNull' => [
+                'name' => 'whereNull',
+                'description' => 'The whereNull method returns items from the collection where the given key is null.',
+                'type' => Type::string(),
+            ],
+            'whereNotNull' => [
+                'name' => 'whereNotNull',
+                'description' => 'he whereNotNull method returns items from the collection where the given key is not null.',
+                'type' => Type::string(),
+            ],
+            'whereIn' => [
+                'name' => 'whereIn',
+                'description' => 'Filter items by the given key value pair. The first item of provided array is used as the key, all the other items compose the matching array.',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'whereNotIn' => [
+                'name' => 'whereNotIn',
+                'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. The first item of provided array is used as the key, all the other items compose the matching array.',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'whereBetween' => [
+                'name' => 'whereBetween',
+                'description' => 'Filter items such that the value of the given key is between the given values. This argument expects exactly three values in an array.',
+                'type' => Type::listOf(Type::string()),
+            ],
+            'whereNotBetween' => [
+                'name' => 'whereNotBetween',
+                'description' => 'Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array.',
+                'type' => Type::listOf(Type::string()),
+            ],
+        ];
     }
 }
