@@ -229,47 +229,47 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             ],
             'sortBy' => [
                 'name' => 'sortBy',
-                'description' => 'Sort the collection using the sort string(s). You can use the `field.subField` syntax and provide multiple sort commands as a list of strings.',
+                'description' => 'Sort the collection using the sort string(s). You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                 'type' => Type::listOf(Type::string()),
             ],
             'sortByDesc' => [
                 'name' => 'sortByDesc',
-                'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax and provide multiple sort commands as a list of strings.',
+                'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                 'type' => Type::listOf(Type::string()),
             ],
             'where' => [
                 'name' => 'where',
-                'description' => 'Get all items by the given key value pair. The argument expects 1 to 3 values. (See https://laravel.com/docs/10.x/collections#method-where).',
+                'description' => 'Get all items by the given key value pair. The argument expects 1 to 3 values. The 1st value is the key (you can use the `field.subField` syntax for nested fields), the 2nd argument is the value, and the optional 3rd argument is the comparison operator (See https://laravel.com/docs/10.x/collections#method-where).',
                 'type' => Type::listOf(Type::string()),
             ],
             'whereNull' => [
                 'name' => 'whereNull',
-                'description' => 'The whereNull method returns items from the collection where the given key is null.',
+                'description' => 'The whereNull method returns items from the collection where the given key is null. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::string(),
             ],
             'whereNotNull' => [
                 'name' => 'whereNotNull',
-                'description' => 'he whereNotNull method returns items from the collection where the given key is not null.',
+                'description' => 'he whereNotNull method returns items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::string(),
             ],
             'whereIn' => [
                 'name' => 'whereIn',
-                'description' => 'Filter items by the given key value pair. The first item of provided array is used as the key, all the other items compose the matching array.',
+                'description' => 'Filter items by the given key value pair. The first item of provided array is used as the key, all the other items compose the matching array. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::listOf(Type::string()),
             ],
             'whereNotIn' => [
                 'name' => 'whereNotIn',
-                'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. The first item of provided array is used as the key, all the other items compose the matching array.',
+                'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. The first item of provided array is used as the key, all the other items compose the matching array. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::listOf(Type::string()),
             ],
             'whereBetween' => [
                 'name' => 'whereBetween',
-                'description' => 'Filter items such that the value of the given key is between the given values. This argument expects exactly three values in an array.',
+                'description' => 'Filter items such that the value of the given key is between the given values. This argument expects exactly three values in an array. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::listOf(Type::string()),
             ],
             'whereNotBetween' => [
                 'name' => 'whereNotBetween',
-                'description' => 'Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array.',
+                'description' => 'Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::listOf(Type::string()),
             ],
         ];
