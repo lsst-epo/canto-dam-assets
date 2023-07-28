@@ -33,8 +33,12 @@ class CantoDamAssetResolver extends Resolver
             'method' => 'sortArgs',
         ],
         [
-            'args' => ['first', 'last', 'except', 'nth', 'random', 'skip'],
+            'args' => ['except', 'nth', 'random', 'skip'],
             'method' => 'simpleArgs',
+        ],
+        [
+            'args' => ['first', 'last'],
+            'method' => 'noArgs',
         ],
     ];
 
@@ -62,9 +66,6 @@ class CantoDamAssetResolver extends Resolver
                 }
             }
         }
-        if (is_array($collection)) {
-            $collection = new Collection([$collection]);
-        }
 
         return $collection;
     }
@@ -89,5 +90,10 @@ class CantoDamAssetResolver extends Resolver
     protected static function simpleArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         return $collection->$arg($arguments[$arg]);
+    }
+
+    protected static function noArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        return new Collection([$collection->$arg(null)]);
     }
 }

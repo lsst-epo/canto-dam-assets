@@ -199,8 +199,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             ],
             'last' => [
                 'name' => 'last',
-                'description' => 'Get the last N items from the collection.',
-                'type' => Type::int(),
+                'description' => 'Get the last item from the collection.',
+                'type' => Type::boolean(),
             ],
             'random' => [
                 'name' => 'random',
@@ -214,13 +214,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             ],
             'first' => [
                 'name' => 'first',
-                'description' => 'Get the first N items from the collection.',
-                'type' => Type::int(),
+                'description' => 'Get the first item from the collection.',
+                'type' => Type::boolean(),
             ],
             'shuffle' => [
                 'name' => 'shuffle',
-                'description' => 'Shuffle the items in the collection.',
-                'type' => Type::boolean(),
+                'description' => 'Shuffle the items in the collection, using the value as a random number seed.',
+                'type' => Type::int(),
             ],
             'skip' => [
                 'name' => 'skip',
