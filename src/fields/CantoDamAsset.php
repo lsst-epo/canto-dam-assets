@@ -107,7 +107,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
         // In case we want to try to transform this image
-        $previewUrl = $value->cantoAssetData[0]['directUri'] ?? null;
+        $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
@@ -135,7 +135,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         /** @var  CantoFieldData $value */
         $view = Craft::$app->getView();
         // In case we want to try to transform this image
-        $previewUrl = $value->cantoAssetData[0]['directUri'] ?? null;
+        $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
