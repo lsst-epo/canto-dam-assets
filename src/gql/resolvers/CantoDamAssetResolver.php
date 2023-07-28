@@ -25,8 +25,12 @@ class CantoDamAssetResolver extends Resolver
             'method' => 'keyArgs',
         ],
         [
-            'args' => ['shuffle', 'sortBy', 'sortByDesc', 'reverse'],
+            'args' => ['shuffle', 'reverse'],
             'method' => 'simpleArgs',
+        ],
+        [
+            'args' => ['sortBy', 'sortByDesc'],
+            'method' => 'sortArgs',
         ],
         [
             'args' => ['first', 'last', 'except', 'nth', 'random', 'skip'],
@@ -70,6 +74,12 @@ class CantoDamAssetResolver extends Resolver
         return $collection->$arg(...$arguments[$arg]);
     }
 
+    protected static function sortArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        $resolvedArg = count($arguments[$arg]) === 1 ? reset($arguments[$arg]) : $arguments[$arg];
+        return $collection->$arg($resolvedArg);
+    }
+
     protected static function keyArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         $key = array_shift($arguments[$arg]);
@@ -80,5 +90,4 @@ class CantoDamAssetResolver extends Resolver
     {
         return $collection->$arg($arguments[$arg]);
     }
-
 }
