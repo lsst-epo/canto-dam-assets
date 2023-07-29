@@ -10,6 +10,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;
@@ -186,7 +187,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     protected function getGqlArguments(): array
     {
-        return [
+        return Craft::$app->getGql()->prepareFieldDefinitions([
             'except' => [
                 'name' => 'except',
                 'description' => 'Get all items except for those with the specified indexes.',
@@ -240,7 +241,23 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'where' => [
                 'name' => 'where',
                 'description' => 'Get all items by the given key value pair. The argument expects 1 to 3 values. The 1st value is the key (you can use the `field.subField` syntax for nested fields), the 2nd argument is the value, and the optional 3rd argument is the comparison operator (See https://laravel.com/docs/10.x/collections#method-where).',
-                'type' => Type::listOf(Type::string()),
+                'type' => new InputObjectType([
+                    'name' => 'WhereFiltersInput',
+                    'fields' => [
+                        'key' => [
+                            'type' => Type::string(),
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'value' => [
+                            'type' => Type::string(),
+                            'description' => 'The value to match when searching'
+                        ],
+                        'operator' => [
+                            'type' => Type::string(),
+                            'description' => 'The comparison operator to use, e.g.: `=`, `>`, `<=`, etc. The default is `=`'
+                        ]
+                    ]
+                ]),
             ],
             'whereNull' => [
                 'name' => 'whereNull',
@@ -249,29 +266,77 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             ],
             'whereNotNull' => [
                 'name' => 'whereNotNull',
-                'description' => 'he whereNotNull method returns items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.',
+                'description' => 'The whereNotNull method returns items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::string(),
             ],
             'whereIn' => [
                 'name' => 'whereIn',
                 'description' => 'Filter items by the given key value pair. The first item of provided array is used as the key, all the other items compose the matching array. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::listOf(Type::string()),
+                'type' => new InputObjectType([
+                    'name' => 'WhereInFiltersInput',
+                    'fields' => [
+                        'key' => [
+                            'type' => Type::string(),
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'values' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The values that should be in the key'
+                        ],
+                    ]
+                ]),
             ],
             'whereNotIn' => [
                 'name' => 'whereNotIn',
                 'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. The first item of provided array is used as the key, all the other items compose the matching array. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::listOf(Type::string()),
+                'type' => new InputObjectType([
+                    'name' => 'WhereNotInFiltersInput',
+                    'fields' => [
+                        'key' => [
+                            'type' => Type::string(),
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'values' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The the values that should not be in the key'
+                        ],
+                    ]
+                ]),
             ],
             'whereBetween' => [
                 'name' => 'whereBetween',
                 'description' => 'Filter items such that the value of the given key is between the given values. This argument expects exactly three values in an array. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::listOf(Type::string()),
+                'type' => new InputObjectType([
+                    'name' => 'WhereBetweenFiltersInput',
+                    'fields' => [
+                        'key' => [
+                            'type' => Type::string(),
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'values' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The values that the key should be between'
+                        ],
+                    ]
+                ]),
             ],
             'whereNotBetween' => [
                 'name' => 'whereNotBetween',
                 'description' => 'Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::listOf(Type::string()),
+                'type' => new InputObjectType([
+                    'name' => 'WhereNotBetweenFiltersInput',
+                    'fields' => [
+                        'key' => [
+                            'type' => Type::string(),
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'values' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The values the key should not be between'
+                        ],
+                    ]
+                ]),
             ],
-        ];
+        ], 'CantoDamAssetQueryType');
     }
 }

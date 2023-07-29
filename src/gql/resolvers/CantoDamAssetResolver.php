@@ -14,7 +14,7 @@ class CantoDamAssetResolver extends Resolver
     protected static array $argsList = [
         [
             'args' => ['where'],
-            'method' => 'spreadArgs',
+            'method' => 'whereArgs',
         ],
         [
             'args' => ['whereNull', 'whereNotNull'],
@@ -22,7 +22,7 @@ class CantoDamAssetResolver extends Resolver
         ],
         [
             'args' => ['whereIn', 'whereNotIn', 'whereBetween', 'whereNotBetween'],
-            'method' => 'keyArgs',
+            'method' => 'whereArrayArgs',
         ],
         [
             'args' => ['shuffle', 'reverse'],
@@ -70,9 +70,13 @@ class CantoDamAssetResolver extends Resolver
         return $collection;
     }
 
-    protected static function spreadArgs(Collection $collection, array $arguments, string $arg): Collection
+    protected static function whereArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(...$arguments[$arg]);
+        return $collection->$arg(
+            $arguments[$arg]['key'] ?? null,
+            $arguments[$arg]['operator'] ?? null,
+            $arguments[$arg]['value'] ?? null
+        );
     }
 
     protected static function sortArgs(Collection $collection, array $arguments, string $arg): Collection
@@ -81,10 +85,12 @@ class CantoDamAssetResolver extends Resolver
         return $collection->$arg($resolvedArg);
     }
 
-    protected static function keyArgs(Collection $collection, array $arguments, string $arg): Collection
+    protected static function whereArrayArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        $key = array_shift($arguments[$arg]);
-        return $collection->$arg($key, $arguments[$arg]);
+        return $collection->$arg(
+            $arguments[$arg]['key'] ?? null,
+            $arguments[$arg]['values'] ?? null
+        );
     }
 
     protected static function simpleArgs(Collection $collection, array $arguments, string $arg): Collection
