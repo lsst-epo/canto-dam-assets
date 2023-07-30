@@ -276,7 +276,6 @@ cantoAPI.insertImage = function (imageArray) {
         cantoAssetData: mergedAssetData,
         cantoAlbumData: albumData,
       };
-      console.log(data);
       // Let our canto-field.js know what asset(s) were picked
       let targetWindow = parent;
       targetWindow.postMessage(data, '*');
