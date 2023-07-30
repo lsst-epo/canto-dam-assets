@@ -260,12 +260,23 @@ cantoAPI.insertImage = function (imageArray) {
           ...directUriResponse[i]
         });
       }
+      // Gather information about the selected album
+      let album = $("#treeviewSection").find("li.selected");
+      const albumId = album.data('id');
+      let albumName = album.find('span').text();
+      const albumData = {
+        id: albumId,
+        name: albumName,
+      };
       // Compose the payload to send as an event
       let data = {
         type: "closeModal",
         cantoId: id,
+        cantoAlbumId: albumId,
         cantoAssetData: mergedAssetData,
+        cantoAlbumData: albumData,
       };
+      console.log(data);
       // Let our canto-field.js know what asset(s) were picked
       let targetWindow = parent;
       targetWindow.postMessage(data, '*');
@@ -385,6 +396,25 @@ function addEventListener() {
       }
       cantoAPI.insertImage(assetArray);
     })
+    // Allow for the insertion of the entire album into the target system
+    .on("click", "#insertAlbumBtn", function (e) {
+      $("#cantoViewBody").find(".loading-icon").removeClass("hidden");
+      let assetArray = [];
+      let selectedArray = $("#cantoViewBody").find(".single-image[data-scheme='image']").closest(".single-image");
+      console.log(selectedArray);
+      for (let i = 0; i < selectedArray.length; i++) {
+        let obj = {};
+        obj.id = $(selectedArray[i]).data("id");
+        obj.scheme = $(selectedArray[i]).data("scheme");
+        obj.size = $(selectedArray[i]).data("size");
+        assetArray.push(obj);
+      }
+      if (assetArray.length) {
+        cantoAPI.insertImage(assetArray);
+      } else {
+        $("#cantoViewBody").find(".loading-icon").addClass("hidden");
+      }
+    })
     .on("click", ".icon-s-Fullscreen", function (e) {
       e.cancelBubble = true;
       e.stopPropagation();
@@ -443,6 +473,7 @@ function addEventListener() {
       } else {
         $("#treeviewSection ul li").removeClass("selected");
         $("#cantoViewBody").find(".type-font").removeClass("current");
+        $("#insertAlbumWrapper").removeClass("hidden");
         $(e.currentTarget).addClass("selected");
         $("#cantoViewBody").find("#globalSearch input").val("");
         $("#cantoViewBody").find("#imagesContent").html("");
@@ -600,11 +631,13 @@ let handleSelectedMode = function () {
     $("#cantoViewBody").find("#filterSection").addClass("hidden");
     $("#cantoViewBody").find("#selectedCountSection").removeClass("hidden");
     $("#cantoViewBody").find("#selectedActionSection").removeClass("hidden");
+    $("#insertAlbumWrapper").addClass("hidden");
   } else {
     $("#cantoViewBody").find("#globalSearch").removeClass("hidden");
     $("#cantoViewBody").find("#filterSection").removeClass("hidden");
     $("#cantoViewBody").find("#selectedCountSection").addClass("hidden");
     $("#cantoViewBody").find("#selectedActionSection").addClass("hidden");
+    $("#insertAlbumWrapper").removeClass("hidden");
   }
   //toggle isAllSelectedMode
   $("#cantoViewBody").find("#selectAllBtn").addClass("all-selected");

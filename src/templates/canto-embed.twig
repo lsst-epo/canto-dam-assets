@@ -49,8 +49,13 @@
             <input onChange="uploadFileToCanto(this);" data-buttonText="Upload File" type="file" id="uploadBtnInvisible" help-id="upload-button" set-aria="{i:70,d:'upload files',pup:1}" class="btn-parent btn-default thirdColorText" tabindex="70" aria-label="upload files" aria-haspopup="true">
         </input>
         </div>
-        <div class="logout-btn" id="logoutBtn" title="Logout">
+        <!-- Hide the logout button, since we don't ever want our content authors to log out of Canto -->
+        <div class="logout-btn hidden" id="logoutBtn" title="Logout">
             <span class="icon-s-logoout-24"></span>
+        </div>
+        <!-- Allow for the insertion of the entire album into the target system -->
+        <div class="selected-action-section hidden" id="insertAlbumWrapper" title="Insert Album">
+            <span class="action-btn" id="insertAlbumBtn" title="Insert these assets into target system.">Insert Album</span>
         </div>
         <div id="selectedActionSection" class="selected-action-section hidden">
             <span class="action-icon icon-icn_checkmark_circle_01 all-selected" id="selectAllBtn" title="Select All"></span>

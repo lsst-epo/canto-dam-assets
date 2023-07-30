@@ -12,12 +12,27 @@ use Illuminate\Support\Collection;
 class CantoFieldData extends Model
 {
     public ?string $cantoId = null;
+    public ?string $cantoAlbumId = null;
     public Collection|array $cantoAssetData = [];
+    public Collection|array $cantoAlbumData = [];
+
+    public function __construct($config = [])
+    {
+        if ($config['cantoAssetData'] === null) {
+            $config['cantoAssetData'] = [];
+        }
+        if ($config['cantoAlbumData'] === null) {
+            $config['cantoAlbumData'] = [];
+        }
+
+        parent::__construct($config);
+    }
 
     public function init(): void
     {
         parent::init();
         $this->cantoAssetData = new Collection($this->cantoAssetData);
+        $this->cantoAlbumData = new Collection($this->cantoAlbumData);
     }
 
     /**
@@ -29,6 +44,7 @@ class CantoFieldData extends Model
             [
                 [
                     'cantoId',
+                    'cantoAlbumId'
                 ],
                 [
                     'string',
@@ -37,6 +53,7 @@ class CantoFieldData extends Model
             ],
             [
                 [
+                    'cantoAlbumData',
                     'cantoAssetData',
                 ],
                 'default',
@@ -44,6 +61,7 @@ class CantoFieldData extends Model
             ],
             [
                 [
+                    'cantoAlbumData',
                     'cantoAssetData',
                 ],
                 ArrayValidator::class,

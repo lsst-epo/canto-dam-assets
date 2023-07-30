@@ -6,6 +6,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
+use craft\db\mysql\Schema as MySqlSchema;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -67,7 +68,9 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     {
         return [
             'cantoId' => Schema::TYPE_STRING,
-            'cantoAssetData' => Schema::TYPE_TEXT,
+            'cantoAlbumId' => Schema::TYPE_STRING,
+            'cantoAssetData' => Craft::$app->getDb()->getIsMysql() ? MySqlSchema::TYPE_MEDIUMTEXT : Schema::TYPE_TEXT,
+            'cantoAlbumData' => Schema::TYPE_STRING,
         ];
     }
 
@@ -75,7 +78,9 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     {
         return [
             'cantoId' => $value['cantoId'] ?? null,
+            'cantoAlbumId' => $value['cantoAlbumId'] ?? null,
             'cantoAssetData' => $value['cantoAssetData'] ?? null,
+            'cantoAlbumData' => $value['cantoAlbumData'] ?? null,
         ];
     }
 
@@ -86,6 +91,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         }
         if (is_array($value)) {
             $value['cantoAssetData'] = Json::decodeIfJson($value['cantoAssetData']);
+            $value['cantoAlbumData'] = Json::decodeIfJson($value['cantoAlbumData']);
             $value = new CantoFieldData($value);
         }
         return $value;
@@ -112,6 +118,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
+        $albumName = $value->cantoAlbumData['name'] ?? '';
         // Render the input template
         return $view->renderTemplate(
             '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
@@ -125,6 +132,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'namespacedId' => $view->namespaceInputId($id),
                 'previewUrl' => $previewUrl,
                 'previewName' => $previewName,
+                'albumName' => $albumName,
                 'assetCount' => $assetCount,
                 'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken()
             ]
@@ -140,6 +148,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
+        $albumName = $value->cantoAlbumData['name'] ?? '';
         $className = $value->cantoId == 0 ? "canto-asset-preview-stack" : "";
 
         return $view->renderTemplate(
@@ -153,6 +162,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'element' => Json::encode($element),
                 'previewUrl' => $previewUrl,
                 'previewName' => $previewName,
+                'albumName' => $albumName,
                 'assetCount' => $assetCount,
             ]
         );

@@ -54,10 +54,14 @@
             $(damAssetPreview).hide();
           } else {
             const url = $(damAssetPreview).attr("data-thumbnailurl");
+            const albumName = $(damAssetPreview).attr("data-albumName");
             let name = $(damAssetPreview).attr("data-thumbnailName");
             const assetCount = $(damAssetPreview).attr("data-assetCount");
             const className = assetCount == 1 ? "" : "canto-asset-preview-stack";
             name = assetCount == 1 ? name : `${assetCount} images`;
+            if (albumName.length) {
+              name += ' / ' + albumName;
+            }
             $(fieldNamespaceIdSelector('chooseAsset')).html("Choose a Different DAM Asset");
             $(damAssetPreview).prepend(`
 <div id="${damAssetPreviewWrapper.slice(1)}">
@@ -107,7 +111,9 @@
           $(fieldNamespaceIdSelector('chooseAsset')).html("Add a DAM Asset");
           $(damAssetPreview).hide();
           $(fieldNamespaceIdSelector('cantoId')).val(null);
+          $(fieldNamespaceIdSelector('cantoAlbumId')).val(null);
           $(fieldNamespaceIdSelector('cantoAssetData')).val([]);
+          $(fieldNamespaceIdSelector('cantoAlbumData')).val([]);
         });
 
         // Beginning of Canto's Universal Connector code:
@@ -135,10 +141,13 @@
             $(damAssetPreview).attr("data-assetCount", assetCount);
             $(damAssetPreview).attr("data-thumbnailUrl", cantoAsset.url.directUrlOriginal);
             $(damAssetPreview).attr("data-thumbnailName", cantoAsset.displayName);
+            $(damAssetPreview).attr("data-albumName", data.cantoAlbumData.name);
             displayImagePreview();
             // Save the cantoId & cantoAssetData into the hidden field data
             $(fieldNamespaceIdSelector('cantoId')).val(data.cantoId);
+            $(fieldNamespaceIdSelector('cantoAlbumId')).val(data.cantoAlbumId);
             $(fieldNamespaceIdSelector('cantoAssetData')).val(JSON.stringify(data.cantoAssetData));
+            $(fieldNamespaceIdSelector('cantoAlbumData')).val(JSON.stringify(data.cantoAlbumData));
             $(damAssetPreview).show();
             $modal.hide();
 

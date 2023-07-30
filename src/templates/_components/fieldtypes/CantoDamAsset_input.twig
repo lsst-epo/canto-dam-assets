@@ -17,15 +17,28 @@
 }) }}
 
 {{ forms.hidden({
+    id: "cantoAlbumId" | namespaceInputId(cantoFieldId),
+    name: "cantoAlbumId" | namespaceInputName(name),
+    value: value.cantoAlbumId,
+}) }}
+
+{{ forms.hidden({
     id: "cantoAssetData" | namespaceInputId(cantoFieldId),
     name: "cantoAssetData" | namespaceInputName(name),
     value: value.cantoAssetData,
+}) }}
+
+{{ forms.hidden({
+    id: "cantoAlbumData" | namespaceInputId(cantoFieldId),
+    name: "cantoAlbumData" | namespaceInputName(name),
+    value: value.cantoAlbumData,
 }) }}
 
 <div style="{% if not previewUrl %} display: none;{% endif %} margin-bottom: 15px;"
      id="{{ "damAssetPreview" | namespaceInputId(cantoFieldId) }}"
      data-thumbnailUrl="{{ previewUrl | default("none") }}"
      data-thumbnailName="{{ previewName | default("none") }}"
+     data-albumName="{{ albumName | default("none") }}"
      data-assetCount="{{ assetCount | default("none") }}"
 >
     <a id="{{ "removeDamAsset" | namespaceInputId(cantoFieldId) }}" class="delete icon" title="Remove"
