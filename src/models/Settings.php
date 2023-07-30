@@ -12,7 +12,7 @@ use craft\helpers\App;
 class Settings extends Model
 {
     public string $appId = "";
-    public string $authEndpoint = "";
+    public string $authEndpoint = "https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token=";
     public string $retrieveAssetMetadataEndpoint = "";
     public string $secretKey = "";
 
@@ -77,6 +77,7 @@ class Settings extends Model
                 ],
                 'url',
             ],
+            ['authEndpoint', 'default', 'value' => 'https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token='],
         ];
     }
 
