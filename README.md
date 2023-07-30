@@ -2,15 +2,15 @@
 
 ![Screenshot](./resources/img/canto-logo.png)
 
-This plugin is intended to be used with the [Canto Digital Asset Management](https://www.canto.com/product/) (DAM) web system
+This Craft CMS plugin adds a Field Type with GraphQL support for the [Canto Digital Asset Management](https://www.canto.com/product/) (DAM) web system.
 
 ## Overview
 
-This plugin works by leveraging a modified version of the [Canto Universal Connector](https://support.canto.com/en/support/solutions/articles/9000159770-universal-connector) to provide the asset picker for your Canto library inside of Craft CMS..
+This plugin works by leveraging a modified version of the [Canto Universal Connector](https://support.canto.com/en/support/solutions/articles/9000159770-universal-connector) to provide the asset picker for your Canto library inside of Craft CMS.
 
 ![Screenshot](./resources/screenshots/canto-dam-assets-picker.png)
 
-It stores all of the Canto asset data in Craft CMS as a JSON blob, which can be accessed via Twig or GraphQL.
+It stores all of the selected Canto asset data in Craft CMS as a JSON blob, which can be accessed via Twig or GraphQL.
 
 The Canto asset data is represented as a [Laravel Collection](https://laravel.com/docs/10.x/collections), allowing you to use the various [Collection methods](https://laravel.com/docs/10.x/collections#available-methods) to search, sort, filter, etc. the data.
 
@@ -24,7 +24,7 @@ While the Canto DAM Assets plugin will allow you to select and utilize assets ot
 
 ## Configuring
 
-Before you can use the Canto DAM Assets plugin, you need to configure it via **Settings &rarr; Plugins &rarr; Canto DAM Assets:
+Before you can use the Canto DAM Assets plugin, you need to configure it via **Settings &rarr; Plugins &rarr; Canto DAM Assets**:
 
 ![Screenshot](./resources/screenshots/canto-dam-assets-settings.png)
 
@@ -67,16 +67,16 @@ To select an entire album, click on the album in the list view on the left, then
 
 Just like [Assets](https://craftcms.com/docs/4.x/assets.html) in Craft CMS, each Canto DAM Field stores data for an array of `n` assets. So a single Canto DAM Asset is treated the same as a gallery of 10 Canto DAM Assets.
 
-The data the Canto DAM Asset field type stores is as follows, each in their own separate table in the `content` table of the Craft CMS database, to allow for easy searching based on the `cantoId` or `cantoAlbumId` which are broken out of their respective data structures:
+The data the Canto DAM Asset field type stores is as follows, each in their own separate table in the `content` table of the Craft CMS database. The separate `content` table columns allows for easy searching based on the `cantoId` or `cantoAlbumId` which are broken out of their respective data structures:
 
-* `cantoId` - The id of the Canto Asset, or `0` if this is a collection of images
-* `cantoAlbumId` - the id of the Canto Album
-* `cantoAssetData` - a JSON blob that is an array of Canto DAM Assets
-* `cantoAlbumData` - a JSON blob of Canto DAM Album data
+* `cantoId` - The `id` of the Canto Asset, or `0` if this is a collection of images
+* `cantoAlbumId` - The `id` of the Canto Album
+* `cantoAssetData` - A JSON blob that is an array of Canto DAM Assets
+* `cantoAlbumData` - A JSON blob of Canto DAM Album data
 
 ## Canto DAM Asset Data Structure
 
-The Canto DAM Asset data is stored as a JSON blob with a structure that mirrors the results from the [`batch/content`](https://api.canto.com/#c9483281-c667-4ec2-be64-c07632680f2d) endpoint combined with the data from the undocumented `batch/directuri` endpoint.
+The selected Canto DAM Asset data is stored as a JSON blob with a structure that mirrors the results from the [`batch/content`](https://api.canto.com/#c9483281-c667-4ec2-be64-c07632680f2d) endpoint combined with the data from the undocumented `batch/directuri` endpoint.
 
 Below are the available fields for the Canto Asset Data of the scheme `image`; the fields may vary for other asset types:
 
@@ -220,18 +220,20 @@ You can use the [GraphiQL IDE](https://craftcms.com/docs/4.x/graphql.html#using-
 You can access the data stored in a Canto DAM Asset field type via Twig by accessing it as you would any other field type. In the examples below, `someDamAsset` is the field handle of a Canto DAM Asset field:
 
 ```twig
-    {{ entry.someDamAsset.cantoAssetData.first().url.directUrlOriginal }}
+{{ entry.someDamAsset.cantoAssetData.first().url.directUrlOriginal }}
 ```
 
 Note that `cantoAssetData` is a [Laravel Collection](https://laravel.com/docs/10.x/collections) that contains an `array` of Canto DAM Assets, so we are using the [`.first()`](https://laravel.com/docs/10.x/collections#method-first) method to get the first item from the array, and then we are accessing the `url.directUrlOriginal` of the Canto DAM Asset data structure.
 
-Since `cantoAssetData`, all [Collection methods](https://laravel.com/docs/10.x/collections#available-methods) are available to operate on the Canto DAM Asset data.
+Since `cantoAssetData` is a Laravel Collection, all [Collection methods](https://laravel.com/docs/10.x/collections#available-methods) are available to operate on the Canto DAM Asset data.
 
 Craft CMS also provides a `.one()` method that aliases to `.first()`, so you can use that as well to mirror how [Element Queries](https://craftcms.com/docs/4.x/element-queries.html) work, if you like.
 
 ## Using GraphQL
 
-You can also access the data stored in a Canto DAM Asset field type via Craft CMS's [GraphQL API](https://craftcms.com/docs/4.x/graphql.html) inside of an Entry query:
+You can also access the data stored in a Canto DAM Asset field type via Craft CMS's [GraphQL API](https://craftcms.com/docs/4.x/graphql.html) inside of an Entry query.
+
+In the examples below, `someDamAsset` is the field handle of a Canto DAM Asset field:
 
 ### Simple Queries
 
@@ -315,6 +317,8 @@ You can also treat the Canto DAM Asset data as a database, and do queries based 
 
 This works by mapping a subset of  [Collection methods](https://laravel.com/docs/10.x/collections#available-methods) to arguments in GraphQL.
 
+In the examples below, `someDamAsset` is the field handle of a Canto DAM Asset field.
+
 So for example, this query:
 
 ```graphql
@@ -394,39 +398,39 @@ Filter items such that the value of the given key is between the given values.
 
 * `WhereFiltersInput` - Used with the `where` argument, in the format: `{key: "key", value: "value", operator: "operator"}`:
 
-  `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
+  * `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
 
-  `value`: `String` - The value to match when searching
+  * `value`: `String` - The value to match when searching
 
-  `operator`: `String` - The comparison operator to use, e.g.: =, >, <=, etc. The default is =
+  * `operator`: `String` - The comparison operator to use, e.g.: =, >, <=, etc. The default is =
 
 
 * `WhereBetweenFiltersInput` - Used with the `whereBetween` argument, in the format: `{key: "key", values: ["value1", "value2"]}`:
 
-  `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
+  * `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
 
-  `values`: `String` - The values that the key should be between
+  * `values`: `String` - The values that the key should be between
 
 
 * `WhereInFiltersInput` - Used with the `whereIn` argument, in the format: `{key: "key", values: ["value1", "value2"]}`:
 
-  `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
+  * `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
 
-  `values`: `String` - The values that should be in the key
+  * `values`: `String` - The values that should be in the key
 
 
 * `WhereNotBetweenFiltersInput` - Used with the `whereNotBetween` argument, in the format: `{key: "key", values: ["value1", "value2"]}`:
 
-  `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
+  * `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
 
-  `values`: `String` - The values that the key should not be between
+  * `values`: `String` - The values that the key should not be between
 
 
 * `WhereNotInFiltersInput` - Used with the `whereNotIn` argument, in the format: `{key: "key", values: ["value1", "value2"]}`:
 
-  `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
+  * `key`: `String` - The key to search on, you can use the `field.subField` syntax for nested fields
 
-  `values`: `String` - The values that should not be in the key
+  * `values`: `String` - The values that should not be in the key
 
 You can use the [GraphiQL IDE](https://craftcms.com/docs/4.x/graphql.html#using-the-graphiql-ide) built into Craft CMS to try queries interactively.
 
