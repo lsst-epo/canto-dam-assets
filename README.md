@@ -33,6 +33,36 @@ Before you can use the Canto DAM Assets plugin, you need to configure it via **S
 * **Authentication Endpoint** - The URL that should be used to authenticate and obtain an access token from. You can include the `{appId}` & `{secretKey}` tokens in the URL, which will be replaced with the respective values from the settings
 * **Retrieve One Asset Endpoint** - The URL to the endpoint provided by Canto for retrieving meta data for individual assets. This will be unique for your application
 
+## Content Authoring With The Canto DAM Asset field
+
+You can have multiple Canto DAM Asset fields in any entry in Craft CMS:
+
+![Screenshot](./resources/screenshots/canto-dam-assets-field.png)
+
+If a single image is selected, a preview of it will appear with the name of the image, and the album it comes from.
+
+If you have multiple images selected (such as for an entire album of images), a preview of the first image will appear with the number of images and the album they come from, with a stack below it as a visual cue that there are multiple images.
+
+Clicking on **Remove Images** will remove the images from the field.
+
+Clicking on **Choose a Different DAM Asset** will bring up the Canto Universal Connector UX the allows you to choose the asset(s) to use:
+
+### Single Asset
+
+To choose a single asset, click on the image for a detail view, when click on **Confirm** to use the image:
+
+![Screenshot](./resources/screenshots/canto-dam-assets-single-asset.png)
+
+### Multiple Assets
+
+To select multiple assets, click on the circle in the upper-right corner of each image (a &check; will appear), and then click on the **Insert** button:
+
+### And Entire Album
+
+To select an entire album, click on the album in the list view on the left, then click on the **Insert Album** button:
+
+![Screenshot](./resources/screenshots/canto-dam-assets-album.png)
+
 ## Canto DAM Field Data Structure
 
 Just like [Assets](https://craftcms.com/docs/4.x/assets.html) in Craft CMS, each Canto DAM Field stores data for an array of `n` assets. So a single Canto DAM Asset is treated the same as a gallery of 10 Canto DAM Assets.
