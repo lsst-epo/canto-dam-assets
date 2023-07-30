@@ -401,7 +401,6 @@ function addEventListener() {
       $("#cantoViewBody").find(".loading-icon").removeClass("hidden");
       let assetArray = [];
       let selectedArray = $("#cantoViewBody").find(".single-image[data-scheme='image']").closest(".single-image");
-      console.log(selectedArray);
       for (let i = 0; i < selectedArray.length; i++) {
         let obj = {};
         obj.id = $(selectedArray[i]).data("id");
