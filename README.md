@@ -373,6 +373,9 @@ Here's a list of the available arguments, and the types they expect as parameter
 * [`sortByDesc`](https://laravel.com/docs/10.x/collections#method-sortbydesc): `[String]` - Sort the collection using the sort string(s) in a descending order. You can use the field.subField syntax for nested fields and provide multiple sort commands as a list of strings.
 
 
+* [`forPage`](https://laravel.com/docs/10.x/collections#method-forpage): `ForPageInput` - Paginate the items by page number and items per page.
+
+
 * [`where`](https://laravel.com/docs/10.x/collections#method-where): `WhereFiltersInput` - Get all items by the given key value pair, using the optional operator for comparison.
 
 
@@ -395,6 +398,13 @@ Filter items such that the value of the given key is between the given values.
 * [`whereNull`](https://laravel.com/docs/10.x/collections#method-wherenull): `String` - Return items from the collection where the given key is null. You can use the `field.subField` syntax for nested fields.
 
 #### Query Argument types
+
+* `ForPageInput` - Used with the `forPage` argument, in the format: `{page: 1, items: 10}`:
+
+  * `page`: `Int` - The page number
+
+  * `items`: `Int` - The number of items per page
+
 
 * `WhereFiltersInput` - Used with the `where` argument, in the format: `{key: "key", value: "value", operator: "operator"}`:
 
