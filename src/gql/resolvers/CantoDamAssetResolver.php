@@ -37,6 +37,10 @@ class CantoDamAssetResolver extends Resolver
             'method' => 'simpleArgs',
         ],
         [
+            'args' => ['forPage'],
+            'method' => 'forPageArgs',
+        ],
+        [
             'args' => ['first', 'last'],
             'method' => 'noArgs',
         ],
@@ -68,6 +72,14 @@ class CantoDamAssetResolver extends Resolver
         }
 
         return $collection;
+    }
+
+    protected static function forPageArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        return $collection->$arg(
+            $arguments[$arg]['page'] ?? 1,
+            $arguments[$arg]['items'] ?? 10,
+        );
     }
 
     protected static function whereArgs(Collection $collection, array $arguments, string $arg): Collection

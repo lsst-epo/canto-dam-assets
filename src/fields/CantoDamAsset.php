@@ -248,6 +248,23 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                 'type' => Type::listOf(Type::string()),
             ],
+            'forPage' => [
+                'name' => 'forPage',
+                'description' => 'Paginate the items by page number and items per page. (See https://laravel.com/docs/10.x/collections#method-forpage).',
+                'type' => new InputObjectType([
+                    'name' => 'ForPageInput',
+                    'fields' => [
+                        'page' => [
+                            'type' => Type::int(),
+                            'description' => 'The page number'
+                        ],
+                        'items' => [
+                            'type' => Type::int(),
+                            'description' => 'The number of items per page'
+                        ],
+                    ]
+                ]),
+            ],
             'where' => [
                 'name' => 'where',
                 'description' => 'Get all items by the given key value pair, using the optional operator for comparison. (See https://laravel.com/docs/10.x/collections#method-where).',
