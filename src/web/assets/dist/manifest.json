@@ -32,7 +32,7 @@
     "src": "src/fonts/icomoon_flight_01.woff"
   },
   "src/js/app.css": {
-    "file": "assets/app-d5d3a823.css",
+    "file": "assets/app-a3cf1571.css",
     "src": "src/js/app.css"
   },
   "src/js/app.ts": {
@@ -47,9 +47,9 @@
       "assets/icomoon-bc1681f9.svg"
     ],
     "css": [
-      "assets/app-d5d3a823.css"
+      "assets/app-a3cf1571.css"
     ],
-    "file": "assets/app-347dc806.js",
+    "file": "assets/app-b0748bb7.js",
     "isEntry": true,
     "src": "src/js/app.ts"
   },
