@@ -5,7 +5,7 @@ namespace lsst\cantodamassets\gql\resolvers;
 use craft\base\ElementInterface;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
-use Illuminate\Support\Collection;
+use lsst\cantodamassets\lib\laravel\Collection;
 use lsst\cantodamassets\models\CantoFieldData;
 
 class CantoDamAssetResolver extends Resolver

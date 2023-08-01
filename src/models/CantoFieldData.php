@@ -4,7 +4,7 @@ namespace lsst\cantodamassets\models;
 
 use craft\base\Model;
 use craft\validators\ArrayValidator;
-use Illuminate\Support\Collection;
+use lsst\cantodamassets\lib\laravel\Collection;
 
 /**
  * Canto DAM Field Data
