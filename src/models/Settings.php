@@ -89,7 +89,12 @@ class Settings extends Model
         return [
             'parser' => [
                 'class' => EnvAttributeParserBehavior::class,
-                'attributes' => ['secretKey'],
+                'attributes' => [
+                    'appId',
+                    'authEndpoint',
+                    'retrieveAssetMetadataEndpoint',
+                    'secretKey'
+                ],
             ],
         ];
     }
