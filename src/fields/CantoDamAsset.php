@@ -176,7 +176,9 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     protected function searchKeywords(mixed $value, ElementInterface $element): string
     {
-        return StringHelper::toString($value, ' ');
+        /* @var CantoFieldData $value */
+        $keywords = $value->cantoAssetData->flatten()->values()->filter();
+        return StringHelper::toString($keywords, ' ');
     }
 
     public function getElementConditionRuleType(): array|string|null
