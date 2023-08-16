@@ -10,7 +10,6 @@ use craft\db\mysql\Schema as MySqlSchema;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
@@ -94,6 +93,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             $value['cantoAlbumData'] = Json::decodeIfJson($value['cantoAlbumData']);
             $value = new CantoFieldData($value);
         }
+
         return $value;
     }
 
@@ -177,8 +177,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     protected function searchKeywords(mixed $value, ElementInterface $element): string
     {
         /* @var CantoFieldData $value */
-        $keywords = $value->cantoAssetData->flatten()->values()->filter();
-        return StringHelper::toString($keywords, ' ');
+        $keywords = $value->cantoAssetData->flatten()->values()->filter()->all();
+        return implode(' ', $keywords);
     }
 
     public function getElementConditionRuleType(): array|string|null
