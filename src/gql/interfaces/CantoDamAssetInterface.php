@@ -208,44 +208,6 @@ class CantoDamAssetInterface extends BaseInterfaceType
                 'size' => Type::string(),
                 'scheme' => Type::string(),
                 'owner' => Type::string(),
-            ],
-            // Fields from the asset directuri API endpoint
-            [
-                'displayName' => [
-                    'name' => 'displayName',
-                    'description' => 'The display name of the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'directUri' => [
-                    'name' => 'directUri',
-                    'description' => 'The URI to the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'id' => [
-                    'name' => 'id',
-                    'description' => 'The ID of the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'preview' => [
-                    'name' => 'preview',
-                    'description' => 'The embed preview of the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'previewUri' => [
-                    'name' => 'previewUri',
-                    'description' => 'The preview URI to the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'scheme' => [
-                    'name' => 'scheme',
-                    'description' => 'The scheme of the Canto asset',
-                    'type' => Type::string(),
-                ],
-                'size' => [
-                    'name' => 'size',
-                    'description' => 'The size of the Canto asset',
-                    'type' => Type::int(),
-                ],
             ]),
             CantoDamAssetGenerator::getName());
     }
