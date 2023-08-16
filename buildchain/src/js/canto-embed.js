@@ -224,7 +224,8 @@ cantoAPI.insertImage = function (imageArray) {
   let data = {};
   data.type = "cantoInsertImage";
   data.assetList = [];
-  let url = `https://${_tenants}/api_binary/v1/batch/directuri`;
+  // Now fetch the asset detail
+  let url = `https://${_tenants}/api/v1/batch/content`;
   fetch(url, {
     method: "post",
     headers: {
@@ -234,52 +235,31 @@ cantoAPI.insertImage = function (imageArray) {
     body: JSON.stringify(imageArray)
   }).then(response => {
     return response.json();
-  }).then(directUriResponse => {
+  }).then(contentResponse => {
     // Get the id of the canto asset, or 0 if it is a collection of images
     let id = 0;
-    if (directUriResponse.length === 1) {
-      id = directUriResponse[0].id;
+    if (contentResponse.length === 1) {
+      id = contentResponse[0].id;
     }
-    // Now fetch the asset detail
-    let url = `https://${_tenants}/api/v1/batch/content`;
-    fetch(url, {
-      method: "post",
-      headers: {
-        "Authorization": `${_tokenType} ${_accessToken}`,
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify(imageArray)
-    }).then(response => {
-      return response.json();
-    }).then(contentResponse => {
-      // Merge the arrays of asset data together
-      const mergedAssetData = [];
-      for (let i = 0; i < directUriResponse.length; i++) {
-        mergedAssetData.push({
-          ...contentResponse.docResult[i],
-          ...directUriResponse[i]
-        });
-      }
-      // Gather information about the selected album
-      let album = $("#treeviewSection").find("li.selected");
-      const albumId = album.data('id');
-      let albumName = album.find('span').text();
-      const albumData = {
-        id: albumId,
-        name: albumName,
-      };
-      // Compose the payload to send as an event
-      let data = {
-        type: "closeModal",
-        cantoId: id,
-        cantoAlbumId: albumId,
-        cantoAssetData: mergedAssetData,
-        cantoAlbumData: albumData,
-      };
-      // Let our canto-field.js know what asset(s) were picked
-      let targetWindow = parent;
-      targetWindow.postMessage(data, '*');
-    });
+    const mergedAssetData = contentResponse.docResult;
+    // Gather information about the selected album
+    let album = $("#treeviewSection").find("li.selected");
+    const albumId = album.data('id');
+    let albumName = album.find('span').text();
+    const albumData = {
+      id: albumId,
+      name: albumName,
+    };
+    // Compose the payload to send as an event
+    let data = {
+      type: "closeModal",
+      cantoId: id,
+      cantoAlbumId: albumId,
+      cantoAssetData: mergedAssetData,
+      cantoAlbumData: albumData,
+    };
+    // Let our canto-field.js know what asset(s) were picked
+    parent.postMessage(data, '*');
   });
 };
 
