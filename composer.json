@@ -2,7 +2,8 @@
   "name": "lsst-epo/canto-dam-assets",
   "description": "This Craft CMS plugin adds a Field Type with GraphQL support for the Canto Digital Asset Management (DAM) web system",
   "type": "craft-plugin",
-  "version": "1.0.0",
+  "version": "4.0.0",
+  "license": "MIT",
   "require": {
     "php": ">=8.0.2",
     "craftcms/cms": "^4.4.0",
