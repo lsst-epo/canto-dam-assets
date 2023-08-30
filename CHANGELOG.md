@@ -4,4 +4,4 @@ All notable changes to this project will be documented in this file.
 
 ## 4.0.0 - 2023.08.30
 ### Added
-* Initial beta release
+* Initial release
