@@ -205,11 +205,6 @@ default {
   size
   scheme
   owner
-  displayName
-  directUri
-  previewUri
-  preview
-  previewUri
 }
 ```
 
