@@ -1,0 +1,14 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Canto Asset Picker Type"|t("_canto-dam-assets"),
+    instructions: "What Canto assets can be chosen by this field."|t("_canto-dam-assets"),
+    id: "cantoAssetPickerType",
+    name: "cantoAssetPickerType",
+    value: field.cantoAssetPickerType,
+    options: {
+        "singleImagePicker": "Single Image"|t("_canto-dam-assets"),
+        "multipleImagePicker": "Multiple Images"|t("_canto-dam-assets"),
+        "wholeAlbumPicker": "Whole Album"|t("_canto-dam-assets"),
+    },
+}) }}

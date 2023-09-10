@@ -23,6 +23,15 @@ use yii\db\Schema;
  */
 class CantoDamAsset extends Field implements PreviewableFieldInterface
 {
+
+    protected const PICKER_TYPE_CLASS_MAP = [
+        'singleImagePicker' => 'can-select-single',
+        'multipleImagePicker' => 'can-select-single can-select-multiple',
+        'wholeAlbumPicker' => 'can-select-album',
+    ];
+
+    public ?string $cantoAssetPickerType = 'singleImagePicker';
+
     public static function displayName(): string
     {
         return Craft::t('_canto-dam-assets', 'Canto Dam Asset');
@@ -60,7 +69,10 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public function getSettingsHtml(): ?string
     {
-        return null;
+        return Craft::$app->getView()->renderTemplate('_canto-dam-assets/_components/fieldtypes/CantoDamAsset_settings.twig',
+            [
+                'field' => $this,
+            ]);
     }
 
     public function getContentColumnType(): array|string
@@ -110,6 +122,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            'bodyClass' => self::PICKER_TYPE_CLASS_MAP[$this->cantoAssetPickerType] ?? self::PICKER_TYPE_CLASS_MAP['singleImagePicker'],
         ];
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
