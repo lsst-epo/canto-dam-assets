@@ -42,6 +42,6 @@ class Assets extends Component
         }
         Craft::error("An exception occurred in getAuthToken()", __METHOD__);
 
-        return Craft::t("cantodamassets", "An error occurred fetching auth token!");
+        return Craft::t("_canto-dam-assets", "An error occurred fetching auth token!");
     }
 }
