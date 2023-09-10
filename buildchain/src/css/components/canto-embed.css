@@ -72,7 +72,7 @@
     text-align: center;
 }
 
-/* -- Feature-base styling to hide/show UX elements -- */
+/* -- Feature-based styling to hide/show UX elements -- */
 
 body:not(.canSelectSingle) div#insertBtn, body:not(.canSelectSingle) .image-preview-modal .detail-box .insert-action-section .insert-text {
     display: none;
