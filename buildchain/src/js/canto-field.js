@@ -102,7 +102,7 @@
           let elementId = e.target.dataset.element;
           let type = e.target.dataset.type;
           let accessToken = e.target.dataset.access;
-          loadIframeContent(fieldId, elementId, type, accessToken);
+          loadIframeContent(fieldId, elementId, type, accessToken, this.options.bodyClass);
         });
 
         // Handle clicks to remove the asset
@@ -195,7 +195,7 @@
   let $modal = new Garnish.Modal(modalMarkup, {'autoShow': false});
 
   /*--------------------------load iframe content---------------------------------------*/
-  function loadIframeContent(fieldId, elementId, type, accessToken) {
+  function loadIframeContent(fieldId, elementId, type, accessToken, bodyClass) {
 //  let timeStamp = new Date().getTime();
     let tokenInfo = {accessToken: accessToken};
     let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
@@ -213,6 +213,10 @@
       $(cantoUCFrame).attr("data-type", type);
       $(cantoUCFrame).attr("src", cantoLoginPage);
     }
+    $(cantoUCFrame).on("load", function () {
+      $(cantoUCFrame).contents().find("body").addClass(bodyClass);
+      console.log($(cantoUCFrame).contents().find("body"));
+    });
   }
 
   function getTenant(tokenInfo) {

@@ -71,3 +71,17 @@
     color: white;
     text-align: center;
 }
+
+/* -- Feature-base styling to hide/show UX elements -- */
+
+body:not(.canSelectSingle) div#insertBtn, body:not(.canSelectSingle) .image-preview-modal .detail-box .insert-action-section .insert-text {
+    display: none;
+}
+
+body:not(.canSelectAlbum) div#insertAlbumWrapper {
+    display: none;
+}
+
+body:not(.canSelectMultiple) .body-section .single-image:hover .select-box, body:not(.canSelectMultiple) .body-section .single-image:hover .select-icon-background {
+    display: none;
+}
