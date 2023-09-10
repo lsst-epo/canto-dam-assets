@@ -74,14 +74,14 @@
 
 /* -- Feature-based styling to hide/show UX elements -- */
 
-body:not(.canSelectSingle) div#insertBtn, body:not(.canSelectSingle) .image-preview-modal .detail-box .insert-action-section .insert-text {
+body:not(.can-select-single) div#insertBtn, body:not(.can-select-single) .image-preview-modal .detail-box .insert-action-section .insert-text {
     display: none;
 }
 
-body:not(.canSelectAlbum) div#insertAlbumWrapper {
+body:not(.can-select-multiple) .body-section .single-image:hover .select-box, body:not(.can-select-multiple) .body-section .single-image:hover .select-icon-background {
     display: none;
 }
 
-body:not(.canSelectMultiple) .body-section .single-image:hover .select-box, body:not(.canSelectMultiple) .body-section .single-image:hover .select-icon-background {
+body:not(.can-select-album) div#insertAlbumWrapper {
     display: none;
 }
