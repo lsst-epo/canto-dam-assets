@@ -32,7 +32,7 @@
     "src": "src/fonts/icomoon_flight_01.woff"
   },
   "src/js/app.css": {
-    "file": "assets/app-f344274c.css",
+    "file": "assets/app-9ed12e88.css",
     "src": "src/js/app.css"
   },
   "src/js/app.ts": {
@@ -47,9 +47,9 @@
       "assets/icomoon-9dcb22af.svg"
     ],
     "css": [
-      "assets/app-f344274c.css"
+      "assets/app-9ed12e88.css"
     ],
-    "file": "assets/app-abac894f.js",
+    "file": "assets/app-e12d88c5.js",
     "isEntry": true,
     "src": "src/js/app.ts"
   },
@@ -59,7 +59,7 @@
     "src": "src/js/canto-embed.js"
   },
   "src/js/canto-field.js": {
-    "file": "assets/canto-field-985cf5f2.js",
+    "file": "assets/canto-field-5ec7fbc3.js",
     "isEntry": true,
     "src": "src/js/canto-field.js"
   }
