@@ -215,7 +215,6 @@
     }
     $(cantoUCFrame).on("load", function () {
       $(cantoUCFrame).contents().find("body").addClass(bodyClass);
-      console.log($(cantoUCFrame).contents().find("body"));
     });
   }
 
