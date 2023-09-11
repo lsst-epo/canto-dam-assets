@@ -24,6 +24,8 @@ While the Canto DAM Assets plugin will allow you to select and utilize assets ot
 
 ## Configuring
 
+### Plugin Settings
+
 Before you can use the Canto DAM Assets plugin, you need to configure it via **Settings &rarr; Plugins &rarr; Canto DAM Assets**:
 
 ![Screenshot](./resources/screenshots/canto-dam-assets-settings.png)
@@ -32,6 +34,20 @@ Before you can use the Canto DAM Assets plugin, you need to configure it via **S
 * **Secret Key** - Your Canto DAM secret key
 * **Authentication Endpoint** - The URL that should be used to authenticate and obtain an access token from. You can include the `{appId}` & `{secretKey}` tokens in the URL, which will be replaced with the respective values from the settings
 * **Retrieve One Asset Endpoint** - The URL to the endpoint provided by Canto for retrieving meta data for individual assets. This will be unique for your application
+
+### Field Settings
+
+Each Canto DAM Assets field can be configured via its Field Settings, to control what Canto assets can be chosen by the field:
+
+![Screenshot](./resources/screenshots/canto-dam-assets-field-settings.png)
+
+* **Single Image** - Only a single image can be picked for use in the field
+* **Multiple Images** - Either a single image, or multiple images (via the round checkbox in the upper-right corner of the image) can be selected
+* **Entire Album** - Only an entire album of images can be selected
+
+You can have multiple Canto DAM Asset fields for any given entry, each with their own separate Field Settings.
+
+Since the **Canto Asset Picker Type** is just a field setting, admins can at any time change what the content author is allowed to pick. Changing this setting for an existing field does not change the assets stored in the field, it just alters what UX is presented to the content author in the future.
 
 ## Content Authoring With The Canto DAM Asset field
 
