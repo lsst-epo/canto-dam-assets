@@ -213,10 +213,16 @@
       $(cantoUCFrame).attr("data-type", type);
       $(cantoUCFrame).attr("src", cantoLoginPage);
     }
-    $(cantoUCFrame).on("load", function () {
-      $(cantoUCFrame).contents().find("body").addClass(bodyClass);
-      console.log($(cantoUCFrame).contents().find("body"));
-    });
+
+    // Apply the feature classes for the iFrame immediately, and also after the iFrame as loaded
+    function applyIFrameClasses() {
+      const $iFrameBody = $(cantoUCFrame).contents().find("body");
+      $iFrameBody.removeClass('can-select-single can-select-multiple can-select-album');
+      $iFrameBody.addClass(bodyClass);
+    }
+
+    $(cantoUCFrame).on("load", applyIFrameClasses);
+    applyIFrameClasses();
   }
 
   function getTenant(tokenInfo) {
