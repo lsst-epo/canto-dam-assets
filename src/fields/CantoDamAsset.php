@@ -114,14 +114,15 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         /** @var  CantoFieldData $value */
         $view = Craft::$app->getView();
         $id = Html::id($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $namespace = $view->getNamespace();
+        $namespacedId = $view->namespaceInputId($id);
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
             'id' => $id,
             'fieldId' => $this->id,
             'name' => $this->handle,
             'namespace' => $namespacedId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            'prefix' => Html::namespaceId('', $namespace),
             'bodyClass' => self::PICKER_TYPE_CLASS_MAP[$this->cantoAssetPickerType] ?? self::PICKER_TYPE_CLASS_MAP['singleImagePicker'],
         ];
         $jsonVars = Json::encode($jsonVars);

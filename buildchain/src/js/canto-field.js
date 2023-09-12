@@ -37,7 +37,7 @@
         settings(this.options);
 
         // Macro for getting a namespaced field selector
-        const fieldNamespaceIdSelector = (fieldName) => `#fields-` + Craft.namespaceId(fieldName, this.options.id);
+        const fieldNamespaceIdSelector = (fieldName) => '#' + this.options.prefix + '-' + Craft.namespaceId(fieldName, this.options.id);
 
         // Display the image preview on init
         const damAssetPreview = fieldNamespaceIdSelector('damAssetPreview');
