@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.3 - 2023.09.12
+### Fixed
+* Fixed an issue where the Canto DAM Asset field didn't work inside of Matrix/Neo blocks due to a namespacing issue
+
 ## 4.0.2 - 2023.09.11
 ### Fixed
 * Fixed an issue where the appropriate feature classes were not re-applied to the iFrame when multiple differently configured Canto DAM Asset fields are used on the same entry
