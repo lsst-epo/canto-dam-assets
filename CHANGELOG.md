@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.4 - UNRELEASED
+### Added
+* Added an icon to the plugin
+
 ## 4.0.3 - 2023.09.12
 ### Fixed
 * Fixed an issue where the Canto DAM Asset field didn't work inside of Matrix/Neo blocks due to a namespacing issue
