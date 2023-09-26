@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.4 - 2023.09.25
+### Added
+* Added an icon to the plugin
+
+### Fixed
+* Fixed an issue where multiple Matrix/Neo blocks on the same page didn't work, because the raw `fieldId` was being passed in instead of the namespaced field input id
+
 ## 4.0.3 - 2023.09.12
 ### Fixed
 * Fixed an issue where the Canto DAM Asset field didn't work inside of Matrix/Neo blocks due to a namespacing issue

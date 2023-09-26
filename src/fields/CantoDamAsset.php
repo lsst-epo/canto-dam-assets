@@ -119,7 +119,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
             'id' => $id,
-            'fieldId' => $this->id,
+            'fieldId' => $namespacedId,
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Html::namespaceId('', $namespace),
@@ -139,7 +139,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             [
                 'name' => $this->handle,
                 'value' => $value,
-                'fieldId' => $this->id,
+                'fieldId' => $namespacedId,
                 'elementId' => $element->id ?? null,
                 'id' => $id,
                 'element' => Json::encode($element),
