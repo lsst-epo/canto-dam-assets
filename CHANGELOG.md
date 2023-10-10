@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.5 - UNRELEASED
+### Added
+* Implement `::getStaticHtml()` for proper display of revisions
+
 ## 4.0.4 - 2023.09.25
 ### Added
 * Added an icon to the plugin
