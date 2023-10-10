@@ -238,8 +238,8 @@ cantoAPI.insertImage = function (imageArray) {
   }).then(contentResponse => {
     // Get the id of the canto asset, or 0 if it is a collection of images
     let id = 0;
-    if (contentResponse.length === 1) {
-      id = contentResponse[0].id;
+    if (contentResponse.docResult.length === 1) {
+      id = contentResponse.docResult[0].id;
     }
     const mergedAssetData = contentResponse.docResult;
     // Gather information about the selected album
