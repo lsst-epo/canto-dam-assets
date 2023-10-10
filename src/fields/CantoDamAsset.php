@@ -130,7 +130,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
-        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
+        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
         $albumName = $value->cantoAlbumData['name'] ?? '';
         $className = $value->cantoId == 0 ? "canto-asset-preview-stack" : "";
 
@@ -238,7 +238,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
-        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['displayName'] ?? null;
+        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
         $albumName = $value->cantoAlbumData['name'] ?? '';
 
         return [
