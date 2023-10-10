@@ -2,9 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.0.5 - UNRELEASED
+## 4.0.5 - 2023.10.09
 ### Added
 * Implement `::getStaticHtml()` for proper display of revisions
+
+### Fixed
+* Fixed an issue where a single selected Canto asset’s ID wasn’t save properly
 
 ## 4.0.4 - 2023.09.25
 ### Added
