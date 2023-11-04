@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\services;
 
+use benf\neo\Field as NeoField;
 use Craft;
 use craft\base\FieldInterface;
 use craft\db\Table;
@@ -12,7 +13,9 @@ use craft\helpers\Json;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\models\CantoFieldData;
+use verbb\supertable\fields\SuperTableField;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 
 /**
@@ -60,17 +63,31 @@ class Assets extends Component
         return Craft::t("_canto-dam-assets", "An error occurred fetching auth token!");
     }
 
-    public function deleteByCantoId(string $cantoId)
+    /**
+     * Update the $cantoId asset from any fields that contain it with the data in $cantoFieldData
+     *
+     * @param string $cantoId
+     * @param CantoFieldData $cantoFieldData
+     * @return void
+     */
+    public function updateByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
     {
-        $this->deleteEntryContentByCantoId($cantoId);
-        $this->deleteMatrixContentByCantoId($cantoId);
-        $this->deleteSuperTableContentByCantoId($cantoId);
-        $this->deleteNeoContentByCantoId($cantoId);
+        $this->updateEntryContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateMatrixContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateSuperTableContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateNeoContentByCantoId($cantoId, $cantoFieldData);
     }
-    
-    protected function deleteEntryContentByCantoId(string $cantoId)
+
+    /**
+     * Delete the $cantoId asset from any fields that contain it
+     *
+     * @param string $cantoId
+     * @return void
+     * @throws InvalidConfigException
+     */
+    public function deleteByCantoId(string $cantoId): void
     {
-        $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
+        // Create a CantoFieldData object with empty values, to effectively deleting it
         $cantoFieldData = Craft::createObject([
             'class' => CantoFieldData::class,
             'cantoId' => null,
@@ -78,23 +95,44 @@ class Assets extends Component
             'cantoAssetData' => [],
             'cantoAlbumData' => [],
         ]);
+        $this->updateEntryContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateMatrixContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateSuperTableContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateNeoContentByCantoId($cantoId, $cantoFieldData);
+    }
+
+    protected function updateEntryContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
+    {
+        $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
         $this->updateContentByCantoId($cantoId, $cantoFieldData, $fields, Table::CONTENT);
     }
 
-    protected function deleteMatrixContentByCantoId(string $cantoId)
+    /* @TODO implement updateMatrixContentByCantoId() */
+    protected function updateMatrixContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
     {
         $fields = Craft::$app->getFields()->getFieldsByType(Matrix::class);
         foreach ($fields as $field) {
-            $matrixContentTableName = Craft::$app->getMatrix()->defineContentTableName($field);
+            /* @var Matrix $field */
+            $contentTableName = Craft::$app->getMatrix()->defineContentTableName($field);
         }
     }
 
-    protected function deleteSuperTableContentByCantoId(string $cantoId)
+    /* @TODO implement updateSuperTableContentByCantoId() */
+    protected function updateSuperTableContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
     {
+        $fields = Craft::$app->getFields()->getFieldsByType(SuperTableField::class);
+        foreach ($fields as $field) {
+            /* @var SuperTableField $field */
+        }
     }
 
-    protected function deleteNeoContentByCantoId(string $cantoId)
+    /* @TODO implement updateNeoContentByCantoId() */
+    protected function updateNeoContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
     {
+        $fields = Craft::$app->getFields()->getFieldsByType(NeoField::class);
+        foreach ($fields as $field) {
+            /* @var NeoField $field */
+        }
     }
 
     /**
