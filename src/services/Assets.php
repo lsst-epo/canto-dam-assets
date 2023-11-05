@@ -72,20 +72,70 @@ class Assets extends Component
      */
     public function updateByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
     {
-        $this->updateEntryContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateMatrixContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateSuperTableContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateNeoContentByCantoId($cantoId, $cantoFieldData);
+        $this->update($cantoId, $cantoFieldData, 'cantoId');
     }
 
     /**
-     * Delete the $cantoId asset from any fields that contain it
+     * Update the $albumId asset from any fields that contain it with the data in $cantoFieldData
+     *
+     * @param string $albumId
+     * @param CantoFieldData $cantoFieldData
+     * @return void
+     */
+    public function updateByAlbumId(string $albumId, CantoFieldData $cantoFieldData): void
+    {
+        $this->update($albumId, $cantoFieldData, 'albumId');
+    }
+
+    /**
+     * Delete the $cantoId from any fields that contain it
      *
      * @param string $cantoId
      * @return void
      * @throws InvalidConfigException
      */
     public function deleteByCantoId(string $cantoId): void
+    {
+        $this->delete($cantoId, 'cantoId');
+    }
+
+    /**
+     * Delete the $cantoId from any fields that contain it
+     *
+     * @param string $albumId
+     * @return void
+     * @throws InvalidConfigException
+     */
+    public function deleteByAlbumId(string $albumId): void
+    {
+        $this->delete($albumId, 'albumId');
+    }
+
+    /**
+     * Update the Canto Asset whose $columnKey matches $value with $cantoFieldData, in any fields that contain it
+     *
+     * @param string $value
+     * @param CantoFieldData $cantoFieldData
+     * @param $columnKey
+     * @return void
+     */
+    public function update(string $value, CantoFieldData $cantoFieldData, $columnKey): void
+    {
+        $this->updateEntryContent($value, $cantoFieldData, $columnKey);
+        $this->updateMatrixContent($value, $cantoFieldData, $columnKey);
+        $this->updateSuperTableContent($value, $cantoFieldData, $columnKey);
+        $this->updateNeoContent($value, $cantoFieldData, $columnKey);
+    }
+
+    /**
+     * Delete the Canto Asset whose $columnKey matches $value, from any fields that contain it
+     *
+     * @param string $value
+     * @param $columnKey
+     * @return void
+     * @throws InvalidConfigException
+     */
+    protected function delete(string $value, $columnKey): void
     {
         // Create a CantoFieldData object with empty values, to effectively deleting it
         $cantoFieldData = Craft::createObject([
@@ -95,20 +145,20 @@ class Assets extends Component
             'cantoAssetData' => [],
             'cantoAlbumData' => [],
         ]);
-        $this->updateEntryContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateMatrixContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateSuperTableContentByCantoId($cantoId, $cantoFieldData);
-        $this->updateNeoContentByCantoId($cantoId, $cantoFieldData);
+        $this->updateEntryContent($value, $cantoFieldData, $columnKey);
+        $this->updateMatrixContent($value, $cantoFieldData, $columnKey);
+        $this->updateSuperTableContent($value, $cantoFieldData, $columnKey);
+        $this->updateNeoContent($value, $cantoFieldData, $columnKey);
     }
 
-    protected function updateEntryContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
+    protected function updateEntryContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
     {
         $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
-        $this->updateContentByCantoId($cantoId, $cantoFieldData, $fields, Table::CONTENT);
+        $this->updateContent($cantoId, $cantoFieldData, $columnKey, $fields, Table::CONTENT);
     }
 
     /* @TODO implement updateMatrixContentByCantoId() */
-    protected function updateMatrixContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
+    protected function updateMatrixContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
     {
         $fields = Craft::$app->getFields()->getFieldsByType(Matrix::class);
         foreach ($fields as $field) {
@@ -118,7 +168,7 @@ class Assets extends Component
     }
 
     /* @TODO implement updateSuperTableContentByCantoId() */
-    protected function updateSuperTableContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
+    protected function updateSuperTableContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
     {
         $fields = Craft::$app->getFields()->getFieldsByType(SuperTableField::class);
         foreach ($fields as $field) {
@@ -127,7 +177,7 @@ class Assets extends Component
     }
 
     /* @TODO implement updateNeoContentByCantoId() */
-    protected function updateNeoContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData): void
+    protected function updateNeoContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
     {
         $fields = Craft::$app->getFields()->getFieldsByType(NeoField::class);
         foreach ($fields as $field) {
@@ -140,13 +190,14 @@ class Assets extends Component
      *
      * @param string $cantoId
      * @param CantoFieldData $cantoFieldData
+     * @param string|null $columnKey
      * @param FieldInterface[] $cantoDamAssetFields
      * @param string $table
      * @return void
      */
-    protected function updateContentByCantoId(string $cantoId, CantoFieldData $cantoFieldData, array $cantoDamAssetFields, string $table): void
+    protected function updateContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
     {
-        $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId'] ?? null;
+        $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
             $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $columnKey);
             $columns = [];
