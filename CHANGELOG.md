@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.6 - UNRELEASED
+### Fixed
+* Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized as GraphQL doesn't support spaces or other special characters in the query params
+
 ## 4.0.5 - 2023.10.09
 ### Added
 * Implement `::getStaticHtml()` for proper display of revisions
