@@ -56,7 +56,7 @@ class m231108_024521_change_to_json_column extends Migration
     }
 
     /**
-     * Change the block type (Matrix, SuperTable, etc.) columns to JSON
+     * Change the block type field (Matrix, SuperTable, etc.) columns to JSON
      *
      * @param string $fieldType
      * @return void
@@ -73,7 +73,7 @@ class m231108_024521_change_to_json_column extends Migration
     }
 
     /**
-     * Update the $fields' column in $table, using the $fieldColumnPrefix if specified
+     * Update the $fields' column in $table
      *
      * @param string $table
      * @param FieldInterface[] $fields
