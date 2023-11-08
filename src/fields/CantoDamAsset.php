@@ -6,7 +6,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
-use craft\db\mysql\Schema as MySqlSchema;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -93,8 +92,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return [
             'cantoId' => Schema::TYPE_STRING,
             'cantoAlbumId' => Schema::TYPE_STRING,
-            'cantoAssetData' => Craft::$app->getDb()->getIsMysql() ? MySqlSchema::TYPE_MEDIUMTEXT : Schema::TYPE_TEXT,
-            'cantoAlbumData' => Schema::TYPE_STRING,
+            'cantoAssetData' => Schema::TYPE_JSON,
+            'cantoAlbumData' => Schema::TYPE_JSON,
         ];
     }
 
