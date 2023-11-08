@@ -7,6 +7,7 @@
   "require": {
     "php": ">=8.0.2",
     "craftcms/cms": "^4.4.0",
+    "daccess1/yii2-json-query-helper": "^1.0.0",
     "nystudio107/craft-plugin-vite": "^4.0.0"
   },
   "require-dev": {
