@@ -24,7 +24,7 @@ class CantoDamAssets extends Plugin
 {
     use ServicesTrait;
 
-    public string $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.1';
     public bool $hasCpSettings = true;
 
     public static ?CantoDamAssets $plugin = null;
@@ -40,7 +40,6 @@ class CantoDamAssets extends Plugin
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function () {
             $this->attachEventHandlers();
-            // ...
         });
     }
 
