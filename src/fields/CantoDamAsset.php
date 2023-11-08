@@ -99,23 +99,26 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): array
     {
+        /** @var ?CantoFieldData $value */
         return [
-            'cantoId' => $value['cantoId'] ?? null,
-            'cantoAlbumId' => $value['cantoAlbumId'] ?? null,
-            'cantoAssetData' => $value['cantoAssetData'] ?? null,
-            'cantoAlbumData' => $value['cantoAlbumData'] ?? null,
+            'cantoId' => $value->cantoId ?? null,
+            'cantoAlbumId' => $value->cantoAlbumId ?? null,
+            'cantoAssetData' => $value->cantoAssetData ?? null,
+            'cantoAlbumData' => $value->cantoAlbumData ?? null,
         ];
     }
 
     public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
-        if ($value === null) {
-            $value = new CantoFieldData();
-        }
-        if (is_array($value)) {
-            $value['cantoAssetData'] = Json::decodeIfJson($value['cantoAssetData']);
-            $value['cantoAlbumData'] = Json::decodeIfJson($value['cantoAlbumData']);
-            $value = new CantoFieldData($value);
+        $config = $value ?? [];
+        if (is_array($config)) {
+            // We are doing this twice to work around a Craft bug for now:
+            // https://github.com/craftcms/cms/issues/13916
+            $config['cantoAssetData'] = Json::decodeIfJson($config['cantoAssetData'] ?? []);
+            $config['cantoAssetData'] = Json::decodeIfJson($config['cantoAssetData'] ?? []);
+            $config['cantoAlbumData'] = Json::decodeIfJson($config['cantoAlbumData'] ?? []);
+            $config['cantoAlbumData'] = Json::decodeIfJson($config['cantoAlbumData'] ?? []);
+            return new CantoFieldData($config);
         }
 
         return $value;
