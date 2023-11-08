@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 * Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized as GraphQL doesn't support spaces or other special characters in the query params
+* Work around a Craft bug with custom fields that have JSON column types ([#13916](https://github.com/craftcms/cms/issues/13916))
 
 ## 4.0.5 - 2023.10.09
 ### Added
