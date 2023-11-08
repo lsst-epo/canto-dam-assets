@@ -8,11 +8,8 @@ use craft\db\Migration;
 use craft\db\Table;
 use craft\fields\Matrix;
 use craft\helpers\ElementHelper;
-use craft\services\Matrix as MatrixService;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use verbb\supertable\fields\SuperTableField;
-use verbb\supertable\SuperTable;
-use yii\base\Component;
 use yii\db\Schema;
 
 /**
@@ -35,10 +32,10 @@ class m231108_024521_change_to_json_column extends Migration
         $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
         $this->changeToJsonColumn(Table::CONTENT, $fields);
         // Matrix columns
-        $this->changeBlockTypeToJsonColumn(Matrix::class, Craft::$app->getMatrix());
+        $this->changeBlockTypeToJsonColumn(Matrix::class);
         // SuperTable columns
         if (Craft::$app->getPlugins()->getPlugin('super-table')) {
-            $this->changeBlockTypeToJsonColumn(SuperTableField::class, SuperTable::$plugin->getService());
+            $this->changeBlockTypeToJsonColumn(SuperTableField::class);
         }
         // Neo columns
         /**
@@ -62,23 +59,16 @@ class m231108_024521_change_to_json_column extends Migration
      * Change the block type (Matrix, SuperTable, etc.) columns to JSON
      *
      * @param string $fieldType
-     * @param Component $service
      * @return void
      */
-    private function changeBlockTypeToJsonColumn(string $fieldType, Component $service): void
+    private function changeBlockTypeToJsonColumn(string $fieldType): void
     {
         $blockFields = Craft::$app->getFields()->getFieldsByType($fieldType);
         foreach ($blockFields as $blockField) {
-            // All block types & services have the same methods as Matrix
+            // Block types have the same methods as Matrix
             /* @var Matrix $blockField */
-            /* @var MatrixService $service */
-            $table = $service->defineContentTableName($blockField);
-            $blockTypes = $service->getBlockTypesByFieldId($blockField->id);
-            foreach ($blockTypes as $blockType) {
-                $fieldColumnPrefix = 'field_' . $blockType->handle . '_';
-                $fields = $blockType->getCustomFields();
-                $this->changeToJsonColumn($table, $fields, $fieldColumnPrefix);
-            }
+            $fields = $blockField->getBlockTypeFields();
+            $this->changeToJsonColumn($blockField->contentTable, $fields);
         }
     }
 
@@ -87,21 +77,13 @@ class m231108_024521_change_to_json_column extends Migration
      *
      * @param string $table
      * @param FieldInterface[] $fields
-     * @param string|null $fieldColumnPrefix
      * @return void
      */
-    private function changeToJsonColumn(string $table, array $fields, ?string $fieldColumnPrefix = null): void
+    private function changeToJsonColumn(string $table, array $fields): void
     {
         foreach ($fields as $field) {
             foreach (self::CONTENT_COLUMN_KEYS as $columnKey) {
                 $column = ElementHelper::fieldColumnFromField($field, $columnKey);
-                if ($fieldColumnPrefix) {
-                    $fieldPrefix = 'field_';
-                    $pos = strpos($column, $fieldPrefix);
-                    if ($pos !== false) {
-                        $column = substr_replace($column, $fieldColumnPrefix, $pos, strlen($fieldPrefix));
-                    }
-                }
                 $this->alterColumn($table, $column, Schema::TYPE_JSON);
             }
         }
