@@ -84,8 +84,33 @@ class m231108_024521_change_to_json_column extends Migration
         foreach ($fields as $field) {
             foreach (self::CONTENT_COLUMN_KEYS as $columnKey) {
                 $column = ElementHelper::fieldColumnFromField($field, $columnKey);
-                $this->alterColumn($table, $column, Schema::TYPE_JSON);
+                if (Craft::$app->getDb()->getIsMysql()) {
+                    $this->alterColumn($table, $column, Schema::TYPE_JSON);
+                }
+                if (Craft::$app->getDb()->getIsPgsql()) {
+                    $this->alterColumnUsingPgsql($table, $column, Schema::TYPE_JSON, '::JSON');
+                }
             }
         }
+    }
+
+    /**
+     * Postgres doesn't let you change from Schema::TYPE_TEXT to Schema::TYPE_JSON without an explicit USING
+     * The command is raw SQL since Yii2 doesn't support "USING" with its db migration/command/builder
+     * ref: https://echobind.com/post/safely-alter-postgres-columns-with-using
+     *
+     * @param $table
+     * @param $column
+     * @param $type
+     * @param $using
+     * @return void
+     * @throws \yii\db\Exception
+     */
+    private function alterColumnUsingPgsql($table, $column, $type, $using): void
+    {
+        $time = $this->beginCommand("alter column $column in table $table to $type using $using");
+        $cmd = $this->db->createCommand('ALTER TABLE ' . $table . ' ALTER COLUMN "' . $column . '" TYPE jsonb USING "' . $column . '"' . $using . ', ALTER COLUMN "' . $column . '" DROP DEFAULT, ALTER COLUMN "' . $column . '" DROP NOT NULL');
+        $cmd->execute();
+        $this->endCommand($time);
     }
 }
