@@ -9,6 +9,7 @@ use craft\db\Table;
 use craft\fields\Matrix;
 use craft\helpers\ElementHelper;
 use lsst\cantodamassets\fields\CantoDamAsset;
+use lsst\cantodamassets\lib\laravel\Collection;
 use verbb\supertable\fields\SuperTableField;
 use yii\db\Schema;
 
@@ -68,6 +69,8 @@ class m231108_024521_change_to_json_column extends Migration
             // Block types have the same methods as Matrix
             /* @var Matrix $blockField */
             $fields = $blockField->getBlockTypeFields();
+            // Filter out any non-CantoDamAsset fields
+            $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
             $this->changeToJsonColumn($blockField->contentTable, $fields);
         }
     }
