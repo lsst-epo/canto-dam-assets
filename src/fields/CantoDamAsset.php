@@ -6,7 +6,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
-use craft\db\mysql\Schema as MySqlSchema;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -93,30 +92,33 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return [
             'cantoId' => Schema::TYPE_STRING,
             'cantoAlbumId' => Schema::TYPE_STRING,
-            'cantoAssetData' => Craft::$app->getDb()->getIsMysql() ? MySqlSchema::TYPE_MEDIUMTEXT : Schema::TYPE_TEXT,
-            'cantoAlbumData' => Schema::TYPE_STRING,
+            'cantoAssetData' => Schema::TYPE_JSON,
+            'cantoAlbumData' => Schema::TYPE_JSON,
         ];
     }
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): array
     {
+        /** @var ?CantoFieldData $value */
         return [
-            'cantoId' => $value['cantoId'] ?? null,
-            'cantoAlbumId' => $value['cantoAlbumId'] ?? null,
-            'cantoAssetData' => $value['cantoAssetData'] ?? null,
-            'cantoAlbumData' => $value['cantoAlbumData'] ?? null,
+            'cantoId' => $value->cantoId ?? null,
+            'cantoAlbumId' => $value->cantoAlbumId ?? null,
+            'cantoAssetData' => $value->cantoAssetData ?? null,
+            'cantoAlbumData' => $value->cantoAlbumData ?? null,
         ];
     }
 
     public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
-        if ($value === null) {
-            $value = new CantoFieldData();
-        }
-        if (is_array($value)) {
-            $value['cantoAssetData'] = Json::decodeIfJson($value['cantoAssetData']);
-            $value['cantoAlbumData'] = Json::decodeIfJson($value['cantoAlbumData']);
-            $value = new CantoFieldData($value);
+        $config = $value ?? [];
+        if (is_array($config)) {
+            // We are doing this twice to work around a Craft bug for now:
+            // https://github.com/craftcms/cms/issues/13916
+            $config['cantoAssetData'] = Json::decodeIfJson($config['cantoAssetData'] ?? []);
+            $config['cantoAssetData'] = Json::decodeIfJson($config['cantoAssetData'] ?? []);
+            $config['cantoAlbumData'] = Json::decodeIfJson($config['cantoAlbumData'] ?? []);
+            $config['cantoAlbumData'] = Json::decodeIfJson($config['cantoAlbumData'] ?? []);
+            return new CantoFieldData($config);
         }
 
         return $value;

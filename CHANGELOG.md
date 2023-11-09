@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.6 - 2023.11.09
+### Added
+* Added a plugin migration to migrate existing field data to use the `Schema::TYPE_JSON` column type
+* Add the package `daccess1/yii2-json-query-helper` to aid in creating `JSON_CONTAINS()` Query Expressions
+
+### Changed
+* Changed the content column types to `Schema::TYPE_JSON` because it's more correct, and we can also use `JSON_CONTAINS()` SQL queries in these columns
+
+### Fixed
+* Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized as GraphQL doesn't support spaces or other special characters in the query params
+* Work around a Craft bug with custom fields that have JSON column types ([#13916](https://github.com/craftcms/cms/issues/13916))
+
 ## 4.0.5 - 2023.10.09
 ### Added
 * Implement `::getStaticHtml()` for proper display of revisions
