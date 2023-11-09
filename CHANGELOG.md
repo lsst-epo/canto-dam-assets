@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.0.6 - UNRELEASED
+## 4.0.6 - 2023.11.09
 ### Added
 * Added a plugin migration to migrate existing field data to use the `Schema::TYPE_JSON` column type
 * Add the package `daccess1/yii2-json-query-helper` to aid in creating `JSON_CONTAINS()` Query Expressions
