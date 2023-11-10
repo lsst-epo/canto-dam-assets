@@ -219,7 +219,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'prefix' => Html::namespaceId('', $namespace),
             'bodyClass' => self::PICKER_TYPE_CLASS_MAP[$this->cantoAssetPickerType] ?? self::PICKER_TYPE_CLASS_MAP['singleImagePicker'],
         ]);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");");
+        $view->registerJs(
+            'document.addEventListener("vite-script-loaded", function (e) {' .
+            'if (e.detail.path === "src/js/canto-field.js") {' .
+            "$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");" .
+            '}' .
+            '});'
+        );
     }
 
     /**
