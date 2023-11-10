@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.7 - 2023.11.10
+### Fixed
+* Fixed an issue where the JavaScript for the field was executed out of order when deeply embedded in a Neo / Matrix block combination nested field
+
 ## 4.0.6 - 2023.11.09
 ### Added
 * Added a plugin migration to migrate existing field data to use the `Schema::TYPE_JSON` column type
