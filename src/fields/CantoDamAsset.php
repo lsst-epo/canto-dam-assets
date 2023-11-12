@@ -220,6 +220,9 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'bodyClass' => self::PICKER_TYPE_CLASS_MAP[$this->cantoAssetPickerType] ?? self::PICKER_TYPE_CLASS_MAP['singleImagePicker'],
         ]);
         $view->registerJs(
+            'if(jQuery().CantoDamConnector) {' .
+            "$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");" .
+            '}' .
             'document.addEventListener("vite-script-loaded", function (e) {' .
             'if (e.detail.path === "src/js/canto-field.js") {' .
             "$('#{$namespacedId}-field').CantoDamConnector(" . $jsonVars . ");" .
