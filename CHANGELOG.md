@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.8 - 2023.11.12
+### Fixed
+* Fixed an issue where field instances weren't initialized when opened via Slideout due to the document custom event already having been triggered
+
 ## 4.0.7 - 2023.11.10
 ### Fixed
 * Fixed an issue where the JavaScript for the field was executed out of order when deeply embedded in a Neo / Matrix block combination nested field
