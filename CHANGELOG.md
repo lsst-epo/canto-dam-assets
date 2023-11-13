@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## 4.0.9 - UNRELEASED
+###
+* Consolidate the field image rendering, and speed up the initial render by having it work without requiring JavaScript
+
 ### Fixed
 * Fixed an issue where the name displayed under an asset wasn't getting updated when choosing a new assets, only when the entry was saved
 
