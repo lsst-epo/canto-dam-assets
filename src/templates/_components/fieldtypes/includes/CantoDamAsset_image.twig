@@ -1,0 +1,38 @@
+{% set config = {
+    id: null,
+    enabled: true,
+    previewUrl: "none",
+    previewName: "none",
+    albumName: "none",
+    assetCount: 1,
+} | merge(config) %}
+
+{% set name = config.assetCount == 1 ? config.previewName : "#{config.assetCount} images" %}
+{% set className = config.assetCount == 1 ? "" : "canto-asset-preview-stack" %}
+{% set albumName = config.albumName | length ? config.albumName : "none" %}
+{% set name = "#{name} / #{albumName}" %}
+<div style="{% if not config.previewUrl %} display: none;{% endif %} margin-bottom: 15px;"
+     id="{{ "damAssetPreview" | namespaceInputId(config.id) }}"
+     data-thumbnailUrl="{{ config.previewUrl }}"
+     data-thumbnailName="{{ config.previewName }}"
+     data-albumName="{{ config.albumName }}"
+     data-assetCount="{{ config.assetCount }}"
+>
+    <div id="{{ "damAssetPreviewWrapper" | namespaceInputId(config.id) }}">
+        <img
+            class="{{ className }}"
+            style="max-height:200px; max-width:200px;"
+            src="{{ config.previewUrl }}"
+            alt="{{ config.previewName }}"
+        >
+        <span>{{ name }}</span>
+    </div>
+    {% if config.enabled %}
+        <a
+            id="{{ "removeDamAsset" | namespaceInputId(config.id) }}"
+            class="delete icon"
+            title="Remove"
+            style="color:#606D8D; font-weight: bold; font-size: 12px;"
+        >&nbsp; Remove Image{% if config.assetCount != 1 %}s{% endif %}</a>
+    {% endif %}
+</div>

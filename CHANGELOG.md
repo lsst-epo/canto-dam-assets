@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.9 - 2023.11.13
+### Added
+* Consolidate the field image rendering, and speed up the initial render by having it work without requiring JavaScript
+
+### Fixed
+* Fixed an issue where the name displayed under an asset wasn't getting updated when choosing a new assets, only when the entry was saved
+
 ## 4.0.8 - 2023.11.12
 ### Fixed
 * Fixed an issue where field instances weren't initialized when opened via Slideout due to the document custom event already having been triggered

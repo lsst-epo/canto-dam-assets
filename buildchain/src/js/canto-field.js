@@ -41,7 +41,6 @@
 
         // Display the image preview on init
         const damAssetPreview = fieldNamespaceIdSelector('damAssetPreview');
-        displayImagePreview();
 
         /**
          * Displays the image preview for the chosen Canto asset(s)
@@ -140,7 +139,7 @@
             const assetCount = data.cantoAssetData.length;
             $(damAssetPreview).attr("data-assetCount", assetCount);
             $(damAssetPreview).attr("data-thumbnailUrl", cantoAsset.url.directUrlOriginal);
-            $(damAssetPreview).attr("data-thumbnailName", cantoAsset.displayName);
+            $(damAssetPreview).attr("data-thumbnailName", cantoAsset.name);
             $(damAssetPreview).attr("data-albumName", data.cantoAlbumData.name);
             displayImagePreview();
             // Save the cantoId & cantoAssetData into the hidden field data
