@@ -77,12 +77,11 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     public function getStaticHtml(mixed $value, ElementInterface $element = null): string
     {
         $view = Craft::$app->getView();
-        $this->registerFieldJavaScript($value, $element);
-        // Render the input template
+        // Render the canto image template
         $twigVariables = $this->getFieldRenderVariables($value, $element, false);
 
         return $view->renderTemplate(
-            '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_input.twig',
+            '_canto-dam-assets/_components/fieldtypes/includes/CantoDamAsset_image.twig',
             $twigVariables
         );
     }
@@ -128,30 +127,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     {
         /** @var  CantoFieldData $value */
         $view = Craft::$app->getView();
-        // In case we want to try to transform this image
-        $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
-        // The name to subtitle the preview
-        $assetCount = count($value->cantoAssetData);
-        $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
-        $albumName = $value->cantoAlbumData['name'] ?? '';
-        $className = $value->cantoId == 0 ? "canto-asset-preview-stack" : "";
+        // Render the canto image template
+        $twigVariables = $this->getFieldRenderVariables($value, $element, false);
 
         return $view->renderTemplate(
-            '_canto-dam-assets/_components/fieldtypes/CantoDamAsset_preview.twig',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'className' => $className,
-                'fieldId' => $this->id,
-                'elementId' => $element->id ?? null,
-                'element' => Json::encode($element),
-                'previewUrl' => $previewUrl,
-                'previewName' => $previewName,
-                'albumName' => $albumName,
-                'assetCount' => $assetCount,
-            ]
+            '_canto-dam-assets/_components/fieldtypes/includes/CantoDamAsset_image.twig',
+            $twigVariables
         );
-
     }
 
     public function getElementValidationRules(): array
@@ -253,19 +235,22 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $albumName = $value->cantoAlbumData['name'] ?? '';
 
         return [
+            'id' => $id,
             'name' => $this->handle,
             'value' => $value,
             'fieldId' => $namespacedId,
             'elementId' => $element->id ?? null,
-            'id' => $id,
             'element' => Json::encode($element),
             'namespacedId' => $view->namespaceInputId($id),
-            'previewUrl' => $previewUrl,
-            'previewName' => $previewName,
-            'albumName' => $albumName,
-            'assetCount' => $assetCount,
             'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken(),
-            'enabled' => $enabled
+            'config' => [
+                'id' => $id,
+                'enabled' => $enabled,
+                'previewUrl' => $previewUrl,
+                'previewName' => $previewName,
+                'albumName' => $albumName,
+                'assetCount' => $assetCount,
+            ],
         ];
     }
 

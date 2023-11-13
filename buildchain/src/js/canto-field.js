@@ -41,7 +41,6 @@
 
         // Display the image preview on init
         const damAssetPreview = fieldNamespaceIdSelector('damAssetPreview');
-        displayImagePreview();
 
         /**
          * Displays the image preview for the chosen Canto asset(s)
