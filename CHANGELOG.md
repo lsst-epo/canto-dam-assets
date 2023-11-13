@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.0.9 - UNRELEASED
-###
+## 4.0.9 - 2023.11.13
+### Added
 * Consolidate the field image rendering, and speed up the initial render by having it work without requiring JavaScript
 
 ### Fixed
