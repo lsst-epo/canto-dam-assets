@@ -1,4 +1,4 @@
-ARG TAG=18-alpine
+ARG TAG=20-alpine
 FROM node:$TAG
 
 RUN npm install -g npm@^9.3.0
