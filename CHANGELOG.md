@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 * Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
 
+### Changed
+* Refactored to use `albumSingleCountLoad` when loading albums, for a much larger pagination size of `1000` (was 50)
+* Limit what is displayed in album views to just images, since that's all we allow in the field type currently
+
 ## 4.0.9 - 2023.11.13
 ### Added
 * Consolidate the field image rendering, and speed up the initial render by having it work without requiring JavaScript
