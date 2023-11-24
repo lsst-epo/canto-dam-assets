@@ -62,6 +62,7 @@ cantoAPI.getListByAlbum = function (albumID, callback) {
   }
   let filterString = loadMoreHandler(albumSingleCountLoad);
   let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}`;
+  url += `&scheme=image`;
   $.ajax({
     type: "GET",
     headers: _APIHeaders,
