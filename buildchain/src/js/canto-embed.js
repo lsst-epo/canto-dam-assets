@@ -8,6 +8,7 @@ let _APIHeaders = {};
 let searchedBy = ""; //bySearch bytree byScheme''
 let currentImageList = [];
 let singleCountLoad = 50;
+let albumSingleCountLoad = 1000;
 let apiNextStart = 0;
 let isLoadingComplete = false;
 let _formatDistrict = '';
@@ -59,7 +60,7 @@ cantoAPI.getListByAlbum = function (albumID, callback) {
   if (isLoadingComplete) {
     return;
   }
-  let filterString = loadMoreHandler();
+  let filterString = loadMoreHandler(albumSingleCountLoad);
   let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}`;
   $.ajax({
     type: "GET",
@@ -126,7 +127,7 @@ cantoAPI.getListByScheme = function (scheme, callback) {
     if (isLoadingComplete) {
       return;
     }
-    let filterString = loadMoreHandler();
+    let filterString = loadMoreHandler(singleCountLoad);
     let url = `https://${_tenants}/api/v1/${scheme}?${filterString}`;
     $.ajax({
       type: "GET",
@@ -175,7 +176,7 @@ cantoAPI.getFilterList = function (data, callback) {
   if (isLoadingComplete) {
     return;
   }
-  let filterString = loadMoreHandler();
+  let filterString = loadMoreHandler(singleCountLoad);
   let url = `https://${_tenants}/api/v1/search?${filterString}`;
   url += `&keyword=${data.keywords}`;
   if (data.scheme && data.scheme == "allfile") {
@@ -535,7 +536,7 @@ function imageListDisplay(imageList) {
       disname = d.name.substr(0, 142) + '...' + d.name.substr(-5);
     }
     html += `<div class="single-image" data-id="${d.id}" data-scheme="${d.scheme}" data-xurl="${d.url.preview}" data-name="${d.name}" data-size="${d.size}" >
-                    <img id="${d.id}" src="https://s3-us-west-2.amazonaws.com/static.dmc/universal/icon/back.png" alt="${d.scheme}">
+                    <img id="${d.id}" loading="lazy" src="https://s3-us-west-2.amazonaws.com/static.dmc/universal/icon/back.png" alt="${d.scheme}">
                     <div class="mask-layer"></div>
                     <div class="single-image-name">${disname}</div>
                     <span class="select-box icon-s-UnselectedCheck_32  "></span><span class="select-icon-background"></span>
@@ -827,9 +828,9 @@ function isScrollToPageBottom() {
   return isToBottom && !nowCount;
 }
 
-function loadMoreHandler() {
+function loadMoreHandler(limit) {
   let start = currentImageList.length == 0 ? 0 : apiNextStart;
-  let filterString = "sortBy=time&sortDirection=descending&limit=" + singleCountLoad + "&start=" + start;
+  let filterString = "sortBy=time&sortDirection=descending&limit=" + limit + "&start=" + start;
   let imageCount = $(".single-image").length;
   if (imageCount !== 0) {
     $("#loadingMore").fadeIn("slow");
