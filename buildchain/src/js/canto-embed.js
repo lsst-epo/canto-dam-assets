@@ -8,9 +8,11 @@ let _APIHeaders = {};
 let searchedBy = ""; //bySearch bytree byScheme''
 let currentImageList = [];
 let singleCountLoad = 50;
+let albumSingleCountLoad = 1000;
 let apiNextStart = 0;
 let isLoadingComplete = false;
 let _formatDistrict = '';
+const MAX_CONTENT_REQUEST_ITEMS = 100;
 
 /* -----------------canto API start-------------------------------------------------------------*/
 
@@ -59,8 +61,9 @@ cantoAPI.getListByAlbum = function (albumID, callback) {
   if (isLoadingComplete) {
     return;
   }
-  let filterString = loadMoreHandler();
+  let filterString = loadMoreHandler(albumSingleCountLoad);
   let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}`;
+  url += `&scheme=image`;
   $.ajax({
     type: "GET",
     headers: _APIHeaders,
@@ -126,7 +129,7 @@ cantoAPI.getListByScheme = function (scheme, callback) {
     if (isLoadingComplete) {
       return;
     }
-    let filterString = loadMoreHandler();
+    let filterString = loadMoreHandler(singleCountLoad);
     let url = `https://${_tenants}/api/v1/${scheme}?${filterString}`;
     $.ajax({
       type: "GET",
@@ -175,7 +178,7 @@ cantoAPI.getFilterList = function (data, callback) {
   if (isLoadingComplete) {
     return;
   }
-  let filterString = loadMoreHandler();
+  let filterString = loadMoreHandler(singleCountLoad);
   let url = `https://${_tenants}/api/v1/search?${filterString}`;
   url += `&keyword=${data.keywords}`;
   if (data.scheme && data.scheme == "allfile") {
@@ -222,45 +225,64 @@ cantoAPI.insertImage = function (imageArray) {
     return;
   }
   let data = {};
+  let url = `https://${_tenants}/api/v1/batch/content`;
+  const responses = [];
+  const pages = Math.ceil(imageArray.length / MAX_CONTENT_REQUEST_ITEMS);
+  for (let i = 0; i < pages; i++) {
+    const offset = MAX_CONTENT_REQUEST_ITEMS * i;
+    const imageArraySubset = imageArray.slice(offset, offset + MAX_CONTENT_REQUEST_ITEMS);
+    const promise = fetch(url, {
+      method: "post",
+      headers: {
+        "Authorization": `${_tokenType} ${_accessToken}`,
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(imageArraySubset)
+    });
+    responses.push(promise);
+  }
   data.type = "cantoInsertImage";
   data.assetList = [];
-  // Now fetch the asset detail
-  let url = `https://${_tenants}/api/v1/batch/content`;
-  fetch(url, {
-    method: "post",
-    headers: {
-      "Authorization": `${_tokenType} ${_accessToken}`,
-      "Content-Type": "application/json; charset=utf-8"
-    },
-    body: JSON.stringify(imageArray)
-  }).then(response => {
-    return response.json();
-  }).then(contentResponse => {
-    // Get the id of the canto asset, or 0 if it is a collection of images
-    let id = 0;
-    if (contentResponse.docResult.length === 1) {
-      id = contentResponse.docResult[0].id;
-    }
-    const mergedAssetData = contentResponse.docResult;
-    // Gather information about the selected album
-    let album = $("#treeviewSection").find("li.selected");
-    const albumId = album.data('id');
-    let albumName = album.find('span').text();
-    const albumData = {
-      id: albumId,
-      name: albumName,
-    };
-    // Compose the payload to send as an event
-    let data = {
-      type: "closeModal",
-      cantoId: id,
-      cantoAlbumId: albumId,
-      cantoAssetData: mergedAssetData,
-      cantoAlbumData: albumData,
-    };
-    // Let our canto-field.js know what asset(s) were picked
-    parent.postMessage(data, '*');
-  });
+  Promise.all(responses)
+    .then((values) => {
+      // Get the id of the canto asset, or 0 if it is a collection of images
+      let id = 0;
+      let mergedAssetData = [];
+      const jsonPromises = [];
+      values.forEach((value) => {
+        jsonPromises.push(value.json());
+      });
+      Promise.all(jsonPromises)
+        .then((jsonResults) => {
+          jsonResults.forEach((jsonResult) => {
+            if (jsonResult.docResult.length === 1) {
+              id = jsonResult.docResult[0].id;
+            }
+            mergedAssetData = mergedAssetData.concat(jsonResult.docResult);
+          });
+          // Gather information about the selected album
+          let album = $("#treeviewSection").find("li.selected");
+          const albumId = album.data('id');
+          let albumName = album.find('span').text();
+          const albumData = {
+            id: albumId,
+            name: albumName,
+          };
+          // Compose the payload to send as an event
+          let data = {
+            type: "closeModal",
+            cantoId: id,
+            cantoAlbumId: albumId,
+            cantoAssetData: mergedAssetData,
+            cantoAlbumData: albumData,
+          };
+          // Let our canto-field.js know what asset(s) were picked
+          parent.postMessage(data, '*');
+        });
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
 };
 
 /* -----------------canto API end--------------------------------------------------------*/
@@ -434,7 +456,6 @@ function addEventListener() {
         currentImageList = [];
         searchedBy = "";
         isLoadingComplete = false;
-        console.log("line 499");
         getImageInit("allfile");
 
       } else if (childList && childList.length) {
@@ -476,7 +497,6 @@ function addEventListener() {
         currentImageList = [];
         searchedBy = "";
         isLoadingComplete = false;
-        console.log("line 492");
         getImageInit(initSchme);
       }
       searchedBy = "bySearch";
@@ -535,7 +555,7 @@ function imageListDisplay(imageList) {
       disname = d.name.substr(0, 142) + '...' + d.name.substr(-5);
     }
     html += `<div class="single-image" data-id="${d.id}" data-scheme="${d.scheme}" data-xurl="${d.url.preview}" data-name="${d.name}" data-size="${d.size}" >
-                    <img id="${d.id}" src="https://s3-us-west-2.amazonaws.com/static.dmc/universal/icon/back.png" alt="${d.scheme}">
+                    <img id="${d.id}" loading="lazy" src="https://s3-us-west-2.amazonaws.com/static.dmc/universal/icon/back.png" alt="${d.scheme}">
                     <div class="mask-layer"></div>
                     <div class="single-image-name">${disname}</div>
                     <span class="select-box icon-s-UnselectedCheck_32  "></span><span class="select-icon-background"></span>
@@ -827,9 +847,9 @@ function isScrollToPageBottom() {
   return isToBottom && !nowCount;
 }
 
-function loadMoreHandler() {
+function loadMoreHandler(limit) {
   let start = currentImageList.length == 0 ? 0 : apiNextStart;
-  let filterString = "sortBy=time&sortDirection=descending&limit=" + singleCountLoad + "&start=" + start;
+  let filterString = "sortBy=time&sortDirection=descending&limit=" + limit + "&start=" + start;
   let imageCount = $(".single-image").length;
   if (imageCount !== 0) {
     $("#loadingMore").fadeIn("slow");

@@ -11,7 +11,7 @@ export default defineConfig(({command}) => ({
   base: command === 'serve' ? '' : './',
   build: {
     emptyOutDir: true,
-    manifest: true,
+    manifest: 'manifest.json',
     outDir: '../src/web/assets/dist',
     rollupOptions: {
       input: {
@@ -19,10 +19,8 @@ export default defineConfig(({command}) => ({
         'canto-embed': 'src/js/canto-embed.js',
         'canto-field': 'src/js/canto-field.js',
       },
-      output: {
-        sourcemap: true
-      },
-    }
+    },
+    sourcemap: true
   },
   plugins: [
     viteRestartPlugin({
