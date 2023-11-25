@@ -12,6 +12,7 @@ let albumSingleCountLoad = 1000;
 let apiNextStart = 0;
 let isLoadingComplete = false;
 let _formatDistrict = '';
+const MAX_CONTENT_REQUEST_ITEMS = 100;
 
 /* -----------------canto API start-------------------------------------------------------------*/
 
@@ -224,45 +225,64 @@ cantoAPI.insertImage = function (imageArray) {
     return;
   }
   let data = {};
+  let url = `https://${_tenants}/api/v1/batch/content`;
+  const responses = [];
+  const pages = Math.ceil(imageArray.length / MAX_CONTENT_REQUEST_ITEMS);
+  for (let i = 0; i < pages; i++) {
+    const offset = MAX_CONTENT_REQUEST_ITEMS * i;
+    const imageArraySubset = imageArray.slice(offset, offset + MAX_CONTENT_REQUEST_ITEMS);
+    const promise = fetch(url, {
+      method: "post",
+      headers: {
+        "Authorization": `${_tokenType} ${_accessToken}`,
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(imageArraySubset)
+    });
+    responses.push(promise);
+  }
   data.type = "cantoInsertImage";
   data.assetList = [];
-  // Now fetch the asset detail
-  let url = `https://${_tenants}/api/v1/batch/content`;
-  fetch(url, {
-    method: "post",
-    headers: {
-      "Authorization": `${_tokenType} ${_accessToken}`,
-      "Content-Type": "application/json; charset=utf-8"
-    },
-    body: JSON.stringify(imageArray)
-  }).then(response => {
-    return response.json();
-  }).then(contentResponse => {
-    // Get the id of the canto asset, or 0 if it is a collection of images
-    let id = 0;
-    if (contentResponse.docResult.length === 1) {
-      id = contentResponse.docResult[0].id;
-    }
-    const mergedAssetData = contentResponse.docResult;
-    // Gather information about the selected album
-    let album = $("#treeviewSection").find("li.selected");
-    const albumId = album.data('id');
-    let albumName = album.find('span').text();
-    const albumData = {
-      id: albumId,
-      name: albumName,
-    };
-    // Compose the payload to send as an event
-    let data = {
-      type: "closeModal",
-      cantoId: id,
-      cantoAlbumId: albumId,
-      cantoAssetData: mergedAssetData,
-      cantoAlbumData: albumData,
-    };
-    // Let our canto-field.js know what asset(s) were picked
-    parent.postMessage(data, '*');
-  });
+  Promise.all(responses)
+    .then((values) => {
+      // Get the id of the canto asset, or 0 if it is a collection of images
+      let id = 0;
+      let mergedAssetData = [];
+      const jsonPromises = [];
+      values.forEach((value) => {
+        jsonPromises.push(value.json());
+      });
+      Promise.all(jsonPromises)
+        .then((jsonResults) => {
+          jsonResults.forEach((jsonResult) => {
+            if (jsonResult.docResult.length === 1) {
+              id = jsonResult.docResult[0].id;
+            }
+            mergedAssetData = mergedAssetData.concat(jsonResult.docResult);
+          });
+          // Gather information about the selected album
+          let album = $("#treeviewSection").find("li.selected");
+          const albumId = album.data('id');
+          let albumName = album.find('span').text();
+          const albumData = {
+            id: albumId,
+            name: albumName,
+          };
+          // Compose the payload to send as an event
+          let data = {
+            type: "closeModal",
+            cantoId: id,
+            cantoAlbumId: albumId,
+            cantoAssetData: mergedAssetData,
+            cantoAlbumData: albumData,
+          };
+          // Let our canto-field.js know what asset(s) were picked
+          parent.postMessage(data, '*');
+        });
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
 };
 
 /* -----------------canto API end--------------------------------------------------------*/
@@ -436,7 +456,6 @@ function addEventListener() {
         currentImageList = [];
         searchedBy = "";
         isLoadingComplete = false;
-        console.log("line 499");
         getImageInit("allfile");
 
       } else if (childList && childList.length) {
@@ -478,7 +497,6 @@ function addEventListener() {
         currentImageList = [];
         searchedBy = "";
         isLoadingComplete = false;
-        console.log("line 492");
         getImageInit(initSchme);
       }
       searchedBy = "bySearch";
