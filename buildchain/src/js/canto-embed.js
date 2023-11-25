@@ -226,7 +226,7 @@ cantoAPI.insertImage = function (imageArray) {
   }
   let data = {};
   let url = `https://${_tenants}/api/v1/batch/content`;
-  const responses = [];
+  const fetchPromises = [];
   const pages = Math.ceil(imageArray.length / MAX_CONTENT_REQUEST_ITEMS);
   for (let i = 0; i < pages; i++) {
     const offset = MAX_CONTENT_REQUEST_ITEMS * i;
@@ -239,23 +239,21 @@ cantoAPI.insertImage = function (imageArray) {
       },
       body: JSON.stringify(imageArraySubset)
     });
-    responses.push(promise);
+    fetchPromises.push(promise);
   }
-  data.type = "cantoInsertImage";
-  data.assetList = [];
-  Promise.all(responses)
-    .then((values) => {
-      // Get the id of the canto asset, or 0 if it is a collection of images
-      let id = 0;
-      let mergedAssetData = [];
+  Promise.all(fetchPromises)
+    .then((apiResponses) => {
       const jsonPromises = [];
-      values.forEach((value) => {
+      apiResponses.forEach((value) => {
         jsonPromises.push(value.json());
       });
       Promise.all(jsonPromises)
         .then((jsonResults) => {
+          // Get the id of the canto asset, or 0 if it is a collection of images
+          let id = 0;
+          let mergedAssetData = [];
           jsonResults.forEach((jsonResult) => {
-            if (jsonResult.docResult.length === 1) {
+            if (pages === 1 && jsonResult.docResult.length === 1) {
               id = jsonResult.docResult[0].id;
             }
             mergedAssetData = mergedAssetData.concat(jsonResult.docResult);
@@ -282,6 +280,9 @@ cantoAPI.insertImage = function (imageArray) {
     })
     .catch((error) => {
       console.error(error.message);
+      data.type = "cantoInsertImage";
+      data.assetList = [];
+      parent.postMessage(data, '*');
     });
 };
 
