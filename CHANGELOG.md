@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 4.0.10 - UNRELEASED
 ### Added
+* Paginate the requests to the `batch/content` Canto API endpoint in batches of 100 (the API limit per request), so it will work for larger albums
 * Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
 
 ### Changed
