@@ -5,6 +5,8 @@ namespace lsst\cantodamassets;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use lsst\cantodamassets\fields\CantoDamAsset;
@@ -87,5 +89,20 @@ class CantoDamAssets extends Plugin
             static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = CantoDamAsset::class;
             });
+        // Add permission for Editors
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event) {
+                $event->permissions[] = [
+                    "heading" => "Canto DAM Assets Picker Extraordinaire",
+                    "permissions" => [
+                        'accessPlugin-_canto-dam-assets' => [
+                            'label' => 'Use Canto DAM Assets Fields',
+                        ],
+                    ]
+                ];
+            }
+        );
     }
 }

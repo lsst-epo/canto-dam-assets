@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.11 - 2023.12.27
+### Fixed
+* Added permission to allow non-admins use of the plugin/field modals
+
 ## 4.0.10 - 2023.11.25
 ### Added
 * Paginate the requests to the `batch/content` Canto API endpoint in batches of 100 (the API limit per request), so it will work for larger albums
