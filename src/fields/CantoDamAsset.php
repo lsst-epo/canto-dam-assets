@@ -228,7 +228,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $id = Html::id($this->handle);
         $namespacedId = $view->namespaceInputId($id);
         // In case we want to try to transform this image
-        $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
+        $previewUrl = $value->cantoAssetData[0]['url']['directUrlPreview'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
