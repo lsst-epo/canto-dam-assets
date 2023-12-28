@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 4.0.12 - UNRELEASED
 ### Changed
 * Use `directUrlPreview` instead of `directUrlOriginal` which will work for other media types such as videos as well
+* Removed the limitation on albums to include only images, so all media types are supported again
 
 ## 4.0.11 - 2023.12.27
 ### Fixed
