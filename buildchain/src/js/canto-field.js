@@ -138,7 +138,7 @@
             let cantoAsset = data.cantoAssetData[0];
             const assetCount = data.cantoAssetData.length;
             $(damAssetPreview).attr("data-assetCount", assetCount);
-            $(damAssetPreview).attr("data-thumbnailUrl", cantoAsset.url.directUrlOriginal);
+            $(damAssetPreview).attr("data-thumbnailUrl", cantoAsset.url.directUrlPreview);
             $(damAssetPreview).attr("data-thumbnailName", cantoAsset.name);
             $(damAssetPreview).attr("data-albumName", data.cantoAlbumData.name);
             displayImagePreview();
