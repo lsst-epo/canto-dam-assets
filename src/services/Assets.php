@@ -2,7 +2,6 @@
 
 namespace lsst\cantodamassets\services;
 
-use benf\neo\Field as NeoField;
 use Craft;
 use craft\base\FieldInterface;
 use craft\db\Table;
@@ -12,6 +11,7 @@ use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\fields\CantoDamAsset;
+use lsst\cantodamassets\lib\laravel\Collection;
 use lsst\cantodamassets\models\CantoFieldData;
 use verbb\supertable\fields\SuperTableField;
 use yii\base\Component;
@@ -122,9 +122,10 @@ class Assets extends Component
     public function update(string $value, CantoFieldData $cantoFieldData, $columnKey): void
     {
         $this->updateEntryContent($value, $cantoFieldData, $columnKey);
-        $this->updateMatrixContent($value, $cantoFieldData, $columnKey);
-        $this->updateSuperTableContent($value, $cantoFieldData, $columnKey);
-        $this->updateNeoContent($value, $cantoFieldData, $columnKey);
+        $this->updateBlockTypeContent(Matrix::class, $value, $cantoFieldData, $columnKey);
+        if (Craft::$app->getPlugins()->getPlugin('super-table')) {
+            $this->updateBlockTypeContent(SuperTableField::class, $value, $cantoFieldData, $columnKey);
+        }
     }
 
     /**
@@ -137,7 +138,7 @@ class Assets extends Component
      */
     protected function delete(string $value, $columnKey): void
     {
-        // Create a CantoFieldData object with empty values, to effectively deleting it
+        // Create a CantoFieldData object with empty values, to effectively delete it
         $cantoFieldData = Craft::createObject([
             'class' => CantoFieldData::class,
             'cantoId' => null,
@@ -146,56 +147,60 @@ class Assets extends Component
             'cantoAlbumData' => [],
         ]);
         $this->updateEntryContent($value, $cantoFieldData, $columnKey);
-        $this->updateMatrixContent($value, $cantoFieldData, $columnKey);
-        $this->updateSuperTableContent($value, $cantoFieldData, $columnKey);
-        $this->updateNeoContent($value, $cantoFieldData, $columnKey);
-    }
-
-    protected function updateEntryContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
-    {
-        $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
-        $this->updateContent($cantoId, $cantoFieldData, $columnKey, $fields, Table::CONTENT);
-    }
-
-    /* @TODO implement updateMatrixContentByCantoId() */
-    protected function updateMatrixContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
-    {
-        $fields = Craft::$app->getFields()->getFieldsByType(Matrix::class);
-        foreach ($fields as $field) {
-            /* @var Matrix $field */
-            $contentTableName = Craft::$app->getMatrix()->defineContentTableName($field);
-        }
-    }
-
-    /* @TODO implement updateSuperTableContentByCantoId() */
-    protected function updateSuperTableContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
-    {
-        $fields = Craft::$app->getFields()->getFieldsByType(SuperTableField::class);
-        foreach ($fields as $field) {
-            /* @var SuperTableField $field */
-        }
-    }
-
-    /* @TODO implement updateNeoContentByCantoId() */
-    protected function updateNeoContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey,): void
-    {
-        $fields = Craft::$app->getFields()->getFieldsByType(NeoField::class);
-        foreach ($fields as $field) {
-            /* @var NeoField $field */
+        $this->updateBlockTypeContent(Matrix::class, $value, $cantoFieldData, $columnKey);
+        if (Craft::$app->getPlugins()->getPlugin('super-table')) {
+            $this->updateBlockTypeContent(SuperTableField::class, $value, $cantoFieldData, $columnKey);
         }
     }
 
     /**
-     * Update the $cantoId entry in the $table for the $cantoDamAssetFields with $cantoFieldData
+     * Update entry content in the Content table where the $columnKey matches $value with the $cantoFieldData
      *
-     * @param string $cantoId
+     * @param string $value
+     * @param CantoFieldData $cantoFieldData
+     * @param string|null $columnKey
+     * @return void
+     */
+    protected function updateEntryContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
+    {
+        $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
+        $this->updateContent($value, $cantoFieldData, $columnKey, $fields, Table::CONTENT);
+    }
+
+    /**
+     * Update $fieldType block type content in its table where the $columnKey matches $value with the $cantoFieldData
+     *
+     * @param string $fieldType
+     * @param string $value
+     * @param CantoFieldData $cantoFieldData
+     * @param string|null $columnKey
+     * @return void
+     */
+    protected function updateBlockTypeContent(string $fieldType, string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
+    {
+        $blockFields = Craft::$app->getFields()->getFieldsByType($fieldType);
+        foreach ($blockFields as $blockField) {
+            // Block types have the same methods as Matrix
+            /* @var Matrix $blockField */
+            $contentTableName = $blockField->contentTable;
+            $fields = $blockField->getBlockTypeFields();
+            // Filter out any non-CantoDamAsset fields
+            $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
+            $this->updateContent($value, $cantoFieldData, $columnKey, $fields, $contentTableName);
+        }
+    }
+
+    /**
+     * Update the $columnKey that matches $value in the $table for the $cantoDamAssetFields with $cantoFieldData
+     *
+     * @param string $value
      * @param CantoFieldData $cantoFieldData
      * @param string|null $columnKey
      * @param FieldInterface[] $cantoDamAssetFields
      * @param string $table
      * @return void
      */
-    protected function updateContent(string $cantoId, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
+    protected function updateContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
     {
         $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
@@ -206,7 +211,7 @@ class Assets extends Component
             }
             if ($queryColumn) {
                 try {
-                    $rows = Db::update($table, $columns, [$queryColumn => $cantoId]);
+                    $rows = Db::update($table, $columns, [$queryColumn => $value]);
                 } catch (Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
