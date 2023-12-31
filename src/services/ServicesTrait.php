@@ -28,6 +28,7 @@ trait ServicesTrait
         $versionName = 'v' . $majorVersion;
         return [
             'components' => [
+                'api' => Api::class,
                 'assets' => Assets::class,
                 // Register the vite service
                 'vite' => [
@@ -45,6 +46,17 @@ trait ServicesTrait
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Returns the Api service
+     *
+     * @return Api The events service
+     * @throws InvalidConfigException
+     */
+    public function getApi(): Api
+    {
+        return $this->get('api');
+    }
 
     /**
      * Returns the Assets service
