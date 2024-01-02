@@ -15,6 +15,7 @@ class Settings extends Model
     public string $authEndpoint = "https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token=";
     public string $retrieveAssetMetadataEndpoint = "";
     public string $secretKey = "";
+    public string $webhookSecureToken = "";
 
     /**
      * @return string
@@ -48,6 +49,11 @@ class Settings extends Model
         return App::parseEnv($this->secretKey);
     }
 
+    public function getWebhookSecureToken(): string
+    {
+        return App::parseEnv($this->webhookSecureToken);
+    }
+
     /**
      * @inheritDoc
      */
@@ -66,7 +72,8 @@ class Settings extends Model
             [
                 [
                     'authEndpoint',
-                    'secretKey'
+                    'secretKey',
+                    'webhookSecureToken',
                 ],
                 'string',
             ],
@@ -77,7 +84,9 @@ class Settings extends Model
                 ],
                 'url',
             ],
-            ['authEndpoint', 'default', 'value' => 'https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token='],
+            [
+                'authEndpoint', 'default', 'value' => 'https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token='
+            ],
         ];
     }
 
@@ -93,7 +102,8 @@ class Settings extends Model
                     'appId',
                     'authEndpoint',
                     'retrieveAssetMetadataEndpoint',
-                    'secretKey'
+                    'secretKey',
+                    'webhookSecureToken',
                 ],
             ],
         ];
