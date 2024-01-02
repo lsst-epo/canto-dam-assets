@@ -180,6 +180,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'directUrlOriginal' => Type::string(),
                         'detail' => Type::string(),
                         'directUrlPreview' => Type::string(),
+                        'directUrlPreviewPlay' => Type::string(),
                         'LowJPG' => Type::string(),
                     ]
                 ]),
