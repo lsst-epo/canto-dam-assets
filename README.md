@@ -195,6 +195,7 @@ Below are the available fields for the Canto Asset Data of the scheme `image`; t
     directUrlOriginal
     detail
     directUrlPreview
+    directUrlPreviewPlay
     LowJPG
   }
   width
