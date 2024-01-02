@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 * Added a `webhookSecureToken` setting for validating webhooks
 * Added a `SyncController` for handling webhooks for changed assets/albums from Canto
+* Added `directUrlPreviewPlay` to the GraphQL schema
 
 ### Changed
 * Use `directUrlPreview` instead of `directUrlOriginal` which will work for other media types such as videos as well
