@@ -5,6 +5,7 @@ namespace lsst\cantodamassets\services;
 use Craft;
 use craft\helpers\Json;
 use lsst\cantodamassets\CantoDamAssets;
+use lsst\cantodamassets\models\CantoFieldData;
 use yii\base\Component;
 
 /**
@@ -42,5 +43,15 @@ class Api extends Component
         Craft::error("An exception occurred in getAuthToken()", __METHOD__);
 
         return Craft::t("_canto-dam-assets", "An error occurred fetching auth token!");
+    }
+
+    public function fetchFieldDataByCantoId(string $cantoId): ?CantoFieldData
+    {
+        // @TODO
+    }
+
+    public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
+    {
+        // @TODO
     }
 }
