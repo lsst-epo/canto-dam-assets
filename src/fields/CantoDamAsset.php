@@ -242,7 +242,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'elementId' => $element->id ?? null,
             'element' => Json::encode($element),
             'namespacedId' => $view->namespaceInputId($id),
-            'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken(),
+            'accessToken' => CantoDamAssets::$plugin->getApi()->getAuthToken(),
             'config' => [
                 'id' => $id,
                 'enabled' => $enabled,
