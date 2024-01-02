@@ -18,10 +18,6 @@ The Canto asset data is represented as a [Laravel Collection](https://laravel.co
 
 This plugin requires Craft CMS 4.4.0 or later, and PHP 8.0.2 or later.
 
-## Limitations
-
-While the Canto DAM Assets plugin will allow you to select and utilize assets other than images, currently a preview is only displayed if the asset is an image.
-
 ## Configuring
 
 ### Plugin Settings
@@ -34,6 +30,7 @@ Before you can use the Canto DAM Assets plugin, you need to configure it via **S
 * **Secret Key** - Your Canto DAM secret key
 * **Authentication Endpoint** - The URL that should be used to authenticate and obtain an access token from. You can include the `{appId}` & `{secretKey}` tokens in the URL, which will be replaced with the respective values from the settings
 * **Retrieve One Asset Endpoint** - The URL to the endpoint provided by Canto for retrieving meta data for individual assets. This will be unique for your application
+* **Webhook Secure Token** - The secure token that must match the token coming from the Canto [webhook](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) **Secure Token** field to allow changes to be synced from Canto
 
 ### Field Settings
 
