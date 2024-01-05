@@ -50,12 +50,12 @@
     "src": "src/js/app.ts"
   },
   "src/js/canto-embed.js": {
-    "file": "assets/canto-embed-KIwCAcyt.js",
+    "file": "assets/canto-embed-lTEjJI62.js",
     "isEntry": true,
     "src": "src/js/canto-embed.js"
   },
   "src/js/canto-field.js": {
-    "file": "assets/canto-field-_Uy09NHU.js",
+    "file": "assets/canto-field-ehMCriUy.js",
     "isEntry": true,
     "src": "src/js/canto-field.js"
   }
