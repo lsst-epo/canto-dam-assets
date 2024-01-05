@@ -7,10 +7,14 @@ All notable changes to this project will be documented in this file.
 * Added a `webhookSecureToken` setting for validating webhooks
 * Added a `SyncController` for handling webhooks for changed assets/albums from Canto
 * Added `directUrlPreviewPlay` to the GraphQL schema
+* Added the `tenantHostName` plugin setting, and pass this down to the Canto Universal Connector JS
 
 ### Changed
 * Use `directUrlPreview` instead of `directUrlOriginal` which will work for other media types such as videos as well
 * Removed the limitation on albums to include only images, so all media types are supported again
+* Removed the `retrieveAssetMetadataEndpoint` setting
+* Removed the hard-coding of the `tenant` from the JS, instead using the `tenantHostName` plugin setting
+* Removed the hard-coding of the `appId` from the JS, instead using the `appId` plugin setting
 
 ## 4.0.11 - 2023.12.27
 ### Fixed
