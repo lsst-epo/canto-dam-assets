@@ -19,7 +19,6 @@ const MAX_CONTENT_REQUEST_ITEMS = 100;
 function setToken(tokenInfo) {
   _accessToken = tokenInfo.accessToken;
   _tenants = tokenInfo.tenant;
-  console.log(tokenInfo);
   _tokenType = tokenInfo.tokenType ? tokenInfo.tokenType : "bearer";
   _APIHeaders = {
     "Authorization": _tokenType + " " + _accessToken,
