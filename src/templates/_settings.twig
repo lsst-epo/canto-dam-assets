@@ -28,9 +28,10 @@
 <p>If the app ID or secret key is needed in the URL include it as <strong>{appId}</strong> or <strong>{secretKey}</strong> with no spaces.</p>
 
 {{ forms.autosuggestField({
-    label: "Retrieve One Asset Endpoint",
-    name: 'retrieveAssetMetadataEndpoint',
-    value: settings.retrieveAssetMetadataEndpoint,
+    label: "Tenant Host Name",
+    instructions: "The hostname for the Canto Tenant, e.g. `rubin.canto.com`",
+    name: 'tenantHostName',
+    value: settings.tenantHostName,
     suggestEnvVars: true
 }) }}
 

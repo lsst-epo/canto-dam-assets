@@ -6,8 +6,9 @@
 
 (function ($) {
   let tokenInfo = {},
-    env = "canto.com",
-    appId = "52ff8ed9d6874d48a3bef9621bc1af26",
+    env,
+    appId,
+    tenantHostName,
     currentCantoTagID,
     formatDistrict;
 
@@ -125,6 +126,7 @@
           if (data && data.type == "getTokenInfo") {
             var receiver = document.getElementById(cantoUCFrame.slice(1)).contentWindow;
             tokenInfo.formatDistrict = formatDistrict;
+            tokenInfo.tenant = tenantHostName;
             receiver.postMessage(tokenInfo, '*');
           } else if (data && data.type == "cantoLogout") {
             tokenInfo = {};
@@ -175,6 +177,8 @@
 
   function settings(options) {
     env = options.env;
+    appId = options.appId;
+    tenantHostName = options.tenantHostName;
     formatDistrict = options.extensions;
   }
 
@@ -196,7 +200,10 @@
   /*--------------------------load iframe content---------------------------------------*/
   function loadIframeContent(fieldId, elementId, type, accessToken, bodyClass) {
 //  let timeStamp = new Date().getTime();
-    let tokenInfo = {accessToken: accessToken};
+    let tokenInfo = {
+      accessToken: accessToken,
+      tenant: tenantHostName,
+    };
     let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
 
     var cantoContentPage = "/admin/_canto-dam-assets/canto-embed.twig";
@@ -205,6 +212,7 @@
       $(cantoUCFrame).attr("data-field", fieldId);
       $(cantoUCFrame).attr("data-type", type);
       $(cantoUCFrame).attr("data-access", tokenInfo.accessToken);
+      $(cantoUCFrame).attr("data-tenant", tokenInfo.tenant);
       $(cantoUCFrame).attr("src", cantoContentPage);
     } else {
       $(cantoUCFrame).attr("data-element", elementId);

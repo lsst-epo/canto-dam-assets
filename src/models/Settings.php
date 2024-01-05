@@ -13,9 +13,19 @@ class Settings extends Model
 {
     public string $appId = "";
     public string $authEndpoint = "https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token=";
-    public string $retrieveAssetMetadataEndpoint = "";
+    public string $tenantHostName = "";
     public string $secretKey = "";
     public string $webhookSecureToken = "";
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $config = [])
+    {
+        // Unset any deprecated properties
+        unset($config['retrieveAssetMetadataEndpoint']);
+        parent::__construct($config);
+    }
 
     /**
      * @return string
@@ -36,9 +46,9 @@ class Settings extends Model
     /**
      * @return string
      */
-    public function getRetrieveAssetMetadataEndpoint(): string
+    public function getTenantHostName(): string
     {
-        return App::parseEnv($this->retrieveAssetMetadataEndpoint);
+        return App::parseEnv($this->tenantHostName);
     }
 
     /**
@@ -64,7 +74,7 @@ class Settings extends Model
                 [
                     'appId',
                     'authEndpoint',
-                    'retrieveAssetMetadataEndpoint',
+                    'tenantHostName',
                     'secretKey'
                 ],
                 'required',
@@ -74,13 +84,13 @@ class Settings extends Model
                     'authEndpoint',
                     'secretKey',
                     'webhookSecureToken',
+                    'tenantHostName',
                 ],
                 'string',
             ],
             [
                 [
                     'authEndpoint',
-                    'retrieveAssetMetadataEndpoint',
                 ],
                 'url',
             ],
@@ -101,7 +111,7 @@ class Settings extends Model
                 'attributes' => [
                     'appId',
                     'authEndpoint',
-                    'retrieveAssetMetadataEndpoint',
+                    'tenantHostName',
                     'secretKey',
                     'webhookSecureToken',
                 ],

@@ -18,7 +18,8 @@ const MAX_CONTENT_REQUEST_ITEMS = 100;
 
 function setToken(tokenInfo) {
   _accessToken = tokenInfo.accessToken;
-  _tenants = tokenInfo.tenant ? tokenInfo.tenant : "rubin.canto.com/";
+  _tenants = tokenInfo.tenant;
+  console.log(tokenInfo);
   _tokenType = tokenInfo.tokenType ? tokenInfo.tokenType : "bearer";
   _APIHeaders = {
     "Authorization": _tokenType + " " + _accessToken,
@@ -299,7 +300,8 @@ $(document).ready(function () {
       setToken(tokenInfo);
     } else {
       setToken({
-        accessToken: parent.document.querySelector(".canto-uc-subiframe").dataset.access
+        accessToken: parent.document.querySelector(".canto-uc-subiframe").dataset.access,
+        tenant: parent.document.querySelector(".canto-uc-subiframe").dataset.tenant,
       });
     }
     treeviewDataHandler();
