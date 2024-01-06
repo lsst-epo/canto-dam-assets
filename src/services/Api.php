@@ -4,6 +4,7 @@ namespace lsst\cantodamassets\services;
 
 use Craft;
 use craft\helpers\Json;
+use GuzzleHttp\Exception\GuzzleException;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\models\CantoFieldData;
 use yii\base\Component;
@@ -23,35 +24,70 @@ class Api extends Component
     /**
      * Return the auth token using the app ID and secret key
      *
-     * @return string
+     * @return ?string
      */
-    public function getAuthToken(): string
+    public function getAuthToken(): ?string
     {
+        // If we have the token memoized already, just return it
         if ($this->authToken) {
             return $this->authToken;
         }
         $client = Craft::createGuzzleClient();
-        $appId = CantoDamAssets::$plugin->getSettings()->getAppId();
-        $secretKey = CantoDamAssets::$plugin->getSettings()->getSecretKey();
-        $authEndpoint = CantoDamAssets::$plugin->getSettings()->getAuthEndpoint();
-
+        $settings = CantoDamAssets::$plugin->getSettings();
         // Inject appId & secretKey tokens in the URL
-        $authEndpoint = str_replace(["{appId}", "{secretKey}"], [$appId, $secretKey], $authEndpoint);
-
+        $authEndpoint = str_replace(
+            ["{appId}", "{secretKey}"],
+            [$settings->getAppId(), $settings->getSecretKey()],
+            $settings->getAuthEndpoint()
+        );
         // Get auth token
         try {
             $response = $client->post($authEndpoint);
-            $body = $response->getBody();
         } catch (\Throwable $e) {
             Craft::error("An exception occurred in getAuthToken()", __METHOD__);
+
             return $e->getMessage();
         }
-
+        $body = Json::decodeIfJson($response->getBody());
         // Extract auth token from response
-        $authTokenDecoded = Json::decodeIfJson($body);
-        $this->authToken = $authTokenDecoded["accessToken"];
+        if (is_array($body)) {
+            $this->authToken = $body["accessToken"] ?? null;
+        }
 
         return $this->authToken;
+    }
+
+    /**
+     * Issue an API request to the Canto endpoint with auth
+     *
+     * @param string $path
+     * @return array|string[]
+     */
+    public function cantoApiRequest(string $path): array
+    {
+        $client = Craft::createGuzzleClient();
+        $cantoApiEndpoint =
+            rtrim(CantoDamAssets::$plugin->getSettings()->getApiUrl(), '/')
+            . '/'
+            . ltrim($path, '/');
+        try {
+            $response = $client->request("GET", $cantoApiEndpoint, $this->getApiHeaders());
+        } catch (GuzzleException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+            return [
+                "status" => "error",
+                'errorMessage' => $e->getMessage(),
+            ];
+        }
+        $body = Json::decodeIfJson($response->getBody());
+        if (!is_array($body)) {
+            return [
+                "status" => "error",
+                'errorMessage' => 'Canto endpoint failure'
+            ];
+        }
+
+        return $body;
     }
 
     public function fetchFieldDataByCantoId(string $cantoId): ?CantoFieldData
@@ -73,7 +109,7 @@ class Api extends Component
     {
         return [
             'headers' => [
-                'Authorization' => $this->getAuthToken(),
+                'Authorization' => 'bearer ' . $this->getAuthToken(),
                 'Content-Type' => 'application/x-www-form-urlencoded'
             ]
         ];
