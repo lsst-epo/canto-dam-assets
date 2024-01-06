@@ -5,7 +5,7 @@
 
 {{ forms.autosuggestField({
     first: true,
-    label: "App ID",
+    label: "App ID"|t("_canto-dam-assets"),
     name: 'appId',
     value: settings.appId,
     suggestEnvVars: true
@@ -13,30 +13,30 @@
 
 {{ forms.autosuggestField({
     first: true,
-    label: "Secret Key",
+    label: "Secret Key"|t("_canto-dam-assets"),
     name: 'secretKey',
     value: settings.secretKey,
     suggestEnvVars: true
 }) }}
 
 {{ forms.autosuggestField({
-    label: "Authentication Endpoint",
+    label: "Authentication Endpoint"|t("_canto-dam-assets"),
     name: 'authEndpoint',
     value: settings.authEndpoint,
     suggestEnvVars: true
 }) }}
-<p>If the app ID or secret key is needed in the URL include it as <strong>{appId}</strong> or <strong>{secretKey}</strong> with no spaces.</p>
+<p>{{ "If the app ID or secret key is needed in the URL include it as <strong>{appId}</strong> or <strong>{secretKey}</strong> with no spaces.</p>"|t("_canto-dam-assets") }}
 
 {{ forms.autosuggestField({
-    label: "Tenant Host Name",
-    instructions: "The hostname for the Canto Tenant, e.g. `rubin.canto.com`",
+    label: "Tenant Host Name"|t("_canto-dam-assets"),
+    instructions: "The hostname for the Canto Tenant, e.g. `rubin.canto.com`"|t("_canto-dam-assets"),
     name: 'tenantHostName',
     value: settings.tenantHostName,
     suggestEnvVars: true
 }) }}
 
 {{ forms.autosuggestField({
-    label: "Webhook Secure Token",
+    label: "Webhook Secure Token"|t("_canto-dam-assets"),
     name: 'webhookSecureToken',
     value: settings.webhookSecureToken,
     suggestEnvVars: true
