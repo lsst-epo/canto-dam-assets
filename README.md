@@ -29,7 +29,7 @@ Before you can use the Canto DAM Assets plugin, you need to configure it via **S
 * **App ID** - Your Canto DAM Application ID
 * **Secret Key** - Your Canto DAM secret key
 * **Authentication Endpoint** - The URL that should be used to authenticate and obtain an access token from. You can include the `{appId}` & `{secretKey}` tokens in the URL, which will be replaced with the respective values from the settings
-* **Retrieve One Asset Endpoint** - The URL to the endpoint provided by Canto for retrieving meta data for individual assets. This will be unique for your application
+* **Tenant Host Name** - The hostname for the Canto Tenant, e.g. `rubin.canto.com`
 * **Webhook Secure Token** - The secure token that must match the token coming from the Canto [webhook](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) **Secure Token** field to allow changes to be synced from Canto
 
 ### Field Settings
