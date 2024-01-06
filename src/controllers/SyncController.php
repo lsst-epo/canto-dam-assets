@@ -16,6 +16,7 @@ class SyncController extends Controller
 {
     public $defaultAction = 'index';
     protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+    public $enableCsrfValidation = false;
 
     public function beforeAction($action): bool
     {
@@ -41,7 +42,7 @@ class SyncController extends Controller
     }
 
     /**
-     * _canto-dam-assets/webhook/update-by-canto-id action
+     * _canto-dam-assets/sync/update-by-canto-id action
      * This action will be called by the Canto "Update Metadata" webhook when a Canto Asset's metadata is changed,
      * so that the asset metadata can be updated in all Canto DAM Assets field types
      *
@@ -69,7 +70,7 @@ class SyncController extends Controller
     }
 
     /**
-     * _canto-dam-assets/webhook/update-by-album-id action
+     * _canto-dam-assets/sync/update-by-album-id action
      * This action will be called by the the following Canto webhooks, so Entire Album fields can be synced:
      * "Assign to Album", "Remove from Album", "Update Album"
      *
@@ -97,7 +98,7 @@ class SyncController extends Controller
     }
 
     /**
-     *  _canto-dam-assets/webhook/delete-by-canto-id action
+     *  _canto-dam-assets/sync/delete-by-canto-id action
      *  This action will be called by the Canto "Delete Asset" webhook when a Canto Asset is deleted,
      *  so that the asset can be deleted from all Canto DAM Assets field types
      *
@@ -117,7 +118,7 @@ class SyncController extends Controller
     }
 
     /**
-     * _canto-dam-assets/webhook/update-by-album-id action
+     * _canto-dam-assets/sync/update-by-album-id action
      * This action will be called by the the following Canto webhooks, so Entire Album fields can be synced:
      * "Assign to Album", "Remove from Album", "Update Album"
      *

@@ -93,12 +93,12 @@ class Api extends Component
 
     public function fetchFieldDataByCantoId(string $cantoId): ?CantoFieldData
     {
-        // @TODO
+        $response = $this->cantoApiRequest('/image/' . $cantoId);
     }
 
     public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
     {
-        // @TODO
+        $response = $this->cantoApiRequest('/album/' . $albumId);
     }
 
     /**
