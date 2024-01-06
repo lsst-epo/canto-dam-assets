@@ -36,6 +36,17 @@ class Settings extends Model
     }
 
     /**
+     * Return the base URL for the API endpoint
+     *
+     * @return string
+     */
+    public function getApiUrl(): string
+    {
+        $tenantHostName = $this->getTenantHostName();
+        return "https://{$tenantHostName}/api/v1/";
+    }
+
+    /**
      * @return string
      */
     public function getAuthEndpoint(): string
