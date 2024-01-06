@@ -10,14 +10,26 @@ use yii\base\Component;
 
 /**
  * Assets service
+ *
+ * @property-read array[] $apiHeaders
  */
 class Api extends Component
 {
     /**
-     *  Private function for using the app ID and secret key to get an auth token
+     * @var ?string
      */
-    public function getAuthToken($validateOnly = false): string
+    private ?string $authToken = null;
+
+    /**
+     * Return the auth token using the app ID and secret key
+     *
+     * @return string
+     */
+    public function getAuthToken(): string
     {
+        if ($this->authToken) {
+            return $this->authToken;
+        }
         $client = Craft::createGuzzleClient();
         $appId = CantoDamAssets::$plugin->getSettings()->getAppId();
         $secretKey = CantoDamAssets::$plugin->getSettings()->getSecretKey();
@@ -31,18 +43,15 @@ class Api extends Component
             $response = $client->post($authEndpoint);
             $body = $response->getBody();
         } catch (\Throwable $e) {
+            Craft::error("An exception occurred in getAuthToken()", __METHOD__);
             return $e->getMessage();
         }
 
         // Extract auth token from response
-        if (!$validateOnly) {
-            $authTokenDecoded = Json::decodeIfJson($body);
+        $authTokenDecoded = Json::decodeIfJson($body);
+        $this->authToken = $authTokenDecoded["accessToken"];
 
-            return $authTokenDecoded["accessToken"];
-        }
-        Craft::error("An exception occurred in getAuthToken()", __METHOD__);
-
-        return Craft::t("_canto-dam-assets", "An error occurred fetching auth token!");
+        return $this->authToken;
     }
 
     public function fetchFieldDataByCantoId(string $cantoId): ?CantoFieldData
@@ -53,5 +62,20 @@ class Api extends Component
     public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
     {
         // @TODO
+    }
+
+    /**
+     * Return the headers for the API endpoint
+     *
+     * @return array[]
+     */
+    public function getApiHeaders(): array
+    {
+        return [
+            'headers' => [
+                'Authorization' => $this->getAuthToken(),
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ]
+        ];
     }
 }
