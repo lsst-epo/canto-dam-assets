@@ -74,6 +74,7 @@ class Api extends Component
             $response = $client->request("GET", $cantoApiEndpoint, $this->getApiHeaders());
         } catch (GuzzleException $e) {
             Craft::error($e->getMessage(), __METHOD__);
+
             return [
                 "status" => "error",
                 'errorMessage' => $e->getMessage(),
