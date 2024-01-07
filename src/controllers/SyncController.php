@@ -5,7 +5,9 @@ namespace lsst\cantodamassets\controllers;
 use Craft;
 use craft\web\Controller;
 use lsst\cantodamassets\CantoDamAssets;
-use yii\base\InvalidConfigException;
+use lsst\cantodamassets\jobs\DeleteByAlbumId;
+use lsst\cantodamassets\jobs\DeleteByCantoId;
+use lsst\cantodamassets\jobs\UpdateByCantoId;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -47,26 +49,16 @@ class SyncController extends Controller
      * so that the asset metadata can be updated in all Canto DAM Assets field types
      *
      * @return Response|null
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
     public function actionUpdateByCantoId(): ?Response
     {
         $cantoId = $this->request->getRequiredBodyParam('id');
-        $cantoAssets = CantoDamAssets::$plugin->getAssets();
-        $cantoApi = CantoDamAssets::$plugin->getApi();
-        $cantoFieldData = $cantoApi->fetchFieldDataByCantoId($cantoId);
-        if ($cantoFieldData) {
-            $cantoAssets->updateByCantoId($cantoId, $cantoFieldData);
-
-            return $this->asSuccess(message: Craft::t('_canto-dam-assets', 'Canto DAM Asset updated'), data: [
-                'id' => $cantoId,
-            ]);
-        }
-
-        return $this->asFailure(message: Craft::t('_canto-dam-assets', 'Canto DAM Asset update failed'), data: [
+        Craft::$app->getQueue()->push(new UpdateByCantoId([
             'id' => $cantoId,
-        ]);
+        ]));
+
+        return $this->redirectToPostedUrl();
     }
 
     /**
@@ -75,26 +67,16 @@ class SyncController extends Controller
      * "Assign to Album", "Remove from Album", "Update Album"
      *
      * @return Response|null
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
     public function actionUpdateByAlbumId(): ?Response
     {
         $albumId = $this->request->getRequiredBodyParam('album');
-        $cantoAssets = CantoDamAssets::$plugin->getAssets();
-        $cantoApi = CantoDamAssets::$plugin->getApi();
-        $cantoFieldData = $cantoApi->fetchFieldDataByAlbumId($albumId);
-        if ($cantoFieldData) {
-            $cantoAssets->updateByAlbumId($albumId, $cantoFieldData);
+        Craft::$app->getQueue()->push(new UpdateByCantoId([
+            'id' => $albumId,
+        ]));
 
-            return $this->asSuccess(message: Craft::t('_canto-dam-assets', 'Canto DAM Album updated'), data: [
-                'album' => $albumId,
-            ]);
-        }
-
-        return $this->asFailure(message: Craft::t('_canto-dam-assets', 'Canto DAM Album update failed'), data: [
-            'album' => $albumId,
-        ]);
+        return $this->redirectToPostedUrl();
     }
 
     /**
@@ -103,37 +85,33 @@ class SyncController extends Controller
      *  so that the asset can be deleted from all Canto DAM Assets field types
      *
      * @return Response|null
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
     public function actionDeleteByCantoId(): ?Response
     {
         $cantoId = $this->request->getRequiredBodyParam('id');
-        $cantoAssets = CantoDamAssets::$plugin->getAssets();
-        $cantoAssets->deleteByCantoId($cantoId);
-
-        return $this->asSuccess(message: Craft::t('_canto-dam-assets', 'Canto DAM Asset deleted'), data: [
+        Craft::$app->getQueue()->push(new DeleteByCantoId([
             'id' => $cantoId,
-        ]);
+        ]));
+
+        return $this->redirectToPostedUrl();
     }
 
     /**
-     * _canto-dam-assets/sync/update-by-album-id action
+     * _canto-dam-assets/sync/delete-by-album-id action
      * This action will be called by the the following Canto webhooks, so Entire Album fields can be synced:
      * "Assign to Album", "Remove from Album", "Update Album"
      *
      * @return Response|null
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
     public function actionDeleteByAlbumId(): ?Response
     {
         $albumId = $this->request->getRequiredBodyParam('album');
-        $cantoAssets = CantoDamAssets::$plugin->getAssets();
-        $cantoAssets->deleteByAlbumId($albumId);
+        Craft::$app->getQueue()->push(new DeleteByAlbumId([
+            'id' => $albumId,
+        ]));
 
-        return $this->asSuccess(message: Craft::t('_canto-dam-assets', 'Canto DAM Album deleted'), data: [
-            'album' => $albumId,
-        ]);
+        return $this->redirectToPostedUrl();
     }
 }
