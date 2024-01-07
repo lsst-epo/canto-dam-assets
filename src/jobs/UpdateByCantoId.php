@@ -5,6 +5,7 @@ namespace lsst\cantodamassets\jobs;
 use craft\i18n\Translation;
 use craft\queue\BaseJob;
 use lsst\cantodamassets\CantoDamAssets;
+use yii\base\InvalidConfigException;
 
 /**
  * Update By Canto Id queue job
@@ -16,7 +17,7 @@ class UpdateByCantoId extends BaseJob
     /**
      * @param $queue
      * @return void
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function execute($queue): void
     {
