@@ -457,10 +457,34 @@ You can use the [GraphiQL IDE](https://craftcms.com/docs/4.x/graphql.html#using-
 
 The Canto DAM Assets plugin has several controller API endpoints, to allow for the syncing of data from Canto [webhooks](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) to Craft:
 
-* `_canto-dam-assets/sync/delete-by-canto-id` - This will delete a Canto Asset from any Canto DAM Assets fields
-* `_canto-dam-assets/sync/delete-by-album-id` - This will delete an entire Canto Album from any Canto DAM Assets fields
-* `_canto-dam-assets/sync/update-by-canto-id` - This will update the metadata for a Canto Asset in any Canto DAM Assets fields
-* `_canto-dam-assets/sync/update-by-album-id` - This will update and entire Canto Album in any Canto DAM Assets fields
+* `_canto-dam-assets/sync/delete-by-canto-id` - This will delete a Canto Asset from any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-canto-id
+```
+* `_canto-dam-assets/sync/delete-by-album-id` - This will delete an entire Canto Album from any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/delete-by-album-id
+```
+* `_canto-dam-assets/sync/update-by-canto-id` - This will update the metadata for a Canto Asset in any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-canto-id
+```
+* `_canto-dam-assets/sync/update-by-album-id` - This will update and entire Canto Album in any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-album-id
+```
 
 The `secure_token` setting in each Canto webhook needs to match the **Webhook Secure Token** plugin setting for it to be considered valid.
 
