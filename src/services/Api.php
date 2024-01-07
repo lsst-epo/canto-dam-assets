@@ -91,14 +91,50 @@ class Api extends Component
         return $body;
     }
 
+    /**
+     * Return a CantoFieldData for a Single Image CantoDamAssets field
+     *
+     * @param string $cantoId
+     * @return CantoFieldData|null
+     */
     public function fetchFieldDataByCantoId(string $cantoId): ?CantoFieldData
     {
-        $response = $this->cantoApiRequest('/image/' . $cantoId);
+        $responseBody = $this->cantoApiRequest('/image/' . $cantoId);
+        if (isset($responseBody['status']) && $responseBody['status'] === 'error') {
+            return null;
+        }
+
+        return new CantoFieldData([
+            'cantoId' => $responseBody['id'] ?? 0,
+            'cantoAlbumId' => 0,
+            'cantoAssetData' => $responseBody,
+            'cantoAlbumData' => [
+                'id' => $responseBody['relatedAlbums'][0]['id'] ?? 0,
+                'name' => $responseBody['relatedAlbums'][0]['name'] ?? '',
+            ],
+        ]);
     }
 
+    /**
+     * Return a CantoFieldData for a Full Album CantoDamAssets field
+     *
+     * @param string $albumId
+     * @return CantoFieldData|null
+     */
     public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
     {
-        $response = $this->cantoApiRequest('/album/' . $albumId);
+        $responseBody = $this->cantoApiRequest('/album/' . $albumId);
+        if (isset($responseBody['status']) && $responseBody['status' === 'error']) {
+            return null;
+        }
+        // @TODO implement fetching a full album's data
+
+        return new CantoFieldData([
+            'cantoId' => 0,
+            'cantoAlbumId' => 0,
+            'cantoAssetData' => [],
+            'cantoAlbumData' => [],
+        ]);
     }
 
     /**
