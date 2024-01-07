@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 * Removed the hard-coding of the `tenant` from the JS, instead using the `tenantHostName` plugin setting
 * Removed the hard-coding of the `appId` from the JS, instead using the `appId` plugin setting
 * Store the `albumId` in the content column only if it's a full album, otherwise store `0`
+* Moved all of the SyncController operations to queue jobs, because they can involve lengthy API/db calls
 
 ## 4.0.11 - 2023.12.27
 ### Fixed
