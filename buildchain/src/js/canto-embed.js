@@ -218,7 +218,7 @@ cantoAPI.logout = function () {
   targetWindow.postMessage(data, '*');
 };
 
-cantoAPI.insertImage = function (imageArray) {
+cantoAPI.insertImage = function (imageArray, isAlbum = false) {
   //clear cookie and trun to login page.
   if (!(imageArray && imageArray.length)) {
     return;
@@ -269,7 +269,8 @@ cantoAPI.insertImage = function (imageArray) {
           let data = {
             type: "closeModal",
             cantoId: id,
-            cantoAlbumId: albumId,
+            // The id of the album, or 0 if it not a full album selection
+            cantoAlbumId: isAlbum ? albumId : 0,
             cantoAssetData: mergedAssetData,
             cantoAlbumData: albumData,
           };
@@ -411,7 +412,7 @@ function addEventListener() {
         assetArray.push(obj);
       }
       if (assetArray.length) {
-        cantoAPI.insertImage(assetArray);
+        cantoAPI.insertImage(assetArray, true);
       } else {
         $("#cantoViewBody").find(".loading-icon").addClass("hidden");
       }
