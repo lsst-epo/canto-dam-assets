@@ -21,5 +21,9 @@ return [
     'App ID' => 'App ID',
     'If the app ID or secret key is needed in the URL include it as <strong>{appId}</strong> or <strong>{secretKey}</strong> with no spaces.</p>' => 'If the app ID or secret key is needed in the URL include it as <strong>{appId}</strong> or <strong>{secretKey}</strong> with no spaces.</p>',
     'Secret Key' => 'Secret Key',
-    'Webhook Secure Token' => 'Webhook Secure Token'
+    'Webhook Secure Token' => 'Webhook Secure Token',
+    'Updating Canto Asset id {id}' => 'Updating Canto Asset id {id}',
+    'Deleting Canto Asset id {id}' => 'Deleting Canto Asset id {id}',
+    'Updating Canto Album id {id}' => 'Updating Canto Album id {id}',
+    'Deleting Canto Album id {id}' => 'Deleting Canto Album id {id}'
 ];
