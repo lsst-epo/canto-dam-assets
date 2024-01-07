@@ -453,6 +453,17 @@ Filter items such that the value of the given key is between the given values.
 
 You can use the [GraphiQL IDE](https://craftcms.com/docs/4.x/graphql.html#using-the-graphiql-ide) built into Craft CMS to try queries interactively.
 
+## Webhook Controller Actions
+
+The Canto DAM Assets plugin has several controller API endpoints, to allow for the syncing of data from Canto [webhooks](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) to Craft:
+
+* `_canto-dam-assets/sync/delete-by-canto-id` - This will delete a Canto Asset from any Canto DAM Assets fields
+* `_canto-dam-assets/sync/delete-by-album-id` - This will delete an entire Canto Album from any Canto DAM Assets fields
+* `_canto-dam-assets/sync/update-by-canto-id` - This will update the metadata for a Canto Asset in any Canto DAM Assets fields
+* `_canto-dam-assets/sync/update-by-album-id` - This will update and entire Canto Album in any Canto DAM Assets fields
+
+The `secure_token` setting in each Canto webhook needs to match the **Webhook Secure Token** plugin setting for it to be considered valid.
+
 ## Plugin Roadmap
 
 Some things to do, and ideas for potential features:
