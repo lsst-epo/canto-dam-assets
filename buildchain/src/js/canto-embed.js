@@ -219,7 +219,6 @@ cantoAPI.logout = function () {
 };
 
 cantoAPI.insertImage = function (imageArray, isAlbum = false) {
-  //clear cookie and trun to login page.
   if (!(imageArray && imageArray.length)) {
     return;
   }
@@ -255,7 +254,7 @@ cantoAPI.insertImage = function (imageArray, isAlbum = false) {
             if (pages === 1 && jsonResult.docResult.length === 1) {
               id = jsonResult.docResult[0].id;
             }
-            mergedAssetData = mergedAssetData.concat(jsonResult.docResult);
+            mergedAssetData.push(...jsonResult.docResult);
           });
           // Gather information about the selected album
           let album = $("#treeviewSection").find("li.selected");
