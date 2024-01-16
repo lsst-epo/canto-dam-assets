@@ -133,14 +133,15 @@ class Api extends Component
         if (!$this->paginatedAlbumRequest($buffer, $albumId, 0)) {
             return null;
         }
+        $albumName = $this->albumNameFromRelatedAlbums($buffer[0]['relatedAlbums'] ?? [], $albumId);
 
         return new CantoFieldData([
             'cantoId' => 0,
             'cantoAlbumId' => $albumId,
             'cantoAssetData' => $buffer,
             'cantoAlbumData' => [
-                'id' => $buffer['relatedAlbums'][0]['id'] ?? 0,
-                'name' => $buffer['relatedAlbums'][0]['name'] ?? '',
+                'id' => $albumId,
+                'name' => $albumName,
             ],
         ]);
     }
@@ -186,5 +187,27 @@ class Api extends Component
                 'Content-Type' => 'application/x-www-form-urlencoded'
             ]
         ];
+    }
+
+    /**
+     * Return the name of an album from $relatedAlbums that matches the $albumId
+     *
+     * @param array $relatedAlbums
+     * @param string $albumId
+     * @return string
+     */
+    protected function albumNameFromRelatedAlbums(array $relatedAlbums, string $albumId): string
+    {
+        foreach ($relatedAlbums as $album) {
+            $idArray = explode('/', $album['idPath']);
+            $id = end($idArray);
+            if ($id === $albumId) {
+                $nameArray = explode('/', $album['namePath']);
+
+                return end($nameArray);
+            }
+        }
+
+        return '';
     }
 }

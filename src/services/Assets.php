@@ -49,7 +49,7 @@ class Assets extends Component
      */
     public function updateByAlbumId(string $albumId, CantoFieldData $cantoFieldData): void
     {
-        $this->update($albumId, $cantoFieldData, 'albumId');
+        $this->update($albumId, $cantoFieldData, 'cantoAlbumId');
     }
 
     /**
@@ -73,7 +73,7 @@ class Assets extends Component
      */
     public function deleteByAlbumId(string $albumId): void
     {
-        $this->delete($albumId, 'albumId');
+        $this->delete($albumId, 'cantoAlbumId');
     }
 
     /**

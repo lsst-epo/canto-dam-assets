@@ -7,6 +7,7 @@ use craft\web\Controller;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\jobs\DeleteByAlbumId;
 use lsst\cantodamassets\jobs\DeleteByCantoId;
+use lsst\cantodamassets\jobs\UpdateByAlbumId;
 use lsst\cantodamassets\jobs\UpdateByCantoId;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -72,7 +73,7 @@ class SyncController extends Controller
     public function actionUpdateByAlbumId(): ?Response
     {
         $albumId = $this->request->getRequiredBodyParam('album');
-        Craft::$app->getQueue()->push(new UpdateByCantoId([
+        Craft::$app->getQueue()->push(new UpdateByAlbumId([
             'id' => $albumId,
         ]));
 
