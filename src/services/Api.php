@@ -130,7 +130,6 @@ class Api extends Component
     public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
     {
         $buffer = [];
-
         if (!$this->paginatedAlbumRequest($buffer, $albumId, 0)) {
             return null;
         }
