@@ -16,6 +16,8 @@ use yii\base\Component;
  */
 class Api extends Component
 {
+    private const MAX_ALBUM_REQUEST_ITEMS = 1000;
+
     /**
      * @var ?string
      */
@@ -61,17 +63,21 @@ class Api extends Component
      * Issue an API request to the Canto endpoint with auth
      *
      * @param string $path
+     * @param array|string[] $params
      * @return array|string[]
      */
-    public function cantoApiRequest(string $path): array
+    public function cantoApiRequest(string $path, array $params = []): array
     {
         $client = Craft::createGuzzleClient();
         $cantoApiEndpoint =
             rtrim(CantoDamAssets::$plugin->getSettings()->getApiUrl(), '/')
             . '/'
             . ltrim($path, '/');
+        $options = array_merge($this->getApiHeaders(), [
+            'query' => $params,
+        ]);
         try {
-            $response = $client->request("GET", $cantoApiEndpoint, $this->getApiHeaders());
+            $response = $client->request("GET", $cantoApiEndpoint, $options);
         } catch (GuzzleException $e) {
             Craft::error($e->getMessage(), __METHOD__);
 
@@ -123,18 +129,49 @@ class Api extends Component
      */
     public function fetchFieldDataByAlbumId(string $albumId): ?CantoFieldData
     {
-        $responseBody = $this->cantoApiRequest('/album/' . $albumId);
-        if (isset($responseBody['status']) && $responseBody['status' === 'error']) {
+        $buffer = [];
+
+        if (!$this->paginatedAlbumRequest($buffer, $albumId, 0)) {
             return null;
         }
-        // @TODO implement fetching a full album's data
 
         return new CantoFieldData([
             'cantoId' => 0,
-            'cantoAlbumId' => 0,
-            'cantoAssetData' => [],
-            'cantoAlbumData' => [],
+            'cantoAlbumId' => $albumId,
+            'cantoAssetData' => $buffer,
+            'cantoAlbumData' => [
+                'id' => $buffer['relatedAlbums'][0]['id'] ?? 0,
+                'name' => $buffer['relatedAlbums'][0]['name'] ?? '',
+            ],
         ]);
+    }
+
+    /**
+     * Retrieve all of the assets from the albumId album, paginated to handle API limits
+     *
+     * @param array $buffer
+     * @param string $albumId
+     * @param int $start
+     * @return boolean
+     */
+    public function paginatedAlbumRequest(array &$buffer, string $albumId, int $start = 0): bool
+    {
+        $params = [
+            'sortBy' => 'time',
+            'sortDirection' => 'descending',
+            'limit' => self::MAX_ALBUM_REQUEST_ITEMS,
+            'start' => $start,
+        ];
+        $responseBody = $this->cantoApiRequest('/album/' . $albumId, $params);
+        if (isset($responseBody['status']) && $responseBody['status' === 'error']) {
+            return false;
+        }
+        $buffer = array_merge($buffer, $responseBody['results']);
+        if (count($buffer) < $responseBody['found']) {
+            $this->paginatedAlbumRequest($buffer, $albumId, $start + self::MAX_ALBUM_REQUEST_ITEMS);
+        }
+
+        return true;
     }
 
     /**
