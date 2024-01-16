@@ -2,8 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.0.12 - UNRELEASED
+## 4.0.12 - 2024.01.16
 ### Added
+* Added the following controller action endpoints for Canto Webhooks: `_canto-dam-assets/sync/delete-by-canto-id`, `_canto-dam-assets/sync/delete-by-album-id`, `_canto-dam-assets/sync/update-by-canto-id` & `_canto-dam-assets/sync/update-by-album-id`
+* Added documentation for the controller action endpoints for Canto Webhooks
 * Added a `webhookSecureToken` setting for validating webhooks
 * Added a `SyncController` for handling webhooks for changed assets/albums from Canto
 * Added `directUrlPreviewPlay` to the GraphQL schema
