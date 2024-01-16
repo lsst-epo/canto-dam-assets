@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.12 - 2024.01.16
+### Added
+* Added the following controller action endpoints for Canto Webhooks: `_canto-dam-assets/sync/delete-by-canto-id`, `_canto-dam-assets/sync/delete-by-album-id`, `_canto-dam-assets/sync/update-by-canto-id` & `_canto-dam-assets/sync/update-by-album-id`
+* Added documentation for the controller action endpoints for Canto Webhooks
+* Added a `webhookSecureToken` setting for validating webhooks
+* Added a `SyncController` for handling webhooks for changed assets/albums from Canto
+* Added `directUrlPreviewPlay` to the GraphQL schema
+* Added the `tenantHostName` plugin setting, and pass this down to the Canto Universal Connector JS
+* Added async function `paginatedContentRequest()` to handle single and multiple image selections from Canto, paginated to API limits, resulting in a significantly faster fetching time
+* Added async function `paginatedAlbumRequest()` to handle full album selections from Canto, paginated to API limits, resulting in a significantly faster fetching time
+
+### Changed
+* Use `directUrlPreview` instead of `directUrlOriginal` which will work for other media types such as videos as well
+* Removed the limitation on albums to include only images, so all media types are supported again
+* Removed the `retrieveAssetMetadataEndpoint` setting
+* Removed the hard-coding of the `tenant` from the JS, instead using the `tenantHostName` plugin setting
+* Removed the hard-coding of the `appId` from the JS, instead using the `appId` plugin setting
+* Store the `albumId` in the content column only if it's a full album, otherwise store `0`
+* Moved all of the SyncController operations to queue jobs, because they can involve lengthy API/db calls
+* Refactored `singleCountLoad` back to the original `50`
+
 ## 4.0.11 - 2023.12.27
 ### Fixed
 * Added permission to allow non-admins use of the plugin/field modals

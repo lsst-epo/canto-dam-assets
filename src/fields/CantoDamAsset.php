@@ -199,6 +199,8 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Html::namespaceId('', $namespace),
+            'appId' => CantoDamAssets::$plugin->getSettings()->getAppId(),
+            'tenantHostName' => CantoDamAssets::$plugin->getSettings()->getTenantHostName(),
             'bodyClass' => self::PICKER_TYPE_CLASS_MAP[$this->cantoAssetPickerType] ?? self::PICKER_TYPE_CLASS_MAP['singleImagePicker'],
         ]);
         $view->registerJs(
@@ -228,7 +230,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         $id = Html::id($this->handle);
         $namespacedId = $view->namespaceInputId($id);
         // In case we want to try to transform this image
-        $previewUrl = $value->cantoAssetData[0]['url']['directUrlOriginal'] ?? null;
+        $previewUrl = $value->cantoAssetData[0]['url']['directUrlPreview'] ?? null;
         // The name to subtitle the preview
         $assetCount = count($value->cantoAssetData);
         $previewName = $value->cantoId == 0 ? "{$assetCount} images" : $value->cantoAssetData[0]['name'] ?? null;
@@ -242,7 +244,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'elementId' => $element->id ?? null,
             'element' => Json::encode($element),
             'namespacedId' => $view->namespaceInputId($id),
-            'accessToken' => CantoDamAssets::$plugin->assets->getAuthToken(),
+            'accessToken' => CantoDamAssets::$plugin->getApi()->getAuthToken(),
             'config' => [
                 'id' => $id,
                 'enabled' => $enabled,

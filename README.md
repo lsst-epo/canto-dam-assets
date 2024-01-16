@@ -18,10 +18,6 @@ The Canto asset data is represented as a [Laravel Collection](https://laravel.co
 
 This plugin requires Craft CMS 4.4.0 or later, and PHP 8.0.2 or later.
 
-## Limitations
-
-While the Canto DAM Assets plugin will allow you to select and utilize assets other than images, currently a preview is only displayed if the asset is an image.
-
 ## Configuring
 
 ### Plugin Settings
@@ -33,7 +29,8 @@ Before you can use the Canto DAM Assets plugin, you need to configure it via **S
 * **App ID** - Your Canto DAM Application ID
 * **Secret Key** - Your Canto DAM secret key
 * **Authentication Endpoint** - The URL that should be used to authenticate and obtain an access token from. You can include the `{appId}` & `{secretKey}` tokens in the URL, which will be replaced with the respective values from the settings
-* **Retrieve One Asset Endpoint** - The URL to the endpoint provided by Canto for retrieving meta data for individual assets. This will be unique for your application
+* **Tenant Host Name** - The hostname for the Canto Tenant, e.g. `rubin.canto.com`
+* **Webhook Secure Token** - The secure token that must match the token coming from the Canto [webhook](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) **Secure Token** field to allow changes to be synced from Canto
 
 ### Field Settings
 
@@ -198,6 +195,7 @@ Below are the available fields for the Canto Asset Data of the scheme `image`; t
     directUrlOriginal
     detail
     directUrlPreview
+    directUrlPreviewPlay
     LowJPG
   }
   width
@@ -454,6 +452,41 @@ Filter items such that the value of the given key is between the given values.
   * `values`: `String` - The values that should not be in the key
 
 You can use the [GraphiQL IDE](https://craftcms.com/docs/4.x/graphql.html#using-the-graphiql-ide) built into Craft CMS to try queries interactively.
+
+## Webhook Controller Actions
+
+The Canto DAM Assets plugin has several controller API endpoints, to allow for the syncing of data from Canto [webhooks](https://support.canto.com/en/support/solutions/articles/9000187706-webhooks) to Craft:
+
+* `_canto-dam-assets/sync/delete-by-canto-id` - This will delete a Canto Asset from any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-canto-id
+```
+* `_canto-dam-assets/sync/delete-by-album-id` - This will delete an entire Canto Album from any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/delete-by-album-id
+```
+* `_canto-dam-assets/sync/update-by-canto-id` - This will update the metadata for a Canto Asset in any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-canto-id
+```
+* `_canto-dam-assets/sync/update-by-album-id` - This will update and entire Canto Album in any Canto DAM Assets fields. Example:
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-album-id
+```
+
+The `secure_token` setting in each Canto webhook needs to match the **Webhook Secure Token** plugin setting for it to be considered valid.
 
 ## Plugin Roadmap
 

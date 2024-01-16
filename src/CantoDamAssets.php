@@ -6,8 +6,8 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
-use craft\services\UserPermissions;
 use craft\services\Fields;
+use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\models\Settings;
@@ -93,7 +93,7 @@ class CantoDamAssets extends Plugin
         Event::on(
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function(RegisterUserPermissionsEvent $event) {
+            function (RegisterUserPermissionsEvent $event) {
                 $event->permissions[] = [
                     "heading" => "Canto DAM Assets Picker Extraordinaire",
                     "permissions" => [

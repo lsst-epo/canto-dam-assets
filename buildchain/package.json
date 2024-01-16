@@ -1,6 +1,7 @@
 {
   "name": "buildchain",
   "description": "A drop-in buildchain for using Vite in your Craft CMS plugins or modules",
+  "version": "1.0.0",
   "type": "module",
   "author": {
     "email": "info@nystudio107.com",
@@ -10,9 +11,9 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@types/node": "^20.0.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.0.0",
     "postcss": "^8.4.0",

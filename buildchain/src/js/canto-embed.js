@@ -8,17 +8,17 @@ let _APIHeaders = {};
 let searchedBy = ""; //bySearch bytree byScheme''
 let currentImageList = [];
 let singleCountLoad = 50;
-let albumSingleCountLoad = 1000;
 let apiNextStart = 0;
 let isLoadingComplete = false;
 let _formatDistrict = '';
 const MAX_CONTENT_REQUEST_ITEMS = 100;
+const MAX_ALBUM_REQUEST_ITEMS = 1000;
 
 /* -----------------canto API start-------------------------------------------------------------*/
 
 function setToken(tokenInfo) {
   _accessToken = tokenInfo.accessToken;
-  _tenants = tokenInfo.tenant ? tokenInfo.tenant : "rubin.canto.com/";
+  _tenants = tokenInfo.tenant;
   _tokenType = tokenInfo.tokenType ? tokenInfo.tokenType : "bearer";
   _APIHeaders = {
     "Authorization": _tokenType + " " + _accessToken,
@@ -61,9 +61,8 @@ cantoAPI.getListByAlbum = function (albumID, callback) {
   if (isLoadingComplete) {
     return;
   }
-  let filterString = loadMoreHandler(albumSingleCountLoad);
+  let filterString = loadMoreHandler(singleCountLoad);
   let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}`;
-  url += `&scheme=image`;
   $.ajax({
     type: "GET",
     headers: _APIHeaders,
@@ -219,71 +218,134 @@ cantoAPI.logout = function () {
   targetWindow.postMessage(data, '*');
 };
 
+/**
+ * Retrieve all of the assets from the albumId album, paginated to handle API limits
+ *
+ * @param {[]} buffer
+ * @param {string} albumId
+ * @param {number} start
+ * @returns {Promise<*>}
+ */
+cantoAPI.paginatedAlbumRequest = async (buffer, albumId, start = 0) => {
+  let url = `https://${_tenants}/api/v1/album/${albumId}`;
+  let filterString = "sortBy=time&sortDirection=descending&limit=" + MAX_ALBUM_REQUEST_ITEMS + "&start=" + start;
+  let result = await fetch(`${url}?${filterString}`, {
+    method: "get",
+    headers: {
+      "Authorization": `${_tokenType} ${_accessToken}`,
+      "Content-Type": "application/json; charset=utf-8"
+    },
+  }).then((response) => {
+    return response.json();
+  });
+  buffer.push(...result['results']);
+  if (buffer.length < result.found) {
+    return cantoAPI.paginatedAlbumRequest(buffer, albumId, start + MAX_ALBUM_REQUEST_ITEMS);
+  } else {
+    return buffer;
+  }
+}
+
+/**
+ * Retrieve all of the assets in the imageArray array, paginated to handle API limits
+ *
+ * @param {[]} buffer
+ * @param {{id: string, scheme: string}[]} imageArray
+ * @param {number} start
+ * @returns {Promise<*>}
+ */
+cantoAPI.paginatedContentRequest = async (buffer, imageArray, start = 0) => {
+  let url = `https://${_tenants}/api/v1/batch/content`;
+  const imageArraySubset = imageArray.slice(start, start + MAX_CONTENT_REQUEST_ITEMS);
+  let result = await fetch(url, {
+    method: "post",
+    headers: {
+      "Authorization": `${_tokenType} ${_accessToken}`,
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: JSON.stringify(imageArraySubset)
+  }).then((response) => {
+    return response.json();
+  });
+  buffer.push(...result['docResult']);
+  if (buffer.length < imageArray.length) {
+    return cantoAPI.paginatedContentRequest(buffer, imageArray, start + MAX_CONTENT_REQUEST_ITEMS);
+  } else {
+    return buffer;
+  }
+}
+
+/**
+ * Insert the images in imageArray into the CMS
+ *
+ * @param {{id: string, scheme: string}[]} imageArray
+ */
 cantoAPI.insertImage = function (imageArray) {
-  //clear cookie and trun to login page.
   if (!(imageArray && imageArray.length)) {
     return;
   }
-  let data = {};
-  let url = `https://${_tenants}/api/v1/batch/content`;
-  const fetchPromises = [];
-  const pages = Math.ceil(imageArray.length / MAX_CONTENT_REQUEST_ITEMS);
-  for (let i = 0; i < pages; i++) {
-    const offset = MAX_CONTENT_REQUEST_ITEMS * i;
-    const imageArraySubset = imageArray.slice(offset, offset + MAX_CONTENT_REQUEST_ITEMS);
-    const promise = fetch(url, {
-      method: "post",
-      headers: {
-        "Authorization": `${_tokenType} ${_accessToken}`,
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify(imageArraySubset)
-    });
-    fetchPromises.push(promise);
-  }
-  Promise.all(fetchPromises)
-    .then((apiResponses) => {
-      const jsonPromises = [];
-      apiResponses.forEach((value) => {
-        jsonPromises.push(value.json());
-      });
-      Promise.all(jsonPromises)
-        .then((jsonResults) => {
-          // Get the id of the canto asset, or 0 if it is a collection of images
-          let id = 0;
-          let mergedAssetData = [];
-          jsonResults.forEach((jsonResult) => {
-            if (pages === 1 && jsonResult.docResult.length === 1) {
-              id = jsonResult.docResult[0].id;
-            }
-            mergedAssetData = mergedAssetData.concat(jsonResult.docResult);
-          });
-          // Gather information about the selected album
-          let album = $("#treeviewSection").find("li.selected");
-          const albumId = album.data('id');
-          let albumName = album.find('span').text();
-          const albumData = {
-            id: albumId,
-            name: albumName,
-          };
-          // Compose the payload to send as an event
-          let data = {
-            type: "closeModal",
-            cantoId: id,
-            cantoAlbumId: albumId,
-            cantoAssetData: mergedAssetData,
-            cantoAlbumData: albumData,
-          };
-          // Let our canto-field.js know what asset(s) were picked
-          parent.postMessage(data, '*');
-        });
-    })
-    .catch((error) => {
-      console.error(error.message);
-      data.type = "cantoInsertImage";
-      data.assetList = [];
-      parent.postMessage(data, '*');
-    });
+  cantoAPI.paginatedContentRequest([], imageArray, 0).then((response) => {
+    // Get the id of the canto asset, or 0 if it is a collection of images
+    let id = response.length === 1 ? response[0].id : 0;
+    // Gather information about the selected album
+    let album = $("#treeviewSection").find("li.selected");
+    const albumId = album.data('id');
+    let albumName = album.find('span').text();
+    const albumData = {
+      id: albumId,
+      name: albumName,
+    };
+    // Compose the payload to send as an event
+    let data = {
+      type: "closeModal",
+      // The id of the canto asset, or 0 if it not a single image selection
+      cantoId: id,
+      // The id of the album, or 0 if it not a full album selection
+      cantoAlbumId: 0,
+      cantoAssetData: response,
+      cantoAlbumData: albumData,
+    };
+    // Let our canto-field.js know what asset(s) were picked
+    parent.postMessage(data, '*');
+  }).catch((error) => {
+    console.error(error.message);
+    data.type = "cantoInsertImage";
+    data.assetList = [];
+    parent.postMessage(data, '*');
+  });
+};
+
+/**
+ * Insert the images in imageArray into the CMS
+ *
+ * @param {string} albumId
+ * @param {string} albumName
+ */
+cantoAPI.insertAlbum = function (albumId, albumName) {
+  cantoAPI.paginatedAlbumRequest([], albumId, 0).then((response) => {
+    // Gather information about the selected album
+    const albumData = {
+      id: albumId,
+      name: albumName,
+    };
+    // Compose the payload to send as an event
+    let data = {
+      type: "closeModal",
+      // The id of the canto asset, or 0 if it not a single image selection
+      cantoId: 0,
+      // The id of the album, or 0 if it not a full album selection
+      cantoAlbumId: albumId,
+      cantoAssetData: response,
+      cantoAlbumData: albumData,
+    };
+    // Let our canto-field.js know what asset(s) were picked
+    parent.postMessage(data, '*');
+  }).catch((error) => {
+    console.error(error.message);
+    data.type = "cantoInsertImage";
+    data.assetList = [];
+    parent.postMessage(data, '*');
+  });
 };
 
 /* -----------------canto API end--------------------------------------------------------*/
@@ -300,7 +362,8 @@ $(document).ready(function () {
       setToken(tokenInfo);
     } else {
       setToken({
-        accessToken: parent.document.querySelector(".canto-uc-subiframe").dataset.access
+        accessToken: parent.document.querySelector(".canto-uc-subiframe").dataset.access,
+        tenant: parent.document.querySelector(".canto-uc-subiframe").dataset.tenant,
       });
     }
     treeviewDataHandler();
@@ -393,7 +456,6 @@ function addEventListener() {
         let obj = {};
         obj.id = $(selectedArray[i]).data("id");
         obj.scheme = $(selectedArray[i]).data("scheme");
-        obj.size = $(selectedArray[i]).data("size");
         assetArray.push(obj);
       }
       cantoAPI.insertImage(assetArray);
@@ -401,20 +463,10 @@ function addEventListener() {
     // Allow for the insertion of the entire album into the target system
     .on("click", "#insertAlbumBtn", function (e) {
       $("#cantoViewBody").find(".loading-icon").removeClass("hidden");
-      let assetArray = [];
-      let selectedArray = $("#cantoViewBody").find(".single-image[data-scheme='image']").closest(".single-image");
-      for (let i = 0; i < selectedArray.length; i++) {
-        let obj = {};
-        obj.id = $(selectedArray[i]).data("id");
-        obj.scheme = $(selectedArray[i]).data("scheme");
-        obj.size = $(selectedArray[i]).data("size");
-        assetArray.push(obj);
-      }
-      if (assetArray.length) {
-        cantoAPI.insertImage(assetArray);
-      } else {
-        $("#cantoViewBody").find(".loading-icon").addClass("hidden");
-      }
+      let album = $("#treeviewSection").find("li.selected");
+      const albumId = album.data('id');
+      let albumName = album.find('span').text();
+      cantoAPI.insertAlbum(albumId, albumName);
     })
     .on("click", ".icon-s-Fullscreen", function (e) {
       e.cancelBubble = true;
@@ -735,8 +787,6 @@ function imageNewDetail(detailData) {
       {
         id: detailData.id,
         scheme: detailData.scheme,
-        size: detailData.size,
-        name: detailData.name,
       }
     ];
     cantoAPI.insertImage(assetArray);
