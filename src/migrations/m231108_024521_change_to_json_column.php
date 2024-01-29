@@ -123,6 +123,7 @@ class m231108_024521_change_to_json_column extends Migration
      */
     private function getBlockFields(string $fieldType): array
     {
+        /** @phpstan-ignore-next-line */
         return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }

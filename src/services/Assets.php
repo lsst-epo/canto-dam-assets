@@ -190,6 +190,7 @@ class Assets extends Component
      */
     private function getBlockFields(string $fieldType): array
     {
+        /** @phpstan-ignore-next-line */
         return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }
