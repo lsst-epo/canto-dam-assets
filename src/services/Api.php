@@ -111,12 +111,12 @@ class Api extends Component
         }
 
         return new CantoFieldData([
-            'cantoId' => $responseBody['id'] ?? 0,
+            'cantoId' => $responseBody['id'] ?: 0,
             'cantoAlbumId' => 0,
             'cantoAssetData' => [$responseBody],
             'cantoAlbumData' => [
-                'id' => $responseBody['relatedAlbums'][0]['id'] ?? 0,
-                'name' => $responseBody['relatedAlbums'][0]['name'] ?? '',
+                'id' => $responseBody['relatedAlbums'][0]['id'] ?: 0,
+                'name' => $responseBody['relatedAlbums'][0]['name'] ?: '',
             ],
         ]);
     }
