@@ -163,7 +163,7 @@ class Api extends Component
             'start' => $start,
         ];
         $responseBody = $this->cantoApiRequest('/album/' . $albumId, $params);
-        if (isset($responseBody['status']) && $responseBody['status' === 'error']) {
+        if (isset($responseBody['status']) && $responseBody['status'] === 'error') {
             return false;
         }
         $buffer = array_merge($buffer, $responseBody['results']);
