@@ -148,6 +148,7 @@ class Assets extends Component
             // Block types have the same methods as Matrix
             /* @var Matrix $blockField */
             $contentTableName = $blockField->contentTable;
+            /* @var Matrix $blockField */
             $fields = $blockField->getBlockTypeFields();
             // Filter out any non-CantoDamAsset fields
             $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
