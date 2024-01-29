@@ -111,12 +111,12 @@ class Api extends Component
         }
 
         return new CantoFieldData([
-            'cantoId' => $responseBody['id'] ?: 0,
+            'cantoId' => $responseBody['id'],
             'cantoAlbumId' => 0,
             'cantoAssetData' => [$responseBody],
             'cantoAlbumData' => [
-                'id' => $responseBody['relatedAlbums'][0]['id'] ?: 0,
-                'name' => $responseBody['relatedAlbums'][0]['name'] ?: '',
+                'id' => $responseBody['relatedAlbums'][0]['id'],
+                'name' => $responseBody['relatedAlbums'][0]['name'],
             ],
         ]);
     }
@@ -164,6 +164,9 @@ class Api extends Component
         ];
         $responseBody = $this->cantoApiRequest('/album/' . $albumId, $params);
         if (isset($responseBody['status']) && $responseBody['status'] === 'error') {
+            return false;
+        }
+        if (!is_array($responseBody['results'])) {
             return false;
         }
         $buffer = array_merge($buffer, $responseBody['results']);
