@@ -143,12 +143,9 @@ class Assets extends Component
      */
     protected function updateBlockTypeContent(string $fieldType, string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
     {
-        $blockFields = Craft::$app->getFields()->getFieldsByType($fieldType);
+        $blockFields = $this->getBlockFields($fieldType);
         foreach ($blockFields as $blockField) {
-            // Block types have the same methods as Matrix
-            /* @var Matrix $blockField */
             $contentTableName = $blockField->contentTable;
-            /* @var Matrix $blockField */
             $fields = $blockField->getBlockTypeFields();
             // Filter out any non-CantoDamAsset fields
             $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
@@ -183,5 +180,16 @@ class Assets extends Component
                 }
             }
         }
+    }
+
+    /**
+     * Block type fields  have the same methods as Matrix
+     *
+     * @param string $fieldType
+     * @return Matrix[]
+     */
+    private function getBlockFields(string $fieldType): array
+    {
+        return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }
