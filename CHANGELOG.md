@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.13 - UNRELEASED
+### Added
+* Add `phpstan` and `ecs` code linting
+* Add `code-analysis.yaml` GitHub action
+* Add `CODEOWNERS`
+
 ## 4.0.12 - 2024.01.16
 ### Added
 * Added the following controller action endpoints for Canto Webhooks: `_canto-dam-assets/sync/delete-by-canto-id`, `_canto-dam-assets/sync/delete-by-album-id`, `_canto-dam-assets/sync/update-by-canto-id` & `_canto-dam-assets/sync/update-by-album-id`
