@@ -90,7 +90,7 @@ class Api extends Component
         if (!is_array($body)) {
             return [
                 "status" => "error",
-                'errorMessage' => 'Canto endpoint failure'
+                'errorMessage' => 'Canto endpoint failure',
             ];
         }
 
@@ -184,8 +184,8 @@ class Api extends Component
         return [
             'headers' => [
                 'Authorization' => 'bearer ' . $this->getAuthToken(),
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ]
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
         ];
     }
 

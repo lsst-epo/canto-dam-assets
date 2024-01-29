@@ -5,7 +5,6 @@ namespace lsst\cantodamassets\gql\types\generators;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
-use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;
 use lsst\cantodamassets\gql\types\CantoDamAssetType;
 
@@ -19,14 +18,14 @@ class CantoDamAssetGenerator implements GeneratorInterface
         $cantoDamAssetType = GqlEntityRegistry::getEntity($typeName)
             ?: GqlEntityRegistry::createEntity($typeName, new CantoDamAssetType([
                 'name' => $typeName,
-                'fields' => function () use ($cantoDamAssetFields) {
+                'fields' => function() use ($cantoDamAssetFields) {
                     return $cantoDamAssetFields;
                 },
                 'description' => 'This entity has all the Canto Dam Asset fields',
             ]));
 
         $gqlTypes[$typeName] = $cantoDamAssetType;
-        TypeLoader::registerType($typeName, function () use ($cantoDamAssetType) {
+        TypeLoader::registerType($typeName, function() use ($cantoDamAssetType) {
             return $cantoDamAssetType;
         });
 

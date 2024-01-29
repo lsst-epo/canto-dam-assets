@@ -44,11 +44,11 @@ class CantoFieldData extends Model
             [
                 [
                     'cantoId',
-                    'cantoAlbumId'
+                    'cantoAlbumId',
                 ],
                 [
                     'string',
-                    'skipOnEmpty' => true
+                    'skipOnEmpty' => true,
                 ],
             ],
             [

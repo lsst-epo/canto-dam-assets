@@ -18,7 +18,6 @@ use yii\db\Schema;
  */
 class m231108_024521_change_to_json_column extends Migration
 {
-
     private const CONTENT_COLUMN_KEYS = [
         'cantoAssetData',
         'cantoAlbumData',

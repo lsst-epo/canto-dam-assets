@@ -32,7 +32,7 @@ class UpdateByCantoId extends BaseJob
     protected function defaultDescription(): ?string
     {
         return Translation::prep('_canto-dam-assets', 'Updating Canto Asset id {id}', [
-            'id' => $this->id
+            'id' => $this->id,
         ]);
     }
 }

@@ -86,7 +86,7 @@ class Settings extends Model
                     'appId',
                     'authEndpoint',
                     'tenantHostName',
-                    'secretKey'
+                    'secretKey',
                 ],
                 'required',
             ],
@@ -106,7 +106,7 @@ class Settings extends Model
                 'url',
             ],
             [
-                'authEndpoint', 'default', 'value' => 'https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token='
+                'authEndpoint', 'default', 'value' => 'https://oauth.canto.com/oauth/api/oauth2/token?app_id={appId}&app_secret={secretKey}&grant_type=client_credentials&refresh_token=',
             ],
         ];
     }
