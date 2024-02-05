@@ -167,10 +167,10 @@ class Assets extends Component
      */
     protected function updateContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
     {
-        $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
+        $contentColumnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
             // Find any $queryColumn content column row that match $value, and update them with the data from $cantoFieldData
-            $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $columnKey);
+            $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $contentColumnKey);
             if ($queryColumn) {
                 $columns = $this->getColumns($cantoDamAssetField, $cantoFieldData);
                 try {
