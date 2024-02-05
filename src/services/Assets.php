@@ -198,10 +198,26 @@ class Assets extends Component
                     $jsonSearchSql = $this->pgSqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
                 }
                 $rows = (new Query())
-                    ->select([$cantoAssetDataFieldName])
+                    ->select(['id', $cantoAssetDataFieldName])
                     ->from([$table])
-                    ->where([$cantoIdFieldName => 0, $jsonSearchSql])
+                    ->where([$cantoIdFieldName => 0])
+                    ->addParams([$jsonSearchSql])
                     ->all();
+                // Iterate through each row, the field data as appropriate
+                foreach ($rows as $row) {
+                    $rowCollection = new Collection($row[$cantoAssetDataFieldName]);
+                    $rowCollection->transform(function ($item) use ($cantoFieldData) {
+                        if ($item['id'] === $cantoFieldData->cantoId) {
+                            $item = $cantoFieldData->cantoAssetData[0];
+                        }
+                        return $item;
+                    });
+                    try {
+                        $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->all()], ['id' => $row['id']]);
+                    } catch (Exception $e) {
+                        Craft::error($e->getMessage(), __METHOD__);
+                    }
+                }
             }
         }
     }
