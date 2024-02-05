@@ -4,10 +4,12 @@ namespace lsst\cantodamassets\services;
 
 use Craft;
 use craft\base\FieldInterface;
+use craft\db\Query;
 use craft\db\Table;
 use craft\fields\Matrix;
 use craft\helpers\Db;
 use craft\helpers\ElementHelper;
+use craft\helpers\Json;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
 use lsst\cantodamassets\models\CantoFieldData;
@@ -167,19 +169,64 @@ class Assets extends Component
     {
         $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
+            // Find any $queryColumn content column row that match $value, and update them with the data from $cantoFieldData
             $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $columnKey);
-            $columns = [];
-            foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
-                $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
-            }
             if ($queryColumn) {
+                $columns = $this->getColumns($cantoDamAssetField, $cantoFieldData);
                 try {
                     $rows = Db::update($table, $columns, [$queryColumn => $value]);
                 } catch (Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
             }
+            // If the column we're updating is the `cantoId`, we need to search the JSON contents of `cantoAssetData`
+            // in order to update any canto assets contained within the JSON blobs as well
+            if ($columnKey === 'cantoId') {
+                $db = Craft::$app->getDb();
+                // Get any existing Canto Assets fields that contain the asset ID we're updating
+                $cantoIdFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId']);
+                $cantoAssetDataFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoAssetData']);
+                $jsonSearchNeedle = ['id' => $cantoFieldData->cantoId];
+                $jsonSearchSql = '';
+                if ($db->getIsMysql()) {
+                    $jsonSearchSql = $this->mySqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
+                }
+                if ($db->getIsPgsql()) {
+                    $jsonSearchSql = $this->pgSqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
+                }
+                $rows = (new Query())
+                    ->select([$cantoAssetDataFieldName])
+                    ->from([$table])
+                    ->where([$cantoIdFieldName => 0, $cantoAssetDataFieldName => $jsonSearchSql])
+                    ->all();
+            }
         }
+    }
+
+    /**
+     * Return a jsonContains expression properly formatted for MySQL
+     *
+     * @param string $targetSql
+     * @param mixed $value
+     * @return string
+     */
+    private function mySqlJsonContains(string $targetSql, mixed $value): string
+    {
+        $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
+        return "JSON_CONTAINS($targetSql, $value)";
+    }
+
+    /**
+     * Return a jsonContains expression properly formatted for Postgres
+     *
+     * @param string $targetSql
+     * @param mixed $value
+     * @return string
+     */
+    private function pgSqlJsonContains(string $targetSql, mixed $value): string
+    {
+        $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
+        return "($targetSql @> $value::jsonb)";
     }
 
     /**
@@ -192,5 +239,22 @@ class Assets extends Component
     {
         /** @phpstan-ignore-next-line */
         return Craft::$app->getFields()->getFieldsByType($fieldType);
+    }
+
+    /**
+     * Return the $cantoDamAssetField db columns to update with the values from the  $cantoFieldData
+     *
+     * @param FieldInterface $cantoDamAssetField
+     * @param CantoFieldData $cantoFieldData
+     * @return array
+     */
+    private function getColumns(FieldInterface $cantoDamAssetField, CantoFieldData $cantoFieldData): array
+    {
+        $columns = [];
+        foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
+            $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
+        }
+
+        return $columns;
     }
 }
