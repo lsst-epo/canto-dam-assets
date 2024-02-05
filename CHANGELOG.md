@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.0.13 - UNRELEASED
+## 4.1.0 - UNRELEASED
 ### Added
 * Add `phpstan` and `ecs` code linting
 * Add `code-analysis.yaml` GitHub action
 * Add `CODEOWNERS`
+
+### Changed
+* Require `craftcms/cms` `^4.6.0` for proper JSON-column content table support
+* Remove unneeded dependency
 
 ## 4.0.12 - 2024.01.16
 ### Added
