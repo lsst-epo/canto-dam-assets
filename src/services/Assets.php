@@ -172,7 +172,10 @@ class Assets extends Component
             // Find any $queryColumn content column row that match $value, and update them with the data from $cantoFieldData
             $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $contentColumnKey);
             if ($queryColumn) {
-                $columns = $this->getColumns($cantoDamAssetField, $cantoFieldData);
+                $columns = [];
+                foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
+                    $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
+                }
                 try {
                     $rows = Db::update($table, $columns, [$queryColumn => $value]);
                 } catch (Exception $e) {
@@ -197,7 +200,7 @@ class Assets extends Component
                 $rows = (new Query())
                     ->select([$cantoAssetDataFieldName])
                     ->from([$table])
-                    ->where([$cantoIdFieldName => 0, $cantoAssetDataFieldName => $jsonSearchSql])
+                    ->where([$cantoIdFieldName => 0, $jsonSearchSql])
                     ->all();
             }
         }
@@ -239,22 +242,5 @@ class Assets extends Component
     {
         /** @phpstan-ignore-next-line */
         return Craft::$app->getFields()->getFieldsByType($fieldType);
-    }
-
-    /**
-     * Return the $cantoDamAssetField db columns to update with the values from the  $cantoFieldData
-     *
-     * @param FieldInterface $cantoDamAssetField
-     * @param CantoFieldData $cantoFieldData
-     * @return array
-     */
-    private function getColumns(FieldInterface $cantoDamAssetField, CantoFieldData $cantoFieldData): array
-    {
-        $columns = [];
-        foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
-            $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
-        }
-
-        return $columns;
     }
 }
