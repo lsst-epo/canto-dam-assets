@@ -2,10 +2,38 @@
 
 namespace lsst\cantodamassets\lib\laravel;
 
+use Craft;
 use Illuminate\Support\Collection as LaravelCollection;
 
 class Collection extends LaravelCollection
 {
+
+
+    public function whereContainsIn($keys, $value, $strict = false)
+    {
+        Craft::info("Got inside of whereContainsIn()!", "lofi!");
+        $keys = $this->getArrayableItems($keys);
+
+        return $this->filter(function ($item) use ($keys, $value, $strict) {
+            // Handle the case where the data is an array of items
+            for ($i = 0; $i < count($keys); $i++) {
+                $item = data_get($item, $keys[$i]);
+
+                if (is_array($item)) {
+                    $item = implode(', ', $item);
+                    Craft::info("Logging: $list", "lofi!");
+                } else {
+                    Craft::info("Logging: $item", "lofi!");
+                }
+
+                if (str_contains($item, $value)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
     /**
      * Filter items by the given key value pair.
      *
