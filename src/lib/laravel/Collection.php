@@ -8,12 +8,11 @@ use Illuminate\Support\Collection as LaravelCollection;
 class Collection extends LaravelCollection
 {
 
-
-    public function whereContainsIn($keys, $value, $strict = false)
+    public function whereContainsIn($keys, $value)
     {
         $keys = $this->getArrayableItems($keys);
 
-        return $this->filter(function ($item) use ($keys, $value, $strict) {
+        return $this->filter(function ($item) use ($keys, $value) {
             // Handle the case where the data is an array of items
             for ($i = 0; $i < count($keys); $i++) {
                 $item = data_get($item, $keys[$i]);
