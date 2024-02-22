@@ -11,7 +11,6 @@ class Collection extends LaravelCollection
 
     public function whereContainsIn($keys, $value, $strict = false)
     {
-        Craft::info("Got inside of whereContainsIn()!", "lofi!");
         $keys = $this->getArrayableItems($keys);
 
         return $this->filter(function ($item) use ($keys, $value, $strict) {
@@ -21,9 +20,6 @@ class Collection extends LaravelCollection
 
                 if (is_array($item)) {
                     $item = implode(', ', $item);
-                    Craft::info("Logging: $list", "lofi!");
-                } else {
-                    Craft::info("Logging: $item", "lofi!");
                 }
 
                 if (str_contains($item, $value)) {
