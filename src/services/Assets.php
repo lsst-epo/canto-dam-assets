@@ -211,7 +211,7 @@ class Assets extends Component
                             $item = $cantoFieldData->cantoAssetData[0];
                         }
                         return $item;
-                    });
+                    })->filter();
                     try {
                         $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->all()], ['id' => $row['id']]);
                     } catch (Exception $e) {
