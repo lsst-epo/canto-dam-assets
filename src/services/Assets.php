@@ -189,7 +189,7 @@ class Assets extends Component
                 // Get any existing Canto Assets fields that contain the asset ID we're updating
                 $cantoIdFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId']);
                 $cantoAssetDataFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoAssetData']);
-                $jsonSearchNeedle = ['id' => $cantoFieldData->cantoId];
+                $jsonSearchNeedle[] = ['id' => $cantoFieldData->cantoId];
                 $jsonSearchSql = '';
                 if ($db->getIsMysql()) {
                     $jsonSearchSql = $this->mySqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
@@ -201,12 +201,12 @@ class Assets extends Component
                     ->select(['id', $cantoAssetDataFieldName])
                     ->from([$table])
                     ->where([$cantoIdFieldName => 0])
-                    ->addParams([$jsonSearchSql])
+                    ->andWhere($jsonSearchSql)
                     ->all();
                 // Iterate through each row, the field data as appropriate
                 foreach ($rows as $row) {
-                    $rowCollection = new Collection($row[$cantoAssetDataFieldName]);
-                    $rowCollection->transform(function ($item) use ($cantoFieldData) {
+                    $rowCollection = new Collection(Json::decodeIfJson($row[$cantoAssetDataFieldName]));
+                    $rowCollection->transform(function($item) use ($cantoFieldData) {
                         if ($item['id'] === $cantoFieldData->cantoId) {
                             $item = $cantoFieldData->cantoAssetData[0];
                         }
@@ -231,7 +231,10 @@ class Assets extends Component
      */
     private function mySqlJsonContains(string $targetSql, mixed $value): string
     {
-        $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
+        $db = Craft::$app->getDb();
+        $value = $db->quoteValue(Json::encode($value));
+        $targetSql = $db->quoteColumnName($targetSql);
+
         return "JSON_CONTAINS($targetSql, $value)";
     }
 
@@ -244,7 +247,10 @@ class Assets extends Component
      */
     private function pgSqlJsonContains(string $targetSql, mixed $value): string
     {
+        $db = Craft::$app->getDb();
         $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
+        $targetSql = $db->quoteColumnName($targetSql);
+
         return "($targetSql @> $value::jsonb)";
     }
 
