@@ -189,7 +189,7 @@ class Assets extends Component
                 // Get any existing Canto Assets fields that contain the asset ID we're updating
                 $cantoIdFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId']);
                 $cantoAssetDataFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoAssetData']);
-                $jsonSearchNeedle[] = ['id' => $cantoFieldData->cantoId];
+                $jsonSearchNeedle[] = ['id' => $cantoFieldData->cantoId ?? $value];
                 $jsonSearchSql = '';
                 if ($db->getIsMysql()) {
                     $jsonSearchSql = $this->mySqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
@@ -206,14 +206,14 @@ class Assets extends Component
                 // Iterate through each row, the field data as appropriate
                 foreach ($rows as $row) {
                     $rowCollection = new Collection(Json::decodeIfJson($row[$cantoAssetDataFieldName]));
-                    $rowCollection->transform(function($item) use ($cantoFieldData) {
-                        if ($item['id'] === $cantoFieldData->cantoId) {
-                            $item = $cantoFieldData->cantoAssetData[0];
+                    $rowCollection->transform(function($item) use ($cantoFieldData, $value) {
+                        if ($item['id'] === ($cantoFieldData->cantoId ?? $value)) {
+                            $item = $cantoFieldData->cantoAssetData[0] ?? [];
                         }
                         return $item;
-                    })->filter();
+                    });
                     try {
-                        $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->all()], ['id' => $row['id']]);
+                        $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->filter()->values()->all()], ['id' => $row['id']]);
                     } catch (Exception $e) {
                         Craft::error($e->getMessage(), __METHOD__);
                     }
