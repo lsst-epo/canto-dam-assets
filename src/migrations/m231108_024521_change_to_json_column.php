@@ -11,6 +11,7 @@ use craft\helpers\ElementHelper;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
 use verbb\supertable\fields\SuperTableField;
+use yii\db\Exception;
 use yii\db\Schema;
 
 /**
@@ -105,7 +106,7 @@ class m231108_024521_change_to_json_column extends Migration
      * @param $type
      * @param $using
      * @return void
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     private function alterColumnUsingPgsql($table, $column, $type, $using): void
     {

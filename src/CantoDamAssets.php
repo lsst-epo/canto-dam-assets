@@ -26,10 +26,9 @@ class CantoDamAssets extends Plugin
 {
     use ServicesTrait;
 
+    public static ?CantoDamAssets $plugin = null;
     public string $schemaVersion = '1.0.1';
     public bool $hasCpSettings = true;
-
-    public static ?CantoDamAssets $plugin = null;
 
     /**
      * @inheritDoc
@@ -93,7 +92,7 @@ class CantoDamAssets extends Plugin
         Event::on(
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function(RegisterUserPermissionsEvent $event) {
+            static function(RegisterUserPermissionsEvent $event) {
                 $event->permissions[] = [
                     "heading" => "Canto DAM Assets Picker Extraordinaire",
                     "permissions" => [

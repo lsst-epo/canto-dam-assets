@@ -58,13 +58,6 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         ]);
     }
 
-    protected function defineRules(): array
-    {
-        return array_merge(parent::defineRules(), [
-            // ...
-        ]);
-    }
-
     public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('_canto-dam-assets/_components/fieldtypes/CantoDamAsset_settings.twig',
@@ -158,6 +151,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     // Protected Methods
     // =========================================================================
+
+    protected function defineRules(): array
+    {
+        return array_merge(parent::defineRules(), [
+            // ...
+        ]);
+    }
 
     protected function searchKeywords(mixed $value, ElementInterface $element): string
     {

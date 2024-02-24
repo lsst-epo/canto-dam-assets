@@ -2,6 +2,8 @@
 
 namespace lsst\cantodamassets\lib\laravel;
 
+use Closure;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection as LaravelCollection;
 
 class Collection extends LaravelCollection
@@ -10,7 +12,7 @@ class Collection extends LaravelCollection
      * Filter items by the given key value pair.
      *
      * @param string $key
-     * @param \Illuminate\Contracts\Support\Arrayable|iterable $values
+     * @param Arrayable|iterable $values
      * @param bool $strict
      * @return static
      */
@@ -32,7 +34,7 @@ class Collection extends LaravelCollection
      * Filter items by the given key value pair.
      *
      * @param string $key
-     * @param \Illuminate\Contracts\Support\Arrayable|iterable $values
+     * @param Arrayable|iterable $values
      * @param bool $strict
      * @return static
      */
@@ -56,7 +58,7 @@ class Collection extends LaravelCollection
      * @param callable|string $key
      * @param string|null $operator
      * @param mixed $value
-     * @return \Closure
+     * @return Closure
      */
     protected function operatorForWhere($key, $operator = null, $value = null)
     {

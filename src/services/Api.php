@@ -7,6 +7,7 @@ use craft\helpers\Json;
 use GuzzleHttp\Exception\GuzzleException;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\models\CantoFieldData;
+use Throwable;
 use yii\base\Component;
 
 /**
@@ -45,7 +46,7 @@ class Api extends Component
         // Get auth token
         try {
             $response = $client->post($authEndpoint);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error("An exception occurred in getAuthToken()", __METHOD__);
 
             return $e->getMessage();
