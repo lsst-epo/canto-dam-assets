@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.1.0 - UNRELEASED
+## 4.1.0 - 2024.02.25
 ### Added
 * Add `phpstan` and `ecs` code linting
 * Add `code-analysis.yaml` GitHub action
 * Add `CODEOWNERS`
+* Added support for updating/deleting Canto assets that are inside of the JSON data blob in response to webhooks
 
 ### Changed
 * Require `craftcms/cms` `^4.6.0` for proper JSON-column content table support
