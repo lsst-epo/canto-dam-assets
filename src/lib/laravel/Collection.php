@@ -2,6 +2,8 @@
 
 namespace lsst\cantodamassets\lib\laravel;
 
+use Closure;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection as LaravelCollection;
 
 class Collection extends LaravelCollection
@@ -10,7 +12,7 @@ class Collection extends LaravelCollection
      * Filter items by the given key value pair.
      *
      * @param string $key
-     * @param \Illuminate\Contracts\Support\Arrayable|iterable $values
+     * @param Arrayable|iterable $values
      * @param bool $strict
      * @return static
      */
@@ -18,7 +20,7 @@ class Collection extends LaravelCollection
     {
         $values = $this->getArrayableItems($values);
 
-        return $this->filter(function ($item) use ($key, $values, $strict) {
+        return $this->filter(function($item) use ($key, $values, $strict) {
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
@@ -32,7 +34,7 @@ class Collection extends LaravelCollection
      * Filter items by the given key value pair.
      *
      * @param string $key
-     * @param \Illuminate\Contracts\Support\Arrayable|iterable $values
+     * @param Arrayable|iterable $values
      * @param bool $strict
      * @return static
      */
@@ -40,7 +42,7 @@ class Collection extends LaravelCollection
     {
         $values = $this->getArrayableItems($values);
 
-        return $this->reject(function ($item) use ($key, $values, $strict) {
+        return $this->reject(function($item) use ($key, $values, $strict) {
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
@@ -56,7 +58,7 @@ class Collection extends LaravelCollection
      * @param callable|string $key
      * @param string|null $operator
      * @param mixed $value
-     * @return \Closure
+     * @return Closure
      */
     protected function operatorForWhere($key, $operator = null, $value = null)
     {
@@ -76,10 +78,10 @@ class Collection extends LaravelCollection
             $operator = '=';
         }
 
-        return function ($item) use ($key, $operator, $value) {
+        return function($item) use ($key, $operator, $value) {
             $retrieved = data_get($item, $key);
 
-            $strings = array_filter([$retrieved, $value], function ($value) {
+            $strings = array_filter([$retrieved, $value], function($value) {
                 return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
 

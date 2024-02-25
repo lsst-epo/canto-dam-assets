@@ -4,10 +4,12 @@ namespace lsst\cantodamassets\services;
 
 use Craft;
 use craft\base\FieldInterface;
+use craft\db\Query;
 use craft\db\Table;
 use craft\fields\Matrix;
 use craft\helpers\Db;
 use craft\helpers\ElementHelper;
+use craft\helpers\Json;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
 use lsst\cantodamassets\models\CantoFieldData;
@@ -143,10 +145,8 @@ class Assets extends Component
      */
     protected function updateBlockTypeContent(string $fieldType, string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
     {
-        $blockFields = Craft::$app->getFields()->getFieldsByType($fieldType);
+        $blockFields = $this->getBlockFields($fieldType);
         foreach ($blockFields as $blockField) {
-            // Block types have the same methods as Matrix
-            /* @var Matrix $blockField */
             $contentTableName = $blockField->contentTable;
             $fields = $blockField->getBlockTypeFields();
             // Filter out any non-CantoDamAsset fields
@@ -167,20 +167,102 @@ class Assets extends Component
      */
     protected function updateContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
     {
-        $columnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
+        $contentColumnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
-            $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $columnKey);
-            $columns = [];
-            foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
-                $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
-            }
+            // Find any $queryColumn content column row that match $value, and update them with the data from $cantoFieldData
+            $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $contentColumnKey);
             if ($queryColumn) {
+                $columns = [];
+                foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
+                    $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
+                }
                 try {
                     $rows = Db::update($table, $columns, [$queryColumn => $value]);
                 } catch (Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
             }
+            // If the column we're updating is the `cantoId`, we need to search the JSON contents of `cantoAssetData`
+            // in order to update any canto assets contained within the JSON blobs as well
+            if ($columnKey === 'cantoId') {
+                $db = Craft::$app->getDb();
+                // Get any existing Canto Assets fields that contain the asset ID we're updating
+                $cantoIdFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId']);
+                $cantoAssetDataFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoAssetData']);
+                $jsonSearchNeedle[] = ['id' => $cantoFieldData->cantoId ?? $value];
+                $jsonSearchSql = '';
+                if ($db->getIsMysql()) {
+                    $jsonSearchSql = $this->mySqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
+                }
+                if ($db->getIsPgsql()) {
+                    $jsonSearchSql = $this->pgSqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
+                }
+                $rows = (new Query())
+                    ->select(['id', $cantoAssetDataFieldName])
+                    ->from([$table])
+                    ->where([$cantoIdFieldName => 0])
+                    ->andWhere($jsonSearchSql)
+                    ->all();
+                // Iterate through each row, the field data as appropriate
+                foreach ($rows as $row) {
+                    $rowCollection = new Collection(Json::decodeIfJson($row[$cantoAssetDataFieldName]));
+                    $rowCollection->transform(function($item) use ($cantoFieldData, $value) {
+                        if ($item['id'] === ($cantoFieldData->cantoId ?? $value)) {
+                            $item = $cantoFieldData->cantoAssetData[0] ?? [];
+                        }
+                        return $item;
+                    });
+                    try {
+                        $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->filter()->values()->all()], ['id' => $row['id']]);
+                    } catch (Exception $e) {
+                        Craft::error($e->getMessage(), __METHOD__);
+                    }
+                }
+            }
         }
+    }
+
+    /**
+     * Return a jsonContains expression properly formatted for MySQL
+     *
+     * @param string $targetSql
+     * @param mixed $value
+     * @return string
+     */
+    private function mySqlJsonContains(string $targetSql, mixed $value): string
+    {
+        $db = Craft::$app->getDb();
+        $value = $db->quoteValue(Json::encode($value));
+        $targetSql = $db->quoteColumnName($targetSql);
+
+        return "JSON_CONTAINS($targetSql, $value)";
+    }
+
+    /**
+     * Return a jsonContains expression properly formatted for Postgres
+     *
+     * @param string $targetSql
+     * @param mixed $value
+     * @return string
+     */
+    private function pgSqlJsonContains(string $targetSql, mixed $value): string
+    {
+        $db = Craft::$app->getDb();
+        $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
+        $targetSql = $db->quoteColumnName($targetSql);
+
+        return "($targetSql @> $value::jsonb)";
+    }
+
+    /**
+     * Block type fields  have the same methods as Matrix
+     *
+     * @param string $fieldType
+     * @return Matrix[]
+     */
+    private function getBlockFields(string $fieldType): array
+    {
+        /** @phpstan-ignore-next-line */
+        return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }

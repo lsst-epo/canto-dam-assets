@@ -18,8 +18,8 @@ use yii\web\Response;
 class SyncController extends Controller
 {
     public $defaultAction = 'index';
-    protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
     public $enableCsrfValidation = false;
+    protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
 
     public function beforeAction($action): bool
     {

@@ -22,7 +22,6 @@ use yii\db\Schema;
  */
 class CantoDamAsset extends Field implements PreviewableFieldInterface
 {
-
     protected const PICKER_TYPE_CLASS_MAP = [
         'singleImagePicker' => 'can-select-single',
         'multipleImagePicker' => 'can-select-single can-select-multiple',
@@ -55,13 +54,6 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
-            // ...
-        ]);
-    }
-
-    protected function defineRules(): array
-    {
-        return array_merge(parent::defineRules(), [
             // ...
         ]);
     }
@@ -159,6 +151,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     // Protected Methods
     // =========================================================================
+
+    protected function defineRules(): array
+    {
+        return array_merge(parent::defineRules(), [
+            // ...
+        ]);
+    }
 
     protected function searchKeywords(mixed $value, ElementInterface $element): string
     {
@@ -320,13 +319,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'page' => [
                             'type' => Type::int(),
-                            'description' => 'The page number'
+                            'description' => 'The page number',
                         ],
                         'items' => [
                             'type' => Type::int(),
-                            'description' => 'The number of items per page'
+                            'description' => 'The number of items per page',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'where' => [
@@ -337,17 +336,17 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'key' => [
                             'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'value' => [
                             'type' => Type::string(),
-                            'description' => 'The value to match when searching'
+                            'description' => 'The value to match when searching',
                         ],
                         'operator' => [
                             'type' => Type::string(),
-                            'description' => 'The comparison operator to use, e.g.: `=`, `>`, `<=`, etc. The default is `=`'
-                        ]
-                    ]
+                            'description' => 'The comparison operator to use, e.g.: `=`, `>`, `<=`, etc. The default is `=`',
+                        ],
+                    ],
                 ]),
             ],
             'whereNull' => [
@@ -368,13 +367,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'key' => [
                             'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'values' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The values that should be in the key'
+                            'description' => 'The values that should be in the key',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'whereNotIn' => [
@@ -385,13 +384,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'key' => [
                             'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'values' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The the values that should not be in the key'
+                            'description' => 'The the values that should not be in the key',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'whereBetween' => [
@@ -402,13 +401,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'key' => [
                             'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'values' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The values that the key should be between'
+                            'description' => 'The values that the key should be between',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'whereNotBetween' => [
@@ -419,13 +418,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'key' => [
                             'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'values' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The values the key should not be between'
+                            'description' => 'The values the key should not be between',
                         ],
-                    ]
+                    ],
                 ]),
             ],
         ], 'CantoDamAssetQueryType');

@@ -461,8 +461,8 @@ The Canto DAM Assets plugin has several controller API endpoints, to allow for t
 ```bash
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"psnne2p0717un0d115ftjd4l1a", "scheme":"image", "secure_token":"abc"}' \
-  http://plugindev.local:8004/actions/_canto-dam-assets/sync/update-by-canto-id
+  --data '{"album":"N29BC", "displayname":"ADASS Poster 6-23.png", "id":"tsfhf1snqh5533j96gi2ntom7j", "scheme":"image", "secure_token":"abc"}' \
+  http://plugindev.local:8004/actions/_canto-dam-assets/sync/delete-by-canto-id
 ```
 * `_canto-dam-assets/sync/delete-by-album-id` - This will delete an entire Canto Album from any Canto DAM Assets fields. Example:
 ```bash

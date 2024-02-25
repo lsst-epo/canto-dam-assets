@@ -40,7 +40,7 @@ trait ServicesTrait
                     'errorEntry' => 'src/js/app.ts',
                     'useDevServer' => true,
                 ],
-            ]
+            ],
         ];
     }
 

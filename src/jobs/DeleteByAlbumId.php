@@ -27,7 +27,7 @@ class DeleteByAlbumId extends BaseJob
     protected function defaultDescription(): ?string
     {
         return Translation::prep('_canto-dam-assets', 'Deleting Canto Album id {id}', [
-            'id' => $this->id
+            'id' => $this->id,
         ]);
     }
 }

@@ -26,10 +26,9 @@ class CantoDamAssets extends Plugin
 {
     use ServicesTrait;
 
+    public static ?CantoDamAssets $plugin = null;
     public string $schemaVersion = '1.0.1';
     public bool $hasCpSettings = true;
-
-    public static ?CantoDamAssets $plugin = null;
 
     /**
      * @inheritDoc
@@ -40,7 +39,7 @@ class CantoDamAssets extends Plugin
         self::$plugin = self::getInstance();
 
         // Defer most setup tasks until Craft is fully initialized
-        Craft::$app->onInit(function () {
+        Craft::$app->onInit(function() {
             $this->attachEventHandlers();
         });
     }
@@ -74,7 +73,7 @@ class CantoDamAssets extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('canto', [
@@ -86,21 +85,21 @@ class CantoDamAssets extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            static function (RegisterComponentTypesEvent $event) {
+            static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CantoDamAsset::class;
             });
         // Add permission for Editors
         Event::on(
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function (RegisterUserPermissionsEvent $event) {
+            static function(RegisterUserPermissionsEvent $event) {
                 $event->permissions[] = [
                     "heading" => "Canto DAM Assets Picker Extraordinaire",
                     "permissions" => [
                         'accessPlugin-_canto-dam-assets' => [
                             'label' => 'Use Canto DAM Assets Fields',
                         ],
-                    ]
+                    ],
                 ];
             }
         );

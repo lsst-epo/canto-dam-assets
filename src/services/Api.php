@@ -7,6 +7,7 @@ use craft\helpers\Json;
 use GuzzleHttp\Exception\GuzzleException;
 use lsst\cantodamassets\CantoDamAssets;
 use lsst\cantodamassets\models\CantoFieldData;
+use Throwable;
 use yii\base\Component;
 
 /**
@@ -45,7 +46,7 @@ class Api extends Component
         // Get auth token
         try {
             $response = $client->post($authEndpoint);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error("An exception occurred in getAuthToken()", __METHOD__);
 
             return $e->getMessage();
@@ -64,7 +65,7 @@ class Api extends Component
      *
      * @param string $path
      * @param array|string[] $params
-     * @return array|string[]
+     * @return array
      */
     public function cantoApiRequest(string $path, array $params = []): array
     {
@@ -90,7 +91,7 @@ class Api extends Component
         if (!is_array($body)) {
             return [
                 "status" => "error",
-                'errorMessage' => 'Canto endpoint failure'
+                'errorMessage' => 'Canto endpoint failure',
             ];
         }
 
@@ -163,7 +164,10 @@ class Api extends Component
             'start' => $start,
         ];
         $responseBody = $this->cantoApiRequest('/album/' . $albumId, $params);
-        if (isset($responseBody['status']) && $responseBody['status' === 'error']) {
+        if (isset($responseBody['status']) && $responseBody['status'] === 'error') {
+            return false;
+        }
+        if (!is_array($responseBody['results'])) {
             return false;
         }
         $buffer = array_merge($buffer, $responseBody['results']);
@@ -184,8 +188,8 @@ class Api extends Component
         return [
             'headers' => [
                 'Authorization' => 'bearer ' . $this->getAuthToken(),
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ]
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
         ];
     }
 

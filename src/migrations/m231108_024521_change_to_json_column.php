@@ -11,6 +11,7 @@ use craft\helpers\ElementHelper;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
 use verbb\supertable\fields\SuperTableField;
+use yii\db\Exception;
 use yii\db\Schema;
 
 /**
@@ -18,7 +19,6 @@ use yii\db\Schema;
  */
 class m231108_024521_change_to_json_column extends Migration
 {
-
     private const CONTENT_COLUMN_KEYS = [
         'cantoAssetData',
         'cantoAlbumData',
@@ -64,10 +64,9 @@ class m231108_024521_change_to_json_column extends Migration
      */
     private function changeBlockTypeToJsonColumn(string $fieldType): void
     {
-        $blockFields = Craft::$app->getFields()->getFieldsByType($fieldType);
+        $blockFields = $this->getBlockFields($fieldType);
         foreach ($blockFields as $blockField) {
             // Block types have the same methods as Matrix
-            /* @var Matrix $blockField */
             $fields = $blockField->getBlockTypeFields();
             // Filter out any non-CantoDamAsset fields
             $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
@@ -107,7 +106,7 @@ class m231108_024521_change_to_json_column extends Migration
      * @param $type
      * @param $using
      * @return void
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     private function alterColumnUsingPgsql($table, $column, $type, $using): void
     {
@@ -115,5 +114,17 @@ class m231108_024521_change_to_json_column extends Migration
         $cmd = $this->db->createCommand('ALTER TABLE ' . $table . ' ALTER COLUMN "' . $column . '" TYPE jsonb USING "' . $column . '"' . $using . ', ALTER COLUMN "' . $column . '" DROP DEFAULT, ALTER COLUMN "' . $column . '" DROP NOT NULL');
         $cmd->execute();
         $this->endCommand($time);
+    }
+
+    /**
+     * Block type fields  have the same methods as Matrix
+     *
+     * @param string $fieldType
+     * @return Matrix[]
+     */
+    private function getBlockFields(string $fieldType): array
+    {
+        /** @phpstan-ignore-next-line */
+        return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }
