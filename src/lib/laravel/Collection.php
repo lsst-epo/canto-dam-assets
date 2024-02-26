@@ -11,24 +11,45 @@ class Collection extends LaravelCollection
     public function whereContainsIn($keys, $value)
     {
         $keys = $this->getArrayableItems($keys);
+        $value2 = preg_split('/\s+/', $value);
+        $values = array_change_key_case($value2, CASE_LOWER);
+        $matched_records = [];
 
-        return $this->filter(function ($item) use ($keys, $value) {
-            // Handle the case where the data is an array of items
-            for ($i = 0; $i < count($keys); $i++) {
-                $item = data_get($item, $keys[$i]);
-
-                if (is_array($item)) {
-                    $item = implode(', ', $item);
+        foreach($keys as $key) {
+            $recs = $this->filter(function ($item) use ($key, $values) {
+                $data = data_get($item, $key);
+                if (is_array($data)) {
+                    $data = implode(', ', $data);
                 }
 
-                if (str_contains($item, $value)) {
-                    return true;
+                $found = false;
+                foreach($values as $value) {
+                    if (str_contains($data, $value)) {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                return $found;
+            });
+
+            if($recs->count() > 0) {
+                if($matched_records == []) {
+                    $count = $recs->count();
+                    $type_rec = gettype($recs);
+                    $matched_records = $recs;
+                } else {
+                    $count = $recs->count();
+                    $matched_records->merge($recs);
+                    $count2 = $matched_records->count();
                 }
             }
 
-            return false;
-        });
+        }
+        
+        return $matched_records->unique();
     }
+
     /**
      * Filter items by the given key value pair.
      *
