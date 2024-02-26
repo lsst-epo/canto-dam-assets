@@ -25,5 +25,5 @@ return [
     'Updating Canto Asset id {id}' => 'Updating Canto Asset id {id}',
     'Deleting Canto Asset id {id}' => 'Deleting Canto Asset id {id}',
     'Updating Canto Album id {id}' => 'Updating Canto Album id {id}',
-    'Deleting Canto Album id {id}' => 'Deleting Canto Album id {id}'
+    'Deleting Canto Album id {id}' => 'Deleting Canto Album id {id}',
 ];

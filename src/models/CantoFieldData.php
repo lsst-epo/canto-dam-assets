@@ -18,10 +18,10 @@ class CantoFieldData extends Model
 
     public function __construct($config = [])
     {
-        if (!isset($config['cantoAssetData']) || $config['cantoAssetData'] === null) {
+        if (empty($config['cantoAssetData'])) {
             $config['cantoAssetData'] = [];
         }
-        if (!isset($config['cantoAlbumData']) || $config['cantoAlbumData'] === null) {
+        if (empty($config['cantoAlbumData'])) {
             $config['cantoAlbumData'] = [];
         }
 
@@ -44,11 +44,11 @@ class CantoFieldData extends Model
             [
                 [
                     'cantoId',
-                    'cantoAlbumId'
+                    'cantoAlbumId',
                 ],
                 [
                     'string',
-                    'skipOnEmpty' => true
+                    'skipOnEmpty' => true,
                 ],
             ],
             [

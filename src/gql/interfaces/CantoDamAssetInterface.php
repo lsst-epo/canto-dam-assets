@@ -28,7 +28,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
             'name' => static::getName(),
             'fields' => self::class . '::getFieldDefinitions',
             'description' => 'This is the interface implemented by CantoDamAsset.',
-            'resolveType' => function (array $value) {
+            'resolveType' => function(array $value) {
                 return GqlEntityRegistry::getEntity(CantoDamAssetGenerator::getName());
             },
         ]));
@@ -80,7 +80,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'Has Color Map' => Type::string(),
                         'Frame Count' => Type::string(),
                         'Panoramas' => Type::string(),
-                    ])
+                    ]),
                 ]),
                 'height' => Type::string(),
                 'relatedAlbums' => Type::listOf(new ObjectType([
@@ -101,7 +101,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'id' => Type::string(),
                         'size' => Type::string(),
                         'schema' => Type::string(),
-                    ]
+                    ],
                 ])),
                 'md5' => Type::string(),
                 'approvalStatus' => Type::string(),
@@ -126,7 +126,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                             ],
                         ]),
                         'currentVersion' => Type::string(),
-                    ]
+                    ],
                 ])),
                 'created' => Type::string(),
                 'keyword' => Type::listOf(Type::string()),
@@ -167,7 +167,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'Caption **EN**' => Type::string(),
                         'Usage Terms' => Type::string(),
                         'WebDAM Media Type' => Type::string(),
-                    ])
+                    ]),
                 ]),
                 'url' => new ObjectType([
                     'name' => 'CantoUrlType',
@@ -182,7 +182,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'directUrlPreview' => Type::string(),
                         'directUrlPreviewPlay' => Type::string(),
                         'LowJPG' => Type::string(),
-                    ]
+                    ],
                 ]),
                 'width' => Type::string(),
                 'name' => Type::string(),
@@ -203,7 +203,7 @@ class CantoDamAssetInterface extends BaseInterfaceType
                         'Author' => Type::string(),
                         'Date Created' => Type::string(),
                         'Resolution' => Type::string(),
-                    ])
+                    ]),
                 ]),
                 'id' => Type::string(),
                 'size' => Type::string(),

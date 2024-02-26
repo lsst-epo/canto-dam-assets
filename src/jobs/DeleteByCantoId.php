@@ -27,7 +27,7 @@ class DeleteByCantoId extends BaseJob
     protected function defaultDescription(): ?string
     {
         return Translation::prep('_canto-dam-assets', 'Deleting Canto Asset id {id}', [
-            'id' => $this->id
+            'id' => $this->id,
         ]);
     }
 }
