@@ -24,7 +24,7 @@ class Collection extends LaravelCollection
 
                 $found = false;
                 foreach($values as $value) {
-                    if (str_contains($data, $value)) {
+                    if (str_contains(strtolower($data), strtolower($value))) {
                         $found = true;
                         break;
                     }
@@ -46,8 +46,14 @@ class Collection extends LaravelCollection
             }
 
         }
-        
-        return $matched_records->unique();
+
+        if($matched_records == []) {
+            // To-do: Come up with a more elegant solution, rather than calling only()
+            return $this->only([""]);
+        } else {
+            return $matched_records->unique();
+        }
+
     }
 
     /**
