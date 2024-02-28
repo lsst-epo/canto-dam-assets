@@ -43,14 +43,10 @@ class Collection extends LaravelCollection
             });
 
             if($recs->count() > 0) {
-                if($matched_records == []) {
-                    $count = $recs->count();
-                    $type_rec = gettype($recs);
+                if ($matched_records == []) {
                     $matched_records = $recs;
                 } else {
-                    $count = $recs->count();
-                    $matched_records->merge($recs);
-                    $count2 = $matched_records->count();
+                    $matched_records = $matched_records->concat($recs);
                 }
             }
 
@@ -59,10 +55,9 @@ class Collection extends LaravelCollection
         if($matched_records == []) {
             // To-do: Come up with a more elegant solution, rather than calling only()
             return $this->only([""]);
-        } else {
-            return $matched_records->unique();
         }
-
+        
+        return $matched_records->unique("id");
     }
 
     /**
