@@ -13,6 +13,10 @@ class CantoDamAssetResolver extends Resolver
     // List of arguments in the order they should be processed, along with the argument transform method
     protected static array $argsList = [
         [
+            'args' => ['whereContainsIn'],
+            'method' => 'whereContainsInArgs',
+        ],
+        [
             'args' => ['where'],
             'method' => 'whereArgs',
         ],
@@ -95,6 +99,14 @@ class CantoDamAssetResolver extends Resolver
     {
         $resolvedArg = count($arguments[$arg]) === 1 ? reset($arguments[$arg]) : $arguments[$arg];
         return $collection->$arg($resolvedArg);
+    }
+
+    protected static function whereContainsInArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        return $collection->$arg(
+            $arguments[$arg]['keys'] ?? null,
+            $arguments[$arg]['value'] ?? null
+        );
     }
 
     protected static function whereArrayArgs(Collection $collection, array $arguments, string $arg): Collection

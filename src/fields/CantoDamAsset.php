@@ -328,6 +328,23 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     ],
                 ]),
             ],
+            'whereContainsIn' => [
+                'name' => 'whereContainsIn',
+                'description' => 'Look across the given key-values and return fuzzy match on a single search term',
+                'type' => new InputObjectType([
+                    'name' => 'WhereContainsInFilterInput',
+                    'fields' => [
+                        'keys' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The keys to search on, you can use the `field.subField` syntax for nested fields'
+                        ],
+                        'value' => [
+                            'type' => Type::string(),
+                            'description' => 'The value that should be fuzzy matched in the key-values'
+                        ],
+                    ]
+                ]),
+            ],
             'where' => [
                 'name' => 'where',
                 'description' => 'Get all items by the given key value pair, using the optional operator for comparison. (See https://laravel.com/docs/10.x/collections#method-where).',
