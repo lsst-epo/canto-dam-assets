@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.3.0 - 2024.03.11
+### Fixed
+* Fixed an issue where the code to upload a new image wasn't in a place the modal button could reach, refactored JS and cleaned up code
+
+### Changed
+* The upload button in the modal now changes colors with rotating status text as the image uploads to Canto
+
+## 4.2.0 - 2024.03.11
+### Added
+* Advanced functionality for setting `where` conditions in the gql queries
+
 ## 4.1.0 - 2024.02.25
 ### Added
 * Add `phpstan` and `ecs` code linting
