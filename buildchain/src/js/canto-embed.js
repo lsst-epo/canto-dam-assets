@@ -27,6 +27,7 @@ function setToken(tokenInfo) {
   _formatDistrict = tokenInfo.formatDistrict;
 }
 
+
 cantoAPI.loadTree = function (callback) {
   var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
   $.ajax({
@@ -371,6 +372,8 @@ $(document).ready(function () {
     $("#cantoViewBody").find("#globalSearch input").val("");
     getImageInit(initSchme);
   });
+
+
 });
 
 function getTokenInfo() {
@@ -397,7 +400,13 @@ function addEventListener() {
     _tokenType = tokenInfo.tokenType;
   });
 
-  $(document).off('click').on("click", "#treeviewSwitch", function (e) {
+  $(document).off('click').on("change", "#uploadBtnInvisible", (e) => {
+      uploadFileToCanto(e);
+    })
+    .on("click", "#uploadBtn", (e) => {
+      document.querySelector("#uploadBtnInvisible").click();
+    })
+    .on("click", "#treeviewSwitch", function (e) {
       if ($('#treeviewSection').hasClass("expanded")) {
         $('#treeviewSection').stop().animate({
           left: '-20%'
@@ -930,10 +939,6 @@ function loadMoreAction() {
   }
 }
 
-function uploadClick(e) {
-  document.querySelector("#uploadBtnInvisible").click();
-}
-
 function uploadFileToCanto(e) {
   let url = `https://${_tenants}/api/v1/upload/setting`;
   fetch(url, {
@@ -951,12 +956,12 @@ function uploadFileToCanto(e) {
     formData.append("AWSAccessKeyId", data.AWSAccessKeyId);
     formData.append("Policy", data.Policy);
     formData.append("Signature", data.Signature);
-    formData.append("x-amz-meta-file_name", e.files[0].name);
+    formData.append("x-amz-meta-file_name", e.currentTarget.files[0].name);
     formData.append("x-amz-meta-tag", "");
     formData.append("x-amz-meta-scheme", "");
     formData.append("x-amz-meta-id", "");
     formData.append("x-amz-meta-album_id", "");
-    formData.append("file", e.files[0]);
+    formData.append("file", e.currentTarget.files[0]);
     let statusBar = parent.document.querySelector(".modal-status-bar");
 
     fetch(data.url, {
@@ -965,14 +970,13 @@ function uploadFileToCanto(e) {
       mode: "no-cors",
       redirect: 'follow'
     }).then(response => {
-      statusBar.style.display = "block";
-      statusBar.innerHTML = "Uploading image...";
-
+      document.getElementById("uploadBtn").style.background = "linear-gradient(16deg, rgb(205 101 1) 0%, rgb(169 218 0 / 100%) 100%)";
+      document.getElementById("uploadBtn").value = "Uploading image...";
     }).catch(error => {
       console.log(error);
     }).finally(() => {
-      statusBar.innerHTML = "Uploading - This can take several minutes...";
-      checkStatusInterval(e.files[0].name);
+      document.getElementById("uploadBtn").value = "Upload complete - processing";
+      checkStatusInterval(e.currentTarget.files[0].name);
     });
   }).catch(error => {
     console.log("An error occurred while attempting to grab upload settings!");
@@ -982,7 +986,7 @@ function uploadFileToCanto(e) {
   function checkStatusInterval(filename) {
     let url = `https://${_tenants}/api/v1/upload/status?hours=1`;
     let statusBar = parent.document.querySelector(".modal-status-bar");
-    statusChecker = setInterval(() => {
+    setInterval(() => {
 
       fetch(url, {
         method: "get",
@@ -992,14 +996,12 @@ function uploadFileToCanto(e) {
       }).then(body => {
         if (body.results && body.results.length > 0) {
           let results = body.results.filter(e => {
-            console.log("evaluating: ", e);
             if (e.name == filename && e.status != "Done") {
-              console.log("match!!!");
               return e;
             }
           });
           if (results.filter(e => e != undefined).length == 0) {
-            statusBar.innerHTML = "Canto processing complete! Reloading"
+            document.getElementById("uploadBtn").value = "Canto processing complete! Reloading";
             window.location.reload();
           }
         }
@@ -1020,3 +1022,4 @@ if (import.meta.hot) {
     console.log("HMR")
   });
 }
+
