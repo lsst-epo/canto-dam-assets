@@ -28,7 +28,6 @@ function setToken(tokenInfo) {
   _formatDistrict = tokenInfo.formatDistrict;
 }
 
-// "https://rubin.canto.com/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1
 cantoAPI.loadTree = function (callback) {
   var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
   $.ajax({
