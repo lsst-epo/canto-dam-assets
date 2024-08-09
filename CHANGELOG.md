@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.4.0 - 2024.8.09
+### Added
+* Added query param to requests to filter to show only `Approved` images
+
 ## 4.3.0 - 2024.03.11
 ### Fixed
 * Fixed an issue where the code to upload a new image wasn't in a place the modal button could reach, refactored JS and cleaned up code

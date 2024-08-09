@@ -13,6 +13,7 @@ let isLoadingComplete = false;
 let _formatDistrict = '';
 const MAX_CONTENT_REQUEST_ITEMS = 100;
 const MAX_ALBUM_REQUEST_ITEMS = 1000;
+const FILTER_BY_APPROVED = "&approval=Approved";
 
 /* -----------------canto API start-------------------------------------------------------------*/
 
@@ -26,7 +27,6 @@ function setToken(tokenInfo) {
   };
   _formatDistrict = tokenInfo.formatDistrict;
 }
-
 
 cantoAPI.loadTree = function (callback) {
   var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
@@ -63,7 +63,7 @@ cantoAPI.getListByAlbum = function (albumID, callback) {
     return;
   }
   let filterString = loadMoreHandler(singleCountLoad);
-  let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}`;
+  let url = `https://${_tenants}/api/v1/album/${albumID}?${filterString}${FILTER_BY_APPROVED}`;
   $.ajax({
     type: "GET",
     headers: _APIHeaders,
@@ -130,7 +130,7 @@ cantoAPI.getListByScheme = function (scheme, callback) {
       return;
     }
     let filterString = loadMoreHandler(singleCountLoad);
-    let url = `https://${_tenants}/api/v1/${scheme}?${filterString}`;
+    let url = `https://${_tenants}/api/v1/${scheme}?${filterString}${FILTER_BY_APPROVED}`;
     $.ajax({
       type: "GET",
       headers: _APIHeaders,
@@ -179,7 +179,7 @@ cantoAPI.getFilterList = function (data, callback) {
     return;
   }
   let filterString = loadMoreHandler(singleCountLoad);
-  let url = `https://${_tenants}/api/v1/search?${filterString}`;
+  let url = `https://${_tenants}/api/v1/search?${filterString}${FILTER_BY_APPROVED}`;
   url += `&keyword=${data.keywords}`;
   if (data.scheme && data.scheme == "allfile") {
     url += `&scheme=${encodeURIComponent("image|presentation|document|audio|video|other")}`;
@@ -229,7 +229,7 @@ cantoAPI.logout = function () {
  */
 cantoAPI.paginatedAlbumRequest = async (buffer, albumId, start = 0) => {
   let url = `https://${_tenants}/api/v1/album/${albumId}`;
-  let filterString = "sortBy=time&sortDirection=descending&limit=" + MAX_ALBUM_REQUEST_ITEMS + "&start=" + start;
+  let filterString = `sortBy=time&sortDirection=descending&limit=${MAX_ALBUM_REQUEST_ITEMS}&start=${start}${FILTER_BY_APPROVED}`;
   let result = await fetch(`${url}?${filterString}`, {
     method: "get",
     headers: {
@@ -256,7 +256,7 @@ cantoAPI.paginatedAlbumRequest = async (buffer, albumId, start = 0) => {
  * @returns {Promise<*>}
  */
 cantoAPI.paginatedContentRequest = async (buffer, imageArray, start = 0) => {
-  let url = `https://${_tenants}/api/v1/batch/content`;
+  let url = `https://${_tenants}/api/v1/batch/content?${FILTER_BY_APPROVED}`;
   const imageArraySubset = imageArray.slice(start, start + MAX_CONTENT_REQUEST_ITEMS);
   let result = await fetch(url, {
     method: "post",
