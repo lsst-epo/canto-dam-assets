@@ -14,6 +14,7 @@ let _formatDistrict = '';
 const MAX_CONTENT_REQUEST_ITEMS = 100;
 const MAX_ALBUM_REQUEST_ITEMS = 1000;
 const FILTER_BY_APPROVED = "&approval=Approved";
+let selectedAlbum = null;
 
 /* -----------------canto API start-------------------------------------------------------------*/
 
@@ -503,6 +504,9 @@ function addEventListener() {
     })
     //treeview event
     .on("click", "#treeviewSection ul li", function (e) {
+      // Track active album for upload purposes
+      selectedAlbum = e.currentTarget.dataset.id;
+
       e.cancelBubble = true;
       e.stopPropagation();
       e.preventDefault();
@@ -960,7 +964,7 @@ function uploadFileToCanto(e) {
     formData.append("x-amz-meta-tag", "");
     formData.append("x-amz-meta-scheme", "");
     formData.append("x-amz-meta-id", "");
-    formData.append("x-amz-meta-album_id", "");
+    formData.append("x-amz-meta-album_id", selectedAlbum);
     formData.append("file", e.currentTarget.files[0]);
     let statusBar = parent.document.querySelector(".modal-status-bar");
 

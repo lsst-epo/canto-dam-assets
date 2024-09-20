@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.0 - 2024.9.24
+### Added
+* Assets are uploaded to the currently selected album
+
 ## 4.4.0 - 2024.8.09
 ### Added
 * Added query param to requests to filter to show only `Approved` images
