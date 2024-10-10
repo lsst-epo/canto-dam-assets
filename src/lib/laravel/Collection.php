@@ -76,7 +76,7 @@ class Collection extends LaravelCollection
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
-                return count(array_intersect($item, $values)) > 0;
+                return count(array_intersect(array_map('strtolower', $item), array_map('strtolower', $values))) > 0;
             }
             return in_array($item, $values, $strict);
         });
@@ -98,7 +98,7 @@ class Collection extends LaravelCollection
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
-                return count(array_intersect($item, $values)) > 0;
+                return count(array_intersect(strtolower($item), array_map('strtolower', $values))) > 0;
             }
             return in_array($item, $values, $strict);
         });
