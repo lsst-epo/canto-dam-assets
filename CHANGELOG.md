@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.1 - 2024.9.24
+### Fixed
+* The `whereIn` and `whereNotIn` argument methods now are case-insensitive
+
 ## 4.5.0 - 2024.9.24
 ### Added
 * Assets are uploaded to the currently selected album
