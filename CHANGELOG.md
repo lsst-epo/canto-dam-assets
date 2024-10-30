@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.6.0 - 2024.10.29
+### Added
+* Added `whereAll` argument which accepts stringified JSON `whereIn` conditions as an array of strings and filters by all conditions
+
 ## 4.5.1 - 2024.9.24
 ### Fixed
 * The `whereIn` and `whereNotIn` argument methods now are case-insensitive

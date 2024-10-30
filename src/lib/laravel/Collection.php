@@ -71,7 +71,6 @@ class Collection extends LaravelCollection
     public function whereIn($key, $values, $strict = false)
     {
         $values = $this->getArrayableItems($values);
-
         return $this->filter(function($item) use ($key, $values, $strict) {
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
@@ -80,6 +79,18 @@ class Collection extends LaravelCollection
             }
             return in_array($item, $values, $strict);
         });
+    }
+
+    public function whereAll(array $keyValues) {
+        $whereAllArr = $this;
+        foreach($keyValues as $filters) {
+            foreach($filters as $filter) {
+                $filter = str_replace("'", '"', $filter );
+                $filter_decoded = json_decode($filter, true);
+                $whereAllArr = $whereAllArr->whereIn($filter_decoded["key"], $filter_decoded["values"]);
+            }
+        }
+        return $whereAllArr;
     }
 
     /**

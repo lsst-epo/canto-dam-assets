@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\gql\types;
 
+use Craft;
 use craft\gql\base\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;

@@ -376,6 +376,19 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'description' => 'Return items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.',
                 'type' => Type::string(),
             ],
+            'whereAll' => [
+                'name' => 'whereAll',
+                'description' => 'A container field for multiple where args',
+                'type' => new InputObjectType([
+                    'name' => 'WhereAllFilterInput',
+                    'fields' => [
+                        'filters' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'A list of JSON strings representing whereIn conditions to filter by.'
+                        ]
+                    ]
+                ])
+            ],
             'whereIn' => [
                 'name' => 'whereIn',
                 'description' => 'Filter items such that the value of the given key is in the array of values provided.  (See https://laravel.com/docs/10.x/collections#method-wherein).',

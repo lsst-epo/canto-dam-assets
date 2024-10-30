@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\gql\resolvers;
 
+use Craft;
 use craft\base\ElementInterface;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -15,6 +16,10 @@ class CantoDamAssetResolver extends Resolver
         [
             'args' => ['whereContainsIn'],
             'method' => 'whereContainsInArgs',
+        ],
+        [
+            'args' => ['whereAll'],
+            'method' => 'whereAllArgs',
         ],
         [
             'args' => ['where'],
@@ -50,7 +55,8 @@ class CantoDamAssetResolver extends Resolver
         ],
     ];
 
-    public static function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
+    // public static function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
+    public static function resolve(mixed $source, mixed $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {
         /** @var ElementInterface $source */
         $fieldName = $resolveInfo->fieldName;
@@ -64,7 +70,8 @@ class CantoDamAssetResolver extends Resolver
         return static::applyArguments($cantoFieldData->cantoAssetData, $arguments);
     }
 
-    protected static function applyArguments(Collection $collection, array $arguments): Collection
+    //protected static function applyArguments(Collection $collection, array $arguments): Collection
+    protected static function applyArguments(Collection $collection, mixed $arguments): Collection
     {
         foreach (static::$argsList as $argList) {
             foreach ($argList['args'] as $arg) {
@@ -86,12 +93,19 @@ class CantoDamAssetResolver extends Resolver
         );
     }
 
+    protected static function whereAllArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        return $collection->$arg(
+            $arguments[$arg]
+        );
+    }
+
     protected static function whereArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         return $collection->$arg(
             $arguments[$arg]['key'] ?? null,
             $arguments[$arg]['operator'] ?? null,
-            $arguments[$arg]['value'] ?? null
+            strtolower($arguments[$arg]['value']) ?? null
         );
     }
 
@@ -125,5 +139,12 @@ class CantoDamAssetResolver extends Resolver
     protected static function noArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         return new Collection([$collection->$arg(null)]);
+    }
+
+    protected static function nestedLowercase($value) {
+        if (is_array($value)) {
+            return array_map('nestedLowercase', $value);
+        }
+        return strtolower($value);
     }
 }

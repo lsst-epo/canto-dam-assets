@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\gql\types\generators;
 
+use Craft;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
@@ -28,7 +29,6 @@ class CantoDamAssetGenerator implements GeneratorInterface
         TypeLoader::registerType($typeName, function() use ($cantoDamAssetType) {
             return $cantoDamAssetType;
         });
-
         return $gqlTypes;
     }
 
