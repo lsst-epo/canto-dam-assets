@@ -1,7 +1,9 @@
 name: Code Analysis
 
 on:
-  pull_request: null
+  pull_request:
+  pull_request_review:
+    types: [ submitted, edited ]
   push:
     branches:
       - develop-v4
@@ -14,11 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         actions:
-          -
-            name: 'PHPStan'
+          - name: 'PHPStan'
             run: composer phpstan
-          -
-            name: 'Coding Standards'
+          - name: 'Coding Standards'
             run: composer fix-cs
     name: ${{ matrix.actions.name }}
     runs-on: ubuntu-latest
