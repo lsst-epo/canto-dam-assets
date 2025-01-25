@@ -88,11 +88,17 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function whereArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(
-            $arguments[$arg]['key'] ?? null,
-            $arguments[$arg]['operator'] ?? null,
-            $arguments[$arg]['value'] ?? null
-        );
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['key'] ?? null,
+                $argValue['operator'] ?? null,
+                $argValue['value'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function sortArgs(Collection $collection, array $arguments, string $arg): Collection
@@ -106,18 +112,30 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function whereContainsInArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(
-            $arguments[$arg]['keys'] ?? null,
-            $arguments[$arg]['value'] ?? null
-        );
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['keys'] ?? null,
+                $argValue['value'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function whereArrayArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(
-            $arguments[$arg]['key'] ?? null,
-            $arguments[$arg]['values'] ?? null
-        );
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['key'] ?? null,
+                $argValue['values'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function simpleArgs(Collection $collection, array $arguments, string $arg): Collection
@@ -128,5 +146,16 @@ class CantoDamAssetResolver extends Resolver
     protected static function noArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         return new Collection([$collection->$arg(null)]);
+    }
+
+    protected static function isArrayList(mixed $arr)
+    {
+        if (!is_array($arr)) {
+            return false;
+        }
+        if ($arr === []) {
+            return true;
+        }
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 }

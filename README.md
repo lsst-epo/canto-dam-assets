@@ -334,7 +334,7 @@ So for example, this query:
 {
   entry(section: "homepage") {
     ... on homepage_homepage_Entry {
-      someDamAsset(where: {key: "default.Author", value: "Hernan Stockebrand"}, sortByDesc: { field: "default.Size" }) {
+      someDamAsset(where: {key: "default.Author", value: "Hernan Stockebrand"}, sortByDesc: { field: "default.Size", flags: SORT_NUMERIC }) {
         id,
         url {
           directUrlOriginal
@@ -385,20 +385,20 @@ Here's a list of the available arguments, and the types they expect as parameter
 * [`forPage`](https://laravel.com/docs/10.x/collections#method-forpage): `ForPageInput` - Paginate the items by page number and items per page.
 
 
-* [`where`](https://laravel.com/docs/10.x/collections#method-where): `WhereFiltersInput` - Get all items by the given key value pair, using the optional operator for comparison.
+* [`where`](https://laravel.com/docs/10.x/collections#method-where): `[WhereFiltersInput]` - Get all items by the given key value pair, using the optional operator for comparison.
 
 
-* [`whereBetween`](https://laravel.com/docs/10.x/collections#method-wherebetween): `WhereBetweenFiltersInput`
+* [`whereBetween`](https://laravel.com/docs/10.x/collections#method-wherebetween): `[WhereBetweenFiltersInput]`
 Filter items such that the value of the given key is between the given values. 
 
 
-* [`whereIn`](https://laravel.com/docs/10.x/collections#method-wherein): `WhereInFiltersInput` - Filter items such that the value of the given key is in the array of values provided.
+* [`whereIn`](https://laravel.com/docs/10.x/collections#method-wherein): `[WhereInFiltersInput]` - Filter items such that the value of the given key is in the array of values provided.
 
 
-* [`whereNotBetween`](https://laravel.com/docs/10.x/collections#method-wherenotbetween): `WhereNotBetweenFiltersInput` - Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array. You can use the field.subField syntax for nested fields.
+* [`whereNotBetween`](https://laravel.com/docs/10.x/collections#method-wherenotbetween): `[WhereNotBetweenFiltersInput]` - Filter items such that the value of the given key is NOT between the given values. This argument expects exactly three values in an array. You can use the field.subField syntax for nested fields.
 
 
-* [`whereNotIn`](https://laravel.com/docs/10.x/collections#method-wherenotin): `WhereNotInFiltersInput` - Filter items by the given key value pair, making sure the value is not in the array.
+* [`whereNotIn`](https://laravel.com/docs/10.x/collections#method-wherenotin): `[WhereNotInFiltersInput]` - Filter items by the given key value pair, making sure the value is not in the array.
 
 
 * [`whereNotNull`](https://laravel.com/docs/10.x/collections#method-wherenotnull): `String` - Return items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.

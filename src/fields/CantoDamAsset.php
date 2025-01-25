@@ -390,7 +390,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'whereContainsIn' => [
                 'name' => 'whereContainsIn',
                 'description' => 'Look across the given key-values and return fuzzy match on a single search term',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereContainsInFilterInput',
                     'fields' => [
                         'keys' => [
@@ -402,12 +402,12 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The value that should be fuzzy matched in the key-values'
                         ],
                     ]
-                ]),
+                ])),
             ],
             'where' => [
                 'name' => 'where',
                 'description' => 'Get all items by the given key value pair, using the optional operator for comparison. (See https://laravel.com/docs/10.x/collections#method-where).',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereFiltersInput',
                     'fields' => [
                         'key' => [
@@ -423,7 +423,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The comparison operator to use, e.g.: `=`, `>`, `<=`, etc. The default is `=`',
                         ],
                     ],
-                ]),
+                ])),
             ],
             'whereNull' => [
                 'name' => 'whereNull',
@@ -438,7 +438,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'whereIn' => [
                 'name' => 'whereIn',
                 'description' => 'Filter items such that the value of the given key is in the array of values provided.  (See https://laravel.com/docs/10.x/collections#method-wherein).',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereInFiltersInput',
                     'fields' => [
                         'key' => [
@@ -450,12 +450,12 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The values that should be in the key',
                         ],
                     ],
-                ]),
+                ])),
             ],
             'whereNotIn' => [
                 'name' => 'whereNotIn',
                 'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. (See https://laravel.com/docs/10.x/collections#method-wherenotin).',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereNotInFiltersInput',
                     'fields' => [
                         'key' => [
@@ -467,12 +467,12 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The the values that should not be in the key',
                         ],
                     ],
-                ]),
+                ])),
             ],
             'whereBetween' => [
                 'name' => 'whereBetween',
                 'description' => 'Filter items such that the value of the given key is between the given values. (See https://laravel.com/docs/10.x/collections#method-wherebetween).',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereBetweenFiltersInput',
                     'fields' => [
                         'key' => [
@@ -484,12 +484,12 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The values that the key should be between',
                         ],
                     ],
-                ]),
+                ])),
             ],
             'whereNotBetween' => [
                 'name' => 'whereNotBetween',
                 'description' => 'Filter items such that the value of the given key is not between the given values.  (See https://laravel.com/docs/10.x/collections#method-wherenotbetween).',
-                'type' => new InputObjectType([
+                'type' => Type::listOf(new InputObjectType([
                     'name' => 'WhereNotBetweenFiltersInput',
                     'fields' => [
                         'key' => [
@@ -501,7 +501,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                             'description' => 'The values the key should not be between',
                         ],
                     ],
-                ]),
+                ])),
             ],
         ], 'CantoDamAssetQueryType');
     }
