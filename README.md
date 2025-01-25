@@ -334,7 +334,7 @@ So for example, this query:
 {
   entry(section: "homepage") {
     ... on homepage_homepage_Entry {
-      someDamAsset(where: {key: "default.Author", value: "Hernan Stockebrand"}, sortByDesc: "default.Size") {
+      someDamAsset(where: {key: "default.Author", value: "Hernan Stockebrand"}, sortByDesc: { field: "default.Size" }) {
         id,
         url {
           directUrlOriginal
@@ -376,10 +376,10 @@ Here's a list of the available arguments, and the types they expect as parameter
 * [`skip`](https://laravel.com/docs/10.x/collections#method-skip): `Int` - Skip the first N items.
 
 
-* [`sortBy`](https://laravel.com/docs/10.x/collections#method-sortby): `[String]` - Sort the collection using the sort string(s). You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.
+* [`sortBy`](https://laravel.com/docs/10.x/collections#method-sortby): `SortByInput` - Sort the collection using the sort string(s). You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.
 
 
-* [`sortByDesc`](https://laravel.com/docs/10.x/collections#method-sortbydesc): `[String]` - Sort the collection using the sort string(s) in a descending order. You can use the field.subField syntax for nested fields and provide multiple sort commands as a list of strings.
+* [`sortByDesc`](https://laravel.com/docs/10.x/collections#method-sortbydesc): `SortByDescInput` - Sort the collection using the sort string(s) in a descending order. You can use the field.subField syntax for nested fields and provide multiple sort commands as a list of strings.
 
 
 * [`forPage`](https://laravel.com/docs/10.x/collections#method-forpage): `ForPageInput` - Paginate the items by page number and items per page.
@@ -414,6 +414,17 @@ Filter items such that the value of the given key is between the given values.
 
   * `items`: `Int` - The number of items per page
 
+* `SortByInput` - Used with the `sortBy` argument, in the format: `{field: "field", flags: SORT_REGULAR}`:
+
+  * `field`: `[String]` - The field(s) to sort by
+
+  * `flags`: `String` - [PHP sort flags](https://www.php.net/manual/en/function.sort.php) that determine how items are compared. Defaults to `SORT_NATURAL_CASE`
+
+* `SortByDescInput` - Used with the `sortByDesc` argument, in the format: `{field: "field", flags: SORT_REGULAR}`:
+
+  * `field`: `[String]` - The field(s) to sort by
+
+  * `flags`: `String` - [PHP sort flags](https://www.php.net/manual/en/function.sort.php) that determine how items are compared. Defaults to `SORT_NATURAL_CASE`
 
 * `WhereFiltersInput` - Used with the `where` argument, in the format: `{key: "key", value: "value", operator: "operator"}`:
 

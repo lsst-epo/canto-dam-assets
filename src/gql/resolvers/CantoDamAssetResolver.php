@@ -11,7 +11,7 @@ use lsst\cantodamassets\models\CantoFieldData;
 class CantoDamAssetResolver extends Resolver
 {
     // List of arguments in the order they should be processed, along with the argument transform method
-    protected static array $argsList = [
+    protected const ARGS_LIST_MAP = [
         [
             'args' => ['whereContainsIn'],
             'method' => 'whereContainsInArgs',
@@ -66,7 +66,7 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function applyArguments(Collection $collection, array $arguments): Collection
     {
-        foreach (static::$argsList as $argList) {
+        foreach (self::ARGS_LIST_MAP as $argList) {
             foreach ($argList['args'] as $arg) {
                 if (!empty($arguments[$arg])) {
                     $func = $argList['method'];
@@ -97,8 +97,11 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function sortArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        $resolvedArg = count($arguments[$arg]) === 1 ? reset($arguments[$arg]) : $arguments[$arg];
-        return $collection->$arg($resolvedArg);
+        $flags = $arguments[$arg]['flags'] ?? SORT_NATURAL | SORT_FLAG_CASE;
+        return $collection->$arg(
+            $arguments[$arg]['field'] ?? null,
+            $flags,
+        );
     }
 
     protected static function whereContainsInArgs(Collection $collection, array $arguments, string $arg): Collection

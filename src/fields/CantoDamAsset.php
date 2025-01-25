@@ -9,6 +9,7 @@ use craft\base\PreviewableFieldInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
+use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
@@ -260,6 +261,40 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
      */
     protected function getGqlArguments(): array
     {
+        $sortFlagsType = new EnumType([
+            'name' => 'PHPSortFlags',
+            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL_CASE - https://www.php.net/manual/en/function.sort.php',
+            'values' => [
+                'SORT_REGULAR' => [
+                    'value' => SORT_REGULAR,
+                    'description' => 'compare items normally; the details are described in the comparison operators section'
+                ],
+                'SORT_NUMERIC' => [
+                    'value' => SORT_NUMERIC,
+                    'description' => 'compare items numerically.'
+                ],
+                'SORT_STRING' => [
+                    'value' => SORT_STRING,
+                    'description' => 'compare items as strings'
+                ],
+                'SORT_STRING_CASE' => [
+                    'value' => SORT_STRING | SORT_FLAG_CASE,
+                    'description' => 'compare items as case insensitive strings'
+                ],
+                'SORT_LOCALE_STRING' => [
+                    'value' => SORT_LOCALE_STRING,
+                    'description' => 'compare items as strings, based on the current locale. It uses the locale, which can be changed using setlocale()'
+                ],
+                'SORT_NATURAL' => [
+                    'value' => SORT_NATURAL,
+                    'description' => 'compare items as strings using "natural ordering" like natsort()'
+                ],
+                'SORT_NATURAL_CASE' => [
+                    'value' => SORT_NATURAL | SORT_FLAG_CASE,
+                    'description' => 'compare items as case insensitive strings using "natural ordering" like natsort()'
+                ],
+            ]
+        ]);
         return Craft::$app->getGql()->prepareFieldDefinitions([
             'except' => [
                 'name' => 'except',
@@ -303,13 +338,37 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             ],
             'sortBy' => [
                 'name' => 'sortBy',
-                'description' => 'Sort the collection using the sort string(s). You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
-                'type' => Type::listOf(Type::string()),
+                'description' => 'Sort the collection using the sort string(s).',
+                'type' => new InputObjectType([
+                    'name' => 'SortByInput',
+                    'fields' => [
+                        'field' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.'
+                        ],
+                        'flags' => [
+                            'type' => $sortFlagsType,
+                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php'
+                        ],
+                    ]
+                ]),
             ],
             'sortByDesc' => [
                 'name' => 'sortByDesc',
-                'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
-                'type' => Type::listOf(Type::string()),
+                'description' => 'Sort the collection using the sort string(s) in a descending order.',
+                'type' => new InputObjectType([
+                    'name' => 'SortByDescInput',
+                    'fields' => [
+                        'field' => [
+                            'type' => Type::listOf(Type::string()),
+                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.'
+                        ],
+                        'flags' => [
+                            'type' => $sortFlagsType,
+                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php'
+                        ],
+                    ]
+                ]),
             ],
             'forPage' => [
                 'name' => 'forPage',
