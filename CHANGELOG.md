@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 * Add the ability to have multiple **and** `where` queries by accepting an array of arguments, closes ([#25](https://github.com/lsst-epo/canto-dam-assets/issues/25))
 * Added project-level `Makefile`: `make dev` to run the dev server, `make release` to run code quality tools and prep the plugin for release
 * Upgrade to Vite 6, switch to `checker, use latest eslint/stylelint packages & configs
+* Upgrade the buildchain to node 22
 
 ### Changed
 * Run `code-analysis.yaml` GitHub Action for pull requests, too
