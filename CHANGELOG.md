@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.2 - UNRELEASED
+### Added
+* Add sort flags to `sortBy` and `sortByDest`, closes ([#24](https://github.com/lsst-epo/canto-dam-assets/issues/24)
+* Add the ability to have multiple **and** `where` queries by accepting an array of arguments, closes ([#25](https://github.com/lsst-epo/canto-dam-assets/issues/25))
+* Added project-level `Makefile`: `make dev` to run the dev server, `make release` to run code quality tools and prep the plugin for release
+
+### Changed
+* Run `code-analysis.yaml` GitHub Action for pull requests, too
+* Allow cross-origin requests for the buildchain, ref: https://github.com/vitejs/vite/security/advisories/GHSA-vg6x-rcgg-rjx6
+* Use npm 11 for the buildchain
+* Clean up JavaScript lint errors
+
 ## 4.5.1 - 2024.9.24
 ### Fixed
 * The `whereIn` and `whereNotIn` argument methods now are case-insensitive
