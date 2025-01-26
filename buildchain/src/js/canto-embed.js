@@ -1,3 +1,4 @@
+/* eslint-env jquery */
 let cantoViewDom = {};
 let _accessToken = "";
 let _refreshToken = "";
@@ -311,9 +312,6 @@ cantoAPI.insertImage = function (imageArray) {
     parent.postMessage(data, '*');
   }).catch((error) => {
     console.error(error.message);
-    data.type = "cantoInsertImage";
-    data.assetList = [];
-    parent.postMessage(data, '*');
   });
 };
 
@@ -344,9 +342,6 @@ cantoAPI.insertAlbum = function (albumId, albumName) {
     parent.postMessage(data, '*');
   }).catch((error) => {
     console.error(error.message);
-    data.type = "cantoInsertImage";
-    data.assetList = [];
-    parent.postMessage(data, '*');
   });
 };
 
@@ -651,7 +646,7 @@ function imageListDisplay(imageList) {
     if (e.shiftKey) {
       let iMin = Math.min(rem[rem.length - 2], rem[rem.length - 1]);
       let iMax = Math.max(rem[rem.length - 2], rem[rem.length - 1]);
-      for (i = iMin; i <= iMax; i++) {
+      for (let i = iMin; i <= iMax; i++) {
         let selectedCount = $("#cantoViewBody").find(".single-image .icon-s-Ok2_32").length;
         if (selectedCount >= 20) {
           $(".max-select-tips").fadeIn("normal").delay(2000).fadeOut(1000);

@@ -1,3 +1,5 @@
+/* eslint-env jquery */
+/* global Craft Garnish */
 /**
  * =====================================================================================================================
  * Refactored plugin code
@@ -134,8 +136,8 @@
 
           } else if (data && data.type == "cantoInsertImage") {
             $(".canto-uc-iframe-close-btn").trigger("click");
-            callback(currentCantoTagID, data.assetList);
-
+            // Unsure what this line of code below was attempting to do, but `callback` is undefined here
+            // callback(currentCantoTagID, data.assetList);
           } else if (data && data.type == "closeModal") {
             let cantoAsset = data.cantoAssetData[0];
             const assetCount = data.cantoAssetData.length;
