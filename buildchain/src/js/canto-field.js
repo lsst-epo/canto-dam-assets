@@ -11,7 +11,6 @@
     env,
     appId,
     tenantHostName,
-    currentCantoTagID,
     formatDistrict;
 
   const pluginName = "CantoDamConnector",
@@ -108,7 +107,7 @@
         });
 
         // Handle clicks to remove the asset
-        $(fieldNamespaceIdSelector('removeDamAsset')).click((e) => {
+        $(fieldNamespaceIdSelector('removeDamAsset')).click(() => {
           // Hide the preview, and change the button name
           $(fieldNamespaceIdSelector('chooseAsset')).html("Add a DAM Asset");
           $(damAssetPreview).hide();
