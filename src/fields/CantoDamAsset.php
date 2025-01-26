@@ -267,33 +267,33 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             'values' => [
                 'SORT_REGULAR' => [
                     'value' => SORT_REGULAR,
-                    'description' => 'compare items normally; the details are described in the comparison operators section'
+                    'description' => 'compare items normally; the details are described in the comparison operators section',
                 ],
                 'SORT_NUMERIC' => [
                     'value' => SORT_NUMERIC,
-                    'description' => 'compare items numerically.'
+                    'description' => 'compare items numerically.',
                 ],
                 'SORT_STRING' => [
                     'value' => SORT_STRING,
-                    'description' => 'compare items as strings'
+                    'description' => 'compare items as strings',
                 ],
                 'SORT_STRING_CASE' => [
                     'value' => SORT_STRING | SORT_FLAG_CASE,
-                    'description' => 'compare items as case insensitive strings'
+                    'description' => 'compare items as case insensitive strings',
                 ],
                 'SORT_LOCALE_STRING' => [
                     'value' => SORT_LOCALE_STRING,
-                    'description' => 'compare items as strings, based on the current locale. It uses the locale, which can be changed using setlocale()'
+                    'description' => 'compare items as strings, based on the current locale. It uses the locale, which can be changed using setlocale()',
                 ],
                 'SORT_NATURAL' => [
                     'value' => SORT_NATURAL,
-                    'description' => 'compare items as strings using "natural ordering" like natsort()'
+                    'description' => 'compare items as strings using "natural ordering" like natsort()',
                 ],
                 'SORT_NATURAL_CASE' => [
                     'value' => SORT_NATURAL | SORT_FLAG_CASE,
-                    'description' => 'compare items as case insensitive strings using "natural ordering" like natsort()'
+                    'description' => 'compare items as case insensitive strings using "natural ordering" like natsort()',
                 ],
-            ]
+            ],
         ]);
         return Craft::$app->getGql()->prepareFieldDefinitions([
             'except' => [
@@ -344,13 +344,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'field' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.'
+                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                         ],
                         'flags' => [
                             'type' => $sortFlagsType,
-                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php'
+                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'sortByDesc' => [
@@ -361,13 +361,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'field' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.'
+                            'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                         ],
                         'flags' => [
                             'type' => $sortFlagsType,
-                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php'
+                            'description' => 'PHP sort flags that determine how items are compared. Defaults to SORT_NATURAL - https://www.php.net/manual/en/function.sort.php',
                         ],
-                    ]
+                    ],
                 ]),
             ],
             'forPage' => [
@@ -395,13 +395,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'fields' => [
                         'keys' => [
                             'type' => Type::listOf(Type::string()),
-                            'description' => 'The keys to search on, you can use the `field.subField` syntax for nested fields'
+                            'description' => 'The keys to search on, you can use the `field.subField` syntax for nested fields',
                         ],
                         'value' => [
                             'type' => Type::string(),
-                            'description' => 'The value that should be fuzzy matched in the key-values'
+                            'description' => 'The value that should be fuzzy matched in the key-values',
                         ],
-                    ]
+                    ],
                 ])),
             ],
             'where' => [
