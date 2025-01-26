@@ -1,5 +1,4 @@
-/* eslint-env jquery */
-/* global Craft Garnish */
+/* global jQuery $ Craft Garnish */
 /**
  * =====================================================================================================================
  * Refactored plugin code

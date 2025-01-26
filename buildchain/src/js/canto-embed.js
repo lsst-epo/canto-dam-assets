@@ -1,4 +1,4 @@
-/* eslint-env jquery */
+/* global $ */
 // eslint-disable-next-line
 let cantoViewDom = {};
 let _accessToken = "";
