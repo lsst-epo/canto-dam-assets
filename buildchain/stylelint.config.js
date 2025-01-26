@@ -18,7 +18,6 @@ export default {
       }
     ],
     "block-no-empty": null,
-    "max-line-length": null,
     "selector-id-pattern": null,
     "selector-class-pattern": null,
     "no-descending-specificity": null,
