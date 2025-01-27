@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 * Added project-level `Makefile`: `make dev` to run the dev server, `make release` to run code quality tools and prep the plugin for release
 * Upgrade to Vite 6, switch to `checker, use latest eslint/stylelint packages & configs
 * Upgrade the buildchain to node 22
+* Upgrade to Tailwind CSS 4
 
 ### Changed
 * Run `code-analysis.yaml` GitHub Action for pull requests, too
