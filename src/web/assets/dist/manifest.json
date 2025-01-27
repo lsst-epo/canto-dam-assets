@@ -32,12 +32,12 @@
     "src": "src/fonts/icomoon_flight_01.woff"
   },
   "src/js/app.ts": {
-    "file": "assets/app-pnoP3YeE.js",
+    "file": "assets/app-D1BR5CZQ.js",
     "name": "app",
     "src": "src/js/app.ts",
     "isEntry": true,
     "css": [
-      "assets/app-BSTP00HZ.css"
+      "assets/app-D41_5M5D.css"
     ],
     "assets": [
       "assets/icomoon_flight_01-DhBPfpZj.eot",
