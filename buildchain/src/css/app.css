@@ -6,19 +6,6 @@
  */
 
 /**
- * This injects Tailwind's base styles, which is a combination of
- * Normalize.css and some additional base styles.
- *
- * You can see the styles here:
- * https://github.com/tailwindcss/tailwindcss/blob/master/css/preflight.css
- */
-
-/**
- * We don't want these in the Control Panel
- * @import "tailwindcss/preflight";
- */
-
-/**
  * Here we add custom component classes; stuff we want loaded
  * *before* the utilities so that the utilities can still
  * override them.
@@ -28,15 +15,14 @@
 @import "./components/canto-field.css";
 
 /**
- * This injects all of Tailwind's utility classes, generated based on your
- * config file.
+ * Disable the Tailwind CSS Preflight styles, as they can interfere with Craft CMS
+ * CP styles. ref: https://tailwindcss.com/docs/preflight#disabling-preflight
  *
  */
 @layer theme, base, components, utilities;
 
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
-
 @source "../../../src/templates";
 
 /**
