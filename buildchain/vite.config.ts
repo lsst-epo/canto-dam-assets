@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite';
 import {visualizer} from 'rollup-plugin-visualizer';
 import checker from 'vite-plugin-checker';
+import tailwindcss from "@tailwindcss/vite";
 import viteCompressionPlugin from 'vite-plugin-compression';
 import viteRestartPlugin from 'vite-plugin-restart';
 import * as path from 'path';
@@ -35,6 +36,7 @@ export default defineConfig(({command}) => ({
       template: 'treemap',
       sourcemap: true,
     }),
+    tailwindcss(),
     checker({
       eslint: {
         lintCommand: 'eslint "./src/**/*.{js,ts}"',

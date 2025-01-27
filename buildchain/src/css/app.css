@@ -19,12 +19,6 @@
  */
 
 /**
- * This injects any component classes registered by plugins.
- *
- */
-@import "tailwindcss/components";
-
-/**
  * Here we add custom component classes; stuff we want loaded
  * *before* the utilities so that the utilities can still
  * override them.
@@ -38,7 +32,11 @@
  * config file.
  *
  */
-@import "tailwindcss/utilities";
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@config "../../tailwind.config.ts";
 
 /**
  * Include styles for individual pages
@@ -49,4 +47,4 @@
  * Include vendor css.
  *
  */
-@import "vendor/base.css";
+@import "./vendor/base.css";
