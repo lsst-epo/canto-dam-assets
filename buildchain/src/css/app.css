@@ -32,11 +32,9 @@
  * config file.
  *
  */
-@layer theme, base, components, utilities;
+@import "tailwindcss";
 
-@import "tailwindcss/utilities.css" layer(utilities);
-
-@config "../../tailwind.config.ts";
+@source "../../../src/templates";
 
 /**
  * Include styles for individual pages
