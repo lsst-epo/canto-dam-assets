@@ -343,7 +343,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'name' => 'SortByInput',
                     'fields' => [
                         'field' => [
-                            'type' => Type::listOf(Type::string()),
+                            'type' => Type::string(),
                             'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                         ],
                         'flags' => [
@@ -360,7 +360,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                     'name' => 'SortByDescInput',
                     'fields' => [
                         'field' => [
-                            'type' => Type::listOf(Type::string()),
+                            'type' => Type::string(),
                             'description' => 'The field to sort by. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
                         ],
                         'flags' => [
