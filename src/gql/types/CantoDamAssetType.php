@@ -32,16 +32,13 @@ class CantoDamAssetType extends ObjectType
     {
         $fieldName = $resolveInfo->fieldName;
         // In case the field is missing
-        if (!isset($source[$fieldName])) {
-            return null;
-        }
-        $resolvedData = $source[$fieldName];
+        $resolvedData = $source[$fieldName] ?? null;
         // Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized
         // as GraphQL doesn't support spaces or other special characters in the query params
         if (is_array($resolvedData) && in_array($fieldName, self::CAMELIZED_FIELDS, true)) {
             $collection = new Collection($resolvedData);
             $resolvedData = $collection->mapWithKeys(fn($value, $key) => [Inflector::camelize($key) => $value])->all();
         }
-        return $resolvedData ?? null;
+        return $resolvedData;
     }
 }
