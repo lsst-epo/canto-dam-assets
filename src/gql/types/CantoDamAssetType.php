@@ -31,6 +31,10 @@ class CantoDamAssetType extends ObjectType
     protected function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {
         $fieldName = $resolveInfo->fieldName;
+        // In case the field is missing
+        if (!isset($source[$fieldName])) {
+            return null;
+        }
         $resolvedData = $source[$fieldName];
         // Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized
         // as GraphQL doesn't support spaces or other special characters in the query params
