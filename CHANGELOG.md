@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
 * Use npm 11 for the buildchain
 * Clean up JavaScript lint errors
 
+### Fixed
+* Fixed an issue where if a field didn't exist in the Canto field data, an exception would be thrown. Now it just returns `null` ([#28](https://github.com/lsst-epo/canto-dam-assets/issues/28))
+
 ## 4.5.1 - 2024.9.24
 ### Fixed
 * The `whereIn` and `whereNotIn` argument methods now are case-insensitive
