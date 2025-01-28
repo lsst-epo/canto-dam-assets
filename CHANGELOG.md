@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 * Allow cross-origin requests for the buildchain, ref: https://github.com/vitejs/vite/security/advisories/GHSA-vg6x-rcgg-rjx6
 * Use npm 11 for the buildchain
 * Clean up JavaScript lint errors
+* Moved the CantoDamAssets field arguments into a separate file
 
 ### Fixed
 * Fixed an issue where if a field didn't exist in the Canto field data, an exception would be thrown. Now it just returns `null` ([#28](https://github.com/lsst-epo/canto-dam-assets/issues/28))
