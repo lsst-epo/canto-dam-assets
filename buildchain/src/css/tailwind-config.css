@@ -1,0 +1,20 @@
+/**
+ * tailwind-config.css
+ *
+ * CSS-based configuration for Tailwind CSS
+ * ref: https://tailwindcss.com/docs/theme
+ */
+
+/**
+ * Disable the Tailwind CSS Preflight styles, as they can interfere with Craft CMS
+ * CP styles. ref: https://tailwindcss.com/docs/preflight#disabling-preflight
+ *
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source "../../../src/templates";
+
+@theme {
+}
