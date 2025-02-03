@@ -7,13 +7,13 @@
 
 /**
  * Disable the Tailwind CSS Preflight styles, as they can interfere with Craft CMS
- * CP styles. ref: https://tailwindcss.com/docs/preflight#disabling-preflight
- *
+ * CP styles. We intentionally do not use @layer here because we don't control the
+ * rest of the CP CSS (which does not use @layer), and need the Tailwind utilities
+ * to override it. ref: https://tailwindcss.com/docs/preflight#disabling-preflight
  */
-@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
 
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
 @source "../../../src/templates";
 
 @theme {
