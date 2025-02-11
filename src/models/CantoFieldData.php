@@ -43,12 +43,13 @@ class CantoFieldData extends Model
         parent::init();
         // Make sure we camelize the keys if an array is being returned, since we normalize them to be camelized
         // as GraphQL doesn't support spaces or other special characters in the query params
-        // We do this here rather than when saving the data to preserve the pristine response from Canto
         foreach ($this->cantoAssetData as &$item) {
             foreach (self::CAMELIZED_FIELDS as $fieldName) {
                 if (isset($item[$fieldName])) {
-                    $collection = new Collection($item[$fieldName]);
-                    $item[$fieldName] = $collection->mapWithKeys(fn($value, $key) => [Inflector::camelize($key) => $value])->all();
+                    foreach ($item[$fieldName] as $key => $value) {
+                        unset($item[$fieldName][$key]);
+                        $item[$fieldName][Inflector::camelize($key)] = $value;
+                    }
                 }
             }
         }
