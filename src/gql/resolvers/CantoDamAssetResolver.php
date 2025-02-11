@@ -56,7 +56,6 @@ class CantoDamAssetResolver extends Resolver
         $fieldName = $resolveInfo->fieldName;
         /** @var CantoFieldData $cantoFieldData */
         $cantoFieldData = $source->{$fieldName};
-
         if (empty($cantoFieldData->cantoAssetData)) {
             return [];
         }
