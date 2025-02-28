@@ -11,7 +11,11 @@ use lsst\cantodamassets\models\CantoFieldData;
 class CantoDamAssetResolver extends Resolver
 {
     // List of arguments in the order they should be processed, along with the argument transform method
-    protected static array $argsList = [
+    protected const ARGS_LIST_MAP = [
+        [
+            'args' => ['whereContainsIn'],
+            'method' => 'whereContainsInArgs',
+        ],
         [
             'args' => ['where'],
             'method' => 'whereArgs',
@@ -52,7 +56,6 @@ class CantoDamAssetResolver extends Resolver
         $fieldName = $resolveInfo->fieldName;
         /** @var CantoFieldData $cantoFieldData */
         $cantoFieldData = $source->{$fieldName};
-
         if (empty($cantoFieldData->cantoAssetData)) {
             return [];
         }
@@ -62,7 +65,7 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function applyArguments(Collection $collection, array $arguments): Collection
     {
-        foreach (static::$argsList as $argList) {
+        foreach (self::ARGS_LIST_MAP as $argList) {
             foreach ($argList['args'] as $arg) {
                 if (!empty($arguments[$arg])) {
                     $func = $argList['method'];
@@ -84,25 +87,54 @@ class CantoDamAssetResolver extends Resolver
 
     protected static function whereArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(
-            $arguments[$arg]['key'] ?? null,
-            $arguments[$arg]['operator'] ?? null,
-            $arguments[$arg]['value'] ?? null
-        );
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['key'] ?? null,
+                $argValue['operator'] ?? null,
+                $argValue['value'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function sortArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        $resolvedArg = count($arguments[$arg]) === 1 ? reset($arguments[$arg]) : $arguments[$arg];
-        return $collection->$arg($resolvedArg);
+        $flags = $arguments[$arg]['flags'] ?? SORT_NATURAL | SORT_FLAG_CASE;
+        return $collection->$arg(
+            $arguments[$arg]['field'] ?? null,
+            $flags,
+        );
+    }
+
+    protected static function whereContainsInArgs(Collection $collection, array $arguments, string $arg): Collection
+    {
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['keys'] ?? null,
+                $argValue['value'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function whereArrayArgs(Collection $collection, array $arguments, string $arg): Collection
     {
-        return $collection->$arg(
-            $arguments[$arg]['key'] ?? null,
-            $arguments[$arg]['values'] ?? null
-        );
+        // Allow for an array of where arguments to be passed in
+        $argValues = self::isArrayList($arguments[$arg]) ? $arguments[$arg] : [$arguments[$arg]];
+        foreach ($argValues as $argValue) {
+            $collection = $collection->$arg(
+                $argValue['key'] ?? null,
+                $argValue['values'] ?? null
+            );
+        }
+
+        return $collection;
     }
 
     protected static function simpleArgs(Collection $collection, array $arguments, string $arg): Collection
@@ -113,5 +145,16 @@ class CantoDamAssetResolver extends Resolver
     protected static function noArgs(Collection $collection, array $arguments, string $arg): Collection
     {
         return new Collection([$collection->$arg(null)]);
+    }
+
+    protected static function isArrayList(mixed $arr)
+    {
+        if (!is_array($arr)) {
+            return false;
+        }
+        if ($arr === []) {
+            return true;
+        }
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 }

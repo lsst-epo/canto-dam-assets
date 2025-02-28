@@ -9,9 +9,9 @@ use craft\base\PreviewableFieldInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use lsst\cantodamassets\CantoDamAssets;
+use lsst\cantodamassets\gql\arguments\CantoDamAssetField;
 use lsst\cantodamassets\gql\interfaces\CantoDamAssetInterface;
 use lsst\cantodamassets\gql\resolvers\CantoDamAssetResolver;
 use lsst\cantodamassets\models\CantoFieldData;
@@ -45,7 +45,7 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return [
             'name' => $this->handle,
             'description' => 'Canto Dam Asset field',
-            'args' => $this->getGqlArguments(),
+            'args' => CantoDamAssetField::getArguments(),
             'type' => Type::listOf(CantoDamAssetInterface::getType()),
             'resolve' => CantoDamAssetResolver::class . '::resolve',
         ];
@@ -253,180 +253,5 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
                 'assetCount' => $assetCount,
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getGqlArguments(): array
-    {
-        return Craft::$app->getGql()->prepareFieldDefinitions([
-            'except' => [
-                'name' => 'except',
-                'description' => 'Get all items except for those with the specified indexes.',
-                'type' => Type::listOf(Type::int()),
-            ],
-            'nth' => [
-                'name' => 'nth',
-                'description' => 'Return a collection consisting of every n-th element.',
-                'type' => Type::int(),
-            ],
-            'last' => [
-                'name' => 'last',
-                'description' => 'Get the last item from the collection.',
-                'type' => Type::boolean(),
-            ],
-            'random' => [
-                'name' => 'random',
-                'description' => 'Get the specified number of items randomly from the collection.',
-                'type' => Type::int(),
-            ],
-            'reverse' => [
-                'name' => 'reverse',
-                'description' => 'Reverse the list',
-                'type' => Type::boolean(),
-            ],
-            'first' => [
-                'name' => 'first',
-                'description' => 'Get the first item from the collection.',
-                'type' => Type::boolean(),
-            ],
-            'shuffle' => [
-                'name' => 'shuffle',
-                'description' => 'Shuffle the items in the collection, using the value as a random number seed.',
-                'type' => Type::int(),
-            ],
-            'skip' => [
-                'name' => 'skip',
-                'description' => 'Skip the first N items.',
-                'type' => Type::int(),
-            ],
-            'sortBy' => [
-                'name' => 'sortBy',
-                'description' => 'Sort the collection using the sort string(s). You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
-                'type' => Type::listOf(Type::string()),
-            ],
-            'sortByDesc' => [
-                'name' => 'sortByDesc',
-                'description' => 'Sort the collection using the sort string(s) in a descending order. You can use the `field.subField` syntax for nested fields and provide multiple sort commands as a list of strings.',
-                'type' => Type::listOf(Type::string()),
-            ],
-            'forPage' => [
-                'name' => 'forPage',
-                'description' => 'Paginate the items by page number and items per page. (See https://laravel.com/docs/10.x/collections#method-forpage).',
-                'type' => new InputObjectType([
-                    'name' => 'ForPageInput',
-                    'fields' => [
-                        'page' => [
-                            'type' => Type::int(),
-                            'description' => 'The page number',
-                        ],
-                        'items' => [
-                            'type' => Type::int(),
-                            'description' => 'The number of items per page',
-                        ],
-                    ],
-                ]),
-            ],
-            'where' => [
-                'name' => 'where',
-                'description' => 'Get all items by the given key value pair, using the optional operator for comparison. (See https://laravel.com/docs/10.x/collections#method-where).',
-                'type' => new InputObjectType([
-                    'name' => 'WhereFiltersInput',
-                    'fields' => [
-                        'key' => [
-                            'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
-                        ],
-                        'value' => [
-                            'type' => Type::string(),
-                            'description' => 'The value to match when searching',
-                        ],
-                        'operator' => [
-                            'type' => Type::string(),
-                            'description' => 'The comparison operator to use, e.g.: `=`, `>`, `<=`, etc. The default is `=`',
-                        ],
-                    ],
-                ]),
-            ],
-            'whereNull' => [
-                'name' => 'whereNull',
-                'description' => 'Return items from the collection where the given key is null. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::string(),
-            ],
-            'whereNotNull' => [
-                'name' => 'whereNotNull',
-                'description' => 'Return items from the collection where the given key is not null. You can use the `field.subField` syntax for nested fields.',
-                'type' => Type::string(),
-            ],
-            'whereIn' => [
-                'name' => 'whereIn',
-                'description' => 'Filter items such that the value of the given key is in the array of values provided.  (See https://laravel.com/docs/10.x/collections#method-wherein).',
-                'type' => new InputObjectType([
-                    'name' => 'WhereInFiltersInput',
-                    'fields' => [
-                        'key' => [
-                            'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
-                        ],
-                        'values' => [
-                            'type' => Type::listOf(Type::string()),
-                            'description' => 'The values that should be in the key',
-                        ],
-                    ],
-                ]),
-            ],
-            'whereNotIn' => [
-                'name' => 'whereNotIn',
-                'description' => 'Filter items by the given key value pair, making sure the value is NOT in the array. (See https://laravel.com/docs/10.x/collections#method-wherenotin).',
-                'type' => new InputObjectType([
-                    'name' => 'WhereNotInFiltersInput',
-                    'fields' => [
-                        'key' => [
-                            'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
-                        ],
-                        'values' => [
-                            'type' => Type::listOf(Type::string()),
-                            'description' => 'The the values that should not be in the key',
-                        ],
-                    ],
-                ]),
-            ],
-            'whereBetween' => [
-                'name' => 'whereBetween',
-                'description' => 'Filter items such that the value of the given key is between the given values. (See https://laravel.com/docs/10.x/collections#method-wherebetween).',
-                'type' => new InputObjectType([
-                    'name' => 'WhereBetweenFiltersInput',
-                    'fields' => [
-                        'key' => [
-                            'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
-                        ],
-                        'values' => [
-                            'type' => Type::listOf(Type::string()),
-                            'description' => 'The values that the key should be between',
-                        ],
-                    ],
-                ]),
-            ],
-            'whereNotBetween' => [
-                'name' => 'whereNotBetween',
-                'description' => 'Filter items such that the value of the given key is not between the given values.  (See https://laravel.com/docs/10.x/collections#method-wherenotbetween).',
-                'type' => new InputObjectType([
-                    'name' => 'WhereNotBetweenFiltersInput',
-                    'fields' => [
-                        'key' => [
-                            'type' => Type::string(),
-                            'description' => 'The key to search on, you can use the `field.subField` syntax for nested fields',
-                        ],
-                        'values' => [
-                            'type' => Type::listOf(Type::string()),
-                            'description' => 'The values the key should not be between',
-                        ],
-                    ],
-                ]),
-            ],
-        ], 'CantoDamAssetQueryType');
     }
 }

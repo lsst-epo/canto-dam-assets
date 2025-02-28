@@ -9,6 +9,55 @@ use Illuminate\Support\Collection as LaravelCollection;
 class Collection extends LaravelCollection
 {
     /**
+     * Fuzzy search across multiple keys
+     *
+     * @param $keys
+     * @param $value
+     * @return Collection
+     */
+    public function whereContainsIn($keys, $value): Collection
+    {
+        $keys = $this->getArrayableItems($keys);
+        $value2 = preg_split('/\s+/', $value);
+        $values = array_change_key_case($value2, CASE_LOWER);
+        $matched_records = [];
+
+        foreach ($keys as $key) {
+            $recs = $this->filter(function($item) use ($key, $values) {
+                $data = data_get($item, $key);
+                if (is_array($data)) {
+                    $data = implode(', ', $data);
+                }
+
+                $found = false;
+                foreach ($values as $value) {
+                    if (str_contains(strtolower($data), strtolower($value))) {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                return $found;
+            });
+
+            if ($recs->count() > 0) {
+                if ($matched_records == []) {
+                    $matched_records = $recs;
+                } else {
+                    $matched_records = $matched_records->concat($recs);
+                }
+            }
+        }
+
+        if ($matched_records == []) {
+            // To-do: Come up with a more elegant solution, rather than calling only()
+            return $this->only([""]);
+        }
+        
+        return $matched_records->unique("id");
+    }
+
+    /**
      * Filter items by the given key value pair.
      *
      * @param string $key
@@ -24,7 +73,7 @@ class Collection extends LaravelCollection
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
-                return count(array_intersect($item, $values)) > 0;
+                return count(array_intersect(array_map('strtolower', $item), array_map('strtolower', $values))) > 0;
             }
             return in_array($item, $values, $strict);
         });
@@ -46,7 +95,7 @@ class Collection extends LaravelCollection
             $item = data_get($item, $key);
             // Handle the case where the data is an array of items
             if (is_array($item)) {
-                return count(array_intersect($item, $values)) > 0;
+                return count(array_intersect(array_map('strtolower', $item), array_map('strtolower', $values))) > 0;
             }
             return in_array($item, $values, $strict);
         });

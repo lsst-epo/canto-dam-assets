@@ -1,23 +1,28 @@
-{
+/** @type {import('stylelint').Config} */
+export default {
   "extends": [
     "stylelint-config-recommended",
     "stylelint-config-standard-scss"
   ],
   "rules": {
-    "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": [
       true,
       {
         "ignoreAtRules": [
-          "screen",
-          "extends",
-          "responsive",
-          "tailwind"
+          "theme",
+          "source",
+          "utility",
+          "variant",
+          "custom-variant",
+          "apply",
+          "reference",
+          "config",
+          "plugin",
         ]
       }
     ],
+    "no-invalid-position-at-import-rule": null,
     "block-no-empty": null,
-    "max-line-length": null,
     "selector-id-pattern": null,
     "selector-class-pattern": null,
     "no-descending-specificity": null,

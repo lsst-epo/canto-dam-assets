@@ -1,5 +1,5 @@
 MAJOR_VERSION?=4
-TAG?=20-alpine
+TAG?=22-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-buildchain
 DEV_PORT?=300${MAJOR_VERSION}
 IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
@@ -31,9 +31,12 @@ endif
 # Run the passed in npm command
 npm: image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)
+# Run the passed in npx command
+npx: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ -it --entrypoint=/usr/local/bin/npx ${IMAGE_NAME} $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)
 # Open a shell inside of the container
 ssh: image-check
-	${DOCKER_RUN} --name ${CONTAINER}-$@ --entrypoint=/bin/sh ${IMAGE_NAME}
+	${DOCKER_RUN} --name ${CONTAINER}-$@ -it --entrypoint=/bin/sh ${IMAGE_NAME}
 %:
 	@:
 # ref: https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line

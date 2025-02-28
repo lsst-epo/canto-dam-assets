@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.2 - 2025.02.28
+### Added
+* Add sort flags to `sortBy` and `sortByDest`, closes ([#24](https://github.com/lsst-epo/canto-dam-assets/issues/24)
+* Add the ability to have multiple **and** `where` queries by accepting an array of arguments, closes ([#25](https://github.com/lsst-epo/canto-dam-assets/issues/25))
+* Added project-level `Makefile`: `make dev` to run the dev server, `make release` to run code quality tools and prep the plugin for release
+* Upgrade to Vite 6, switch to `checker, use latest eslint/stylelint packages & configs
+* Upgrade the buildchain to node 22
+* Upgrade to Tailwind CSS 4
+
+### Changed
+* Run `code-analysis.yaml` GitHub Action for pull requests, too
+* Allow cross-origin requests for the buildchain, ref: https://github.com/vitejs/vite/security/advisories/GHSA-vg6x-rcgg-rjx6
+* Use npm 11 for the buildchain
+* Clean up JavaScript lint errors
+* Moved the CantoDamAssets field arguments into a separate file
+
+### Fixed
+* Fixed an issue where if a field didn't exist in the Canto field data, an exception would be thrown. Now it just returns `null` ([#28](https://github.com/lsst-epo/canto-dam-assets/issues/28))
+
+## 4.5.1 - 2024.9.24
+### Fixed
+* The `whereIn` and `whereNotIn` argument methods now are case-insensitive
+
+## 4.5.0 - 2024.9.24
+### Added
+* Assets are uploaded to the currently selected album
+
+## 4.4.0 - 2024.8.09
+### Added
+* Added query param to requests to filter to show only `Approved` images
+
+## 4.3.0 - 2024.03.11
+### Fixed
+* Fixed an issue where the code to upload a new image wasn't in a place the modal button could reach, refactored JS and cleaned up code
+
+### Changed
+* The upload button in the modal now changes colors with rotating status text as the image uploads to Canto
+
+## 4.2.0 - 2024.03.11
+### Added
+* Advanced functionality for setting `where` conditions in the gql queries
+
 ## 4.1.0 - 2024.02.25
 ### Added
 * Add `phpstan` and `ecs` code linting

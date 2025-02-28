@@ -1,3 +1,4 @@
+/* global jQuery $ Craft Garnish */
 /**
  * =====================================================================================================================
  * Refactored plugin code
@@ -9,7 +10,6 @@
     env,
     appId,
     tenantHostName,
-    currentCantoTagID,
     formatDistrict;
 
   const pluginName = "CantoDamConnector",
@@ -106,7 +106,7 @@
         });
 
         // Handle clicks to remove the asset
-        $(fieldNamespaceIdSelector('removeDamAsset')).click((e) => {
+        $(fieldNamespaceIdSelector('removeDamAsset')).click(() => {
           // Hide the preview, and change the button name
           $(fieldNamespaceIdSelector('chooseAsset')).html("Add a DAM Asset");
           $(damAssetPreview).hide();
@@ -134,8 +134,8 @@
 
           } else if (data && data.type == "cantoInsertImage") {
             $(".canto-uc-iframe-close-btn").trigger("click");
-            callback(currentCantoTagID, data.assetList);
-
+            // Unsure what this line of code below was attempting to do, but `callback` is undefined here
+            // callback(currentCantoTagID, data.assetList);
           } else if (data && data.type == "closeModal") {
             let cantoAsset = data.cantoAssetData[0];
             const assetCount = data.cantoAssetData.length;
