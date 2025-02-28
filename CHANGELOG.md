@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 4.5.2 - UNRELEASED
+## 4.5.2 - 2025.02.28
 ### Added
 * Add sort flags to `sortBy` and `sortByDest`, closes ([#24](https://github.com/lsst-epo/canto-dam-assets/issues/24)
 * Add the ability to have multiple **and** `where` queries by accepting an array of arguments, closes ([#25](https://github.com/lsst-epo/canto-dam-assets/issues/25))
