@@ -2,18 +2,18 @@
   "name": "lsst-epo/canto-dam-assets",
   "description": "This Craft CMS plugin adds a Field Type with GraphQL support for the Canto Digital Asset Management (DAM) web system",
   "type": "craft-plugin",
-  "version": "4.5.2",
+  "version": "5.0.0-beta.1",
   "license": "MIT",
   "require": {
-    "php": ">=8.0.2",
-    "craftcms/cms": "^4.6.0",
-    "nystudio107/craft-plugin-vite": "^4.0.0"
+    "php": ">=8.2.0",
+    "craftcms/cms": "^5.0.0",
+    "nystudio107/craft-plugin-vite": "^5.0.0"
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
     "craftcms/rector": "dev-main",
-    "verbb/super-table": "^3.0.0"
+    "verbb/super-table": "^4.0.0"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan --ansi --memory-limit=1G",
@@ -32,7 +32,7 @@
     }
   ],
   "support": {
-    "docs": "https://github.com/lsst-epo/canto-dam-assets/blob/develop-v4/README.md",
+    "docs": "https://github.com/lsst-epo/canto-dam-assets/blob/develop-v5/README.md",
     "issues": "https://github.com/lsst-epo/canto-dam-assets/issues",
     "source": "https://github.com/lsst-epo/canto-dam-assets/"
   },
@@ -40,7 +40,7 @@
     "handle": "_canto-dam-assets",
     "name": "Canto DAM Assets",
     "developer": "nystudio107",
-    "documentationUrl": "https://github.com/lsst-epo/canto-dam-assets/blob/develop-v4/README.md",
+    "documentationUrl": "https://github.com/lsst-epo/canto-dam-assets/blob/develop-v5/README.md",
     "class": "lsst\\cantodamassets\\CantoDamAssets"
   },
   "scripts": {
@@ -51,7 +51,7 @@
   "config": {
     "sort-packages": true,
     "platform": {
-      "php": "8.0.2"
+      "php": "8.2.0"
     },
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
