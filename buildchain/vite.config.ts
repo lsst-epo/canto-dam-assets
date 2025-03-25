@@ -3,7 +3,6 @@ import {visualizer} from 'rollup-plugin-visualizer';
 import checker from 'vite-plugin-checker';
 import tailwindcss from "@tailwindcss/vite";
 import viteCompressionPlugin from 'vite-plugin-compression';
-import viteRestartPlugin from 'vite-plugin-restart';
 import * as path from 'path';
 
 // https://vitejs.dev/config/
@@ -23,11 +22,6 @@ export default defineConfig(({command}) => ({
     sourcemap: true
   },
   plugins: [
-    viteRestartPlugin({
-      reload: [
-        '../src/templates/**/*',
-      ],
-    }),
     viteCompressionPlugin({
       filter: /\.(js|mjs|json|css|map)$/i
     }),
