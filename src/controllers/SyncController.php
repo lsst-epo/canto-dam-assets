@@ -90,12 +90,19 @@ class SyncController extends Controller
      */
     public function actionDeleteByCantoId(): ?Response
     {
-        $cantoId = $this->request->getRequiredBodyParam('id');
-        Craft::$app->getQueue()->push(new DeleteByCantoId([
-            'id' => $cantoId,
-        ]));
+        // Commented out for now until the client has null-image exception logic, and
+        // for now just logging that the delete endpoint was hit
+//        $cantoId = $this->request->getRequiredBodyParam('id');
+//        Craft::$app->getQueue()->push(new DeleteByCantoId([
+//            'id' => $cantoId,
+//        ]));
+        $body = $this->request->rawBody;
+        Craft::info("Request body:  $body", "CANTO_DELETE_WEBHOOK_RECEIVED");
 
-        return $this->redirectToPostedUrl();
+//        return $this->redirectToPostedUrl();
+        $res = new Response();
+        $res->statusCode = 200;
+        return $res;
     }
 
     /**
@@ -108,11 +115,17 @@ class SyncController extends Controller
      */
     public function actionDeleteByAlbumId(): ?Response
     {
-        $albumId = $this->request->getRequiredBodyParam('album');
-        Craft::$app->getQueue()->push(new DeleteByAlbumId([
-            'id' => $albumId,
-        ]));
-
-        return $this->redirectToPostedUrl();
+        // Commented out for now until the client has null-image exception logic, and
+        // for now just logging that the delete endpoint was hit
+//        $albumId = $this->request->getRequiredBodyParam('album');
+//        Craft::$app->getQueue()->push(new DeleteByAlbumId([
+//            'id' => $albumId,
+//        ]));
+        $body = $this->request->rawBody;
+        Craft::info("The album DELETE endpoint was hit: $body", "CANTO_DELETE_WEBHOOK_RECEIVED");
+//        return $this->redirectToPostedUrl();
+        $res = new Response();
+        $res->statusCode = 200;
+        return $res;
     }
 }
