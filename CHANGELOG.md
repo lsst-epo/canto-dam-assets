@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.3 - 2025.03.28
+### Changed
+* Commented out the actual `delete` operation for the delete-webhook controller functions for now until the client is updated with null-handling
+
 ## 4.5.2 - 2025.02.28
 ### Added
 * Add sort flags to `sortBy` and `sortByDest`, closes ([#24](https://github.com/lsst-epo/canto-dam-assets/issues/24)
