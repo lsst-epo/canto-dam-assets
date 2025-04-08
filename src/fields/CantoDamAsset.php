@@ -6,7 +6,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
-use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use GraphQL\Type\Definition\Type;
@@ -35,9 +34,24 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return Craft::t('_canto-dam-assets', 'Canto Dam Asset');
     }
 
-    public static function valueType(): string
+    public static function icon(): string
     {
-        return 'mixed';
+        return 'image';
+    }
+
+    public static function phpType(): string
+    {
+        return sprintf('\\%s|null', CantoFieldData::class);
+    }
+
+    public static function dbType(): array|string
+    {
+        return [
+            'cantoId' => Schema::TYPE_STRING,
+            'cantoAlbumId' => Schema::TYPE_STRING,
+            'cantoAssetData' => Schema::TYPE_JSON,
+            'cantoAlbumData' => Schema::TYPE_JSON,
+        ];
     }
 
     public function getContentGqlType(): Type|array
@@ -76,16 +90,6 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
             '_canto-dam-assets/_components/fieldtypes/includes/CantoDamAsset_image.twig',
             $twigVariables
         );
-    }
-
-    public function getContentColumnType(): array|string
-    {
-        return [
-            'cantoId' => Schema::TYPE_STRING,
-            'cantoAlbumId' => Schema::TYPE_STRING,
-            'cantoAssetData' => Schema::TYPE_JSON,
-            'cantoAlbumData' => Schema::TYPE_JSON,
-        ];
     }
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): array
@@ -138,17 +142,6 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return null;
     }
 
-    /**
-     * @inerhitDoc
-     */
-    public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
-    {
-        // By default this method will allow searching on the primary content column for this field type,
-        // which is `cantoId`, but this stub method is left in place in case we need to do some other kind
-        // of custom searching in the future
-        parent::modifyElementsQuery($query, $value);
-    }
-
     // Protected Methods
     // =========================================================================
 
@@ -166,8 +159,11 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
         return implode(' ', $keywords);
     }
 
-    protected function inputHtml(mixed $value, ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
+        if (!$element) {
+            return '';
+        }
         $view = Craft::$app->getView();
         $this->registerFieldJavaScript($value, $element);
         // Render the input template
