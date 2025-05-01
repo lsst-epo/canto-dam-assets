@@ -5,11 +5,14 @@ namespace lsst\cantodamassets;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterGqlDirectivesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\Fields;
+use craft\services\Gql;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use lsst\cantodamassets\fields\CantoDamAsset;
+use lsst\cantodamassets\gql\directives\CantoFormatFieldDirective;
 use lsst\cantodamassets\models\Settings;
 use lsst\cantodamassets\services\ServicesTrait;
 use lsst\cantodamassets\variables\CantoVariable;
@@ -64,7 +67,7 @@ class CantoDamAssets extends Plugin
     }
 
     /**
-     * Attach our plugin's even handlers
+     * Attach our plugin's event handlers
      *
      * @return void
      */
@@ -103,5 +106,14 @@ class CantoDamAssets extends Plugin
                 ];
             }
         );
+
+        // Adds a custom directive to handle canto fields
+        Event::on(Gql::class,
+            Gql::EVENT_REGISTER_GQL_DIRECTIVES,
+            function(RegisterGqlDirectivesEvent $event) {
+                $event->directives[] = CantoFormatFieldDirective::class;
+            }
+        );
+
     }
 }
