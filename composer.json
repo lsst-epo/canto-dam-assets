@@ -43,11 +43,6 @@
     "documentationUrl": "https://github.com/lsst-epo/canto-dam-assets/blob/develop-v4/README.md",
     "class": "lsst\\cantodamassets\\CantoDamAssets"
   },
-  "scripts": {
-    "check-cs": "ecs check --ansi",
-    "fix-cs": "ecs check --ansi --fix",
-    "phpstan": "phpstan --memory-limit=1G"
-  },
   "config": {
     "sort-packages": true,
     "platform": {
