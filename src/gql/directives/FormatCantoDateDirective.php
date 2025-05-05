@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 
 
-class CantoFormatFieldDirective extends Directive
+class FormatCantoDateDirective extends Directive
 {
     public const DEFAULT_SOURCE_FORMAT = 'YmdHisu';
     public const DEFAULT_DESTINATION_FORMAT = 'ISO8601';
@@ -52,7 +52,7 @@ class CantoFormatFieldDirective extends Directive
      */
     public static function name(): string
     {
-        return 'cantoFormatField';
+        return 'formatCantoDate';
     }
 
     /**

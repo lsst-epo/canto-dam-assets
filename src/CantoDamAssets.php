@@ -12,7 +12,7 @@ use craft\services\Gql;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use lsst\cantodamassets\fields\CantoDamAsset;
-use lsst\cantodamassets\gql\directives\CantoFormatFieldDirective;
+use lsst\cantodamassets\gql\directives\FormatCantoDateDirective;
 use lsst\cantodamassets\models\Settings;
 use lsst\cantodamassets\services\ServicesTrait;
 use lsst\cantodamassets\variables\CantoVariable;
@@ -111,7 +111,7 @@ class CantoDamAssets extends Plugin
         Event::on(Gql::class,
             Gql::EVENT_REGISTER_GQL_DIRECTIVES,
             function(RegisterGqlDirectivesEvent $event) {
-                $event->directives[] = CantoFormatFieldDirective::class;
+                $event->directives[] = FormatCantoDateDirective::class;
             }
         );
 
