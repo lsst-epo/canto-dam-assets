@@ -154,8 +154,8 @@ class Assets extends Component
             // Compose a JSON object search needle
             $jsonSearchNeedle = [
                 $fieldUid => [
-                    $columnKey => $value
-                ]
+                    $columnKey => $value,
+                ],
             ];
             // Query the db for all the rows that meet the search nest json query
             $jsonSearchSql = $qb->jsonContains('content', $jsonSearchNeedle);
@@ -185,9 +185,9 @@ class Assets extends Component
                     $fieldUid => [
                         'cantoId' => 0,
                         'cantoAssetData' => [
-                            'id' => $cantoFieldData->cantoId ?? $value
-                        ]
-                    ]
+                            'id' => $cantoFieldData->cantoId ?? $value,
+                        ],
+                    ],
                 ];
                 // Query the db for all the rows that meet the search nest json query
                 $jsonSearchSql = $qb->jsonContains('content', $jsonSearchNeedle);
