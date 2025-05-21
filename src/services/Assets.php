@@ -6,13 +6,11 @@ use Craft;
 use craft\base\FieldInterface;
 use craft\db\Query;
 use craft\db\Table;
-use craft\fields\Matrix;
 use craft\helpers\Db;
 use craft\helpers\Json;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
 use lsst\cantodamassets\models\CantoFieldData;
-use verbb\supertable\fields\SuperTableField;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
@@ -88,10 +86,6 @@ class Assets extends Component
     public function update(string $value, CantoFieldData $cantoFieldData, $columnKey): void
     {
         $this->updateEntryContent($value, $cantoFieldData, $columnKey);
-        $this->updateBlockTypeContent(Matrix::class, $value, $cantoFieldData, $columnKey);
-        if (Craft::$app->getPlugins()->getPlugin('super-table')) {
-            $this->updateBlockTypeContent(SuperTableField::class, $value, $cantoFieldData, $columnKey);
-        }
     }
 
     /**
@@ -113,10 +107,6 @@ class Assets extends Component
             'cantoAlbumData' => [],
         ]);
         $this->updateEntryContent($value, $cantoFieldData, $columnKey);
-        $this->updateBlockTypeContent(Matrix::class, $value, $cantoFieldData, $columnKey);
-        if (Craft::$app->getPlugins()->getPlugin('super-table')) {
-            $this->updateBlockTypeContent(SuperTableField::class, $value, $cantoFieldData, $columnKey);
-        }
     }
 
     /**
@@ -142,27 +132,6 @@ class Assets extends Component
         }
 
         $this->updateContent($value, $cantoFieldData, $columnKey, $fields, Table::ELEMENTS_SITES);
-    }
-
-    /**
-     * Update $fieldType block type content in its table where the $columnKey matches $value with the $cantoFieldData
-     *
-     * @param string $fieldType
-     * @param string $value
-     * @param CantoFieldData $cantoFieldData
-     * @param string|null $columnKey
-     * @return void
-     */
-    protected function updateBlockTypeContent(string $fieldType, string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
-    {
-        $blockFields = $this->getBlockFields($fieldType);
-        foreach ($blockFields as $blockField) {
-            $contentTableName = $blockField->contentTable;
-            $fields = $blockField->getBlockTypeFields();
-            // Filter out any non-CantoDamAsset fields
-            $fields = (new Collection($fields))->filter(fn($value) => $value instanceof CantoDamAsset)->toArray();
-            $this->updateContent($value, $cantoFieldData, $columnKey, $fields, $contentTableName);
-        }
     }
 
     /**
@@ -247,17 +216,5 @@ class Assets extends Component
                 }
             }
         }
-    }
-
-    /**
-     * Block type fields  have the same methods as Matrix
-     *
-     * @param string $fieldType
-     * @return Matrix[]
-     */
-    private function getBlockFields(string $fieldType): array
-    {
-        /** @phpstan-ignore-next-line */
-        return Craft::$app->getFields()->getFieldsByType($fieldType);
     }
 }
