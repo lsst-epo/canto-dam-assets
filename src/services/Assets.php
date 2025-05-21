@@ -8,7 +8,6 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\fields\Matrix;
 use craft\helpers\Db;
-use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use lsst\cantodamassets\fields\CantoDamAsset;
 use lsst\cantodamassets\lib\laravel\Collection;
@@ -130,8 +129,19 @@ class Assets extends Component
      */
     protected function updateEntryContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey): void
     {
-        $fields = Craft::$app->getFields()->getFieldsByType(CantoDamAsset::class);
-        $this->updateContent($value, $cantoFieldData, $columnKey, $fields, Table::CONTENT);
+        $fields = [];
+        $entries = Craft::$app->getEntries();
+        $entryTypes = $entries->getAllEntryTypes();
+        foreach ($entryTypes as $entryType) {
+            $customFields = $entryType->getCustomFields();
+            foreach ($customFields as $customField) {
+                if ($customField instanceof CantoDamAsset) {
+                    $fields[] = $customField;
+                }
+            }
+        }
+
+        $this->updateContent($value, $cantoFieldData, $columnKey, $fields, Table::ELEMENTS_SITES);
     }
 
     /**
@@ -167,17 +177,33 @@ class Assets extends Component
      */
     protected function updateContent(string $value, CantoFieldData $cantoFieldData, ?string $columnKey, array $cantoDamAssetFields, string $table): void
     {
-        $contentColumnKey = self::CONTENT_COLUMN_KEY_MAPPINGS[$columnKey] ?? null;
+        $db = Craft::$app->getDb();
+        $qb = $db->getQueryBuilder();
         foreach ($cantoDamAssetFields as $cantoDamAssetField) {
-            // Find any $queryColumn content column row that match $value, and update them with the data from $cantoFieldData
-            $queryColumn = ElementHelper::fieldColumnFromField($cantoDamAssetField, $contentColumnKey);
-            if ($queryColumn) {
-                $columns = [];
+            // The layout element uid is the key in the content json
+            $fieldUid = $cantoDamAssetField->layoutElement->uid;
+            // Compose a JSON object search needle
+            $jsonSearchNeedle = [
+                $fieldUid => [
+                    $columnKey => $value
+                ]
+            ];
+            // Query the db for all the rows that meet the search nest json query
+            $jsonSearchSql = $qb->jsonContains('content', $jsonSearchNeedle);
+            $rows = (new Query())
+                ->select(['id', 'content'])
+                ->from([$table])
+                ->where($jsonSearchSql)
+                ->all();
+            // Iterate through the rows, replacing the appropriate value
+            foreach ($rows as $row) {
+                $content = Json::decodeIfJson($row['content']);
                 foreach (self::CONTENT_COLUMN_KEY_MAPPINGS as $propertyName => $selectColumnKey) {
-                    $columns[ElementHelper::fieldColumnFromField($cantoDamAssetField, $selectColumnKey)] = $cantoFieldData->$propertyName;
+                    $content[$fieldUid][$propertyName] = $cantoFieldData->$propertyName;
                 }
+                $content = Json::encode($content);
                 try {
-                    $rows = Db::update($table, $columns, [$queryColumn => $value]);
+                    $rowsAffected = Db::update($table, ['content' => $content], ['id' => $row['id']]);
                 } catch (Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
@@ -185,73 +211,42 @@ class Assets extends Component
             // If the column we're updating is the `cantoId`, we need to search the JSON contents of `cantoAssetData`
             // in order to update any canto assets contained within the JSON blobs as well
             if ($columnKey === 'cantoId') {
-                $db = Craft::$app->getDb();
-                // Get any existing Canto Assets fields that contain the asset ID we're updating
-                $cantoIdFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoId']);
-                $cantoAssetDataFieldName = ElementHelper::fieldColumnFromField($cantoDamAssetField, self::CONTENT_COLUMN_KEY_MAPPINGS['cantoAssetData']);
-                $jsonSearchNeedle[] = ['id' => $cantoFieldData->cantoId ?? $value];
-                $jsonSearchSql = '';
-                if ($db->getIsMysql()) {
-                    $jsonSearchSql = $this->mySqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
-                }
-                if ($db->getIsPgsql()) {
-                    $jsonSearchSql = $this->pgSqlJsonContains($cantoAssetDataFieldName, $jsonSearchNeedle);
-                }
+                // Compose a JSON object search needle
+                $jsonSearchNeedle = [
+                    $fieldUid => [
+                        'cantoId' => 0,
+                        'cantoAssetData' => [
+                            'id' => $cantoFieldData->cantoId ?? $value
+                        ]
+                    ]
+                ];
+                // Query the db for all the rows that meet the search nest json query
+                $jsonSearchSql = $qb->jsonContains('content', $jsonSearchNeedle);
                 $rows = (new Query())
-                    ->select(['id', $cantoAssetDataFieldName])
+                    ->select(['id', 'content'])
                     ->from([$table])
-                    ->where([$cantoIdFieldName => 0])
-                    ->andWhere($jsonSearchSql)
+                    ->where($jsonSearchSql)
                     ->all();
-                // Iterate through each row, the field data as appropriate
+                // Iterate through the rows, replacing the appropriate value
                 foreach ($rows as $row) {
-                    $rowCollection = new Collection(Json::decodeIfJson($row[$cantoAssetDataFieldName]));
-                    $rowCollection->transform(function($item) use ($cantoFieldData, $value) {
+                    $content = Json::decodeIfJson($row['content']);
+                    $assetData = new Collection($content[$fieldUid]['cantoAssetData']);
+                    $assetData->transform(function($item) use ($cantoFieldData, $value) {
                         if ($item['id'] === ($cantoFieldData->cantoId ?? $value)) {
                             $item = $cantoFieldData->cantoAssetData[0] ?? [];
                         }
                         return $item;
                     });
+                    $content[$fieldUid]['cantoAssetData'] = $assetData->all();
+                    $content = Json::encode($content);
                     try {
-                        $rowsAffected = Db::update($table, [$cantoAssetDataFieldName => $rowCollection->filter()->values()->all()], ['id' => $row['id']]);
+                        $rowsAffected = Db::update($table, ['content' => $content], ['id' => $row['id']]);
                     } catch (Exception $e) {
                         Craft::error($e->getMessage(), __METHOD__);
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Return a jsonContains expression properly formatted for MySQL
-     *
-     * @param string $targetSql
-     * @param mixed $value
-     * @return string
-     */
-    private function mySqlJsonContains(string $targetSql, mixed $value): string
-    {
-        $db = Craft::$app->getDb();
-        $value = $db->quoteValue(Json::encode($value));
-        $targetSql = $db->quoteColumnName($targetSql);
-
-        return "JSON_CONTAINS($targetSql, $value)";
-    }
-
-    /**
-     * Return a jsonContains expression properly formatted for Postgres
-     *
-     * @param string $targetSql
-     * @param mixed $value
-     * @return string
-     */
-    private function pgSqlJsonContains(string $targetSql, mixed $value): string
-    {
-        $db = Craft::$app->getDb();
-        $value = Craft::$app->getDb()->quoteValue(Json::encode($value));
-        $targetSql = $db->quoteColumnName($targetSql);
-
-        return "($targetSql @> $value::jsonb)";
     }
 
     /**
