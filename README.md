@@ -499,6 +499,66 @@ curl --header "Content-Type: application/json" \
 
 The `secure_token` setting in each Canto webhook needs to match the **Webhook Secure Token** plugin setting for it to be considered valid.
 
+## Webhook Sync Events
+
+The Canto Dam Assets plugin will throw events when the various webhooks are triggered, to allow listeners to be informed when content changes are synced as a result of a Canto webhook:
+
+**UpdateCantoAssetEvent** -  The event that is triggered when a singular Canto asset is updated via webhook from Canto.
+
+```php
+use lsst\cantodamassets\controllers\SyncController;
+use lsst\cantodamassets\events\UpdateCantoAssetEvent;
+
+Event::on(SyncController::class,
+    SyncController::EVENT_UPDATE_CANTO_ASSET,
+    function(UpdateCantoAssetEvent $event) {
+        // look at $event->cantoId;
+    }
+ );
+```
+
+**UpdateCantoAlbumEvent** -  The event that is triggered when a Canto album is updated via webhook from Canto.
+
+```php
+use lsst\cantodamassets\controllers\SyncController;
+use lsst\cantodamassets\events\UpdateCantoAlbumEvent;
+
+Event::on(SyncController::class,
+    SyncController::EVENT_UPDATE_CANTO_ALBUM,
+    function(UpdateCantoAlbumEvent $event) {
+        // look at $event->cantoAlbumId;
+    }
+);
+```
+
+**DeleteCantoAssetEvent** -  The event that is triggered when a singular Canto asset is deleted via webhook from Canto.
+
+```php
+use lsst\cantodamassets\controllers\SyncController;
+use lsst\cantodamassets\events\DeleteCantoAssetEvent;
+
+Event::on(SyncController::class,
+    SyncController::EVENT_DELETE_CANTO_ASSET,
+    function(DeleteCantoAssetEvent $event) {
+        // look at $event->cantoId;
+    }
+);
+```
+
+**DeleteCantoAlbumEvent** -  The event that is triggered when a Canto album is deleted via webhook from Canto.
+
+```php
+use lsst\cantodamassets\controllers\SyncController;
+use lsst\cantodamassets\events\DeleteCantoAlbumEvent;
+
+Event::on(SyncController::class,
+    SyncController::EVENT_DELETE_CANTO_ALBUM,
+    function(DeleteCantoAlbumEvent $event) {
+        // look at $event->cantoAlbumId;
+    }
+);
+```
+
 ## Plugin Roadmap
 
 Some things to do, and ideas for potential features:
