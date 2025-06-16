@@ -16,7 +16,7 @@ let isLoadingComplete = false;
 let _formatDistrict = '';
 const MAX_CONTENT_REQUEST_ITEMS = 100;
 const MAX_ALBUM_REQUEST_ITEMS = 1000;
-const FILTER_BY_APPROVED = "&approval=Approved";
+const FILTER_BY_APPROVED = "&approval=approved%7Crestricted";
 let selectedAlbum = null;
 
 /* -----------------canto API start-------------------------------------------------------------*/
