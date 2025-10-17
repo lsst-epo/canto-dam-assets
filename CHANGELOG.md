@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.5.9 - 2025.10.17
+### Fixed
+* Wrapped translation service calls in safety check to see if plugin is installed
+
 ## 4.5.3 - 2025.03.28
 ### Changed
 * Commented out the actual `delete` operation for the delete-webhook controller functions for now until the client is updated with null-handling

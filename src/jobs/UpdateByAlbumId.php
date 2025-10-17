@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\jobs;
 
+use Craft;
 use craft\i18n\Translation;
 use craft\queue\BaseJob;
 use lsst\cantodamassets\CantoDamAssets;
@@ -31,8 +32,12 @@ class UpdateByAlbumId extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Translation::prep('_canto-dam-assets', 'Updating Canto Album id {id}', [
-            'id' => $this->id,
-        ]);
+        $returnDescription = "";
+        if (Craft::$app->plugins->isPluginEnabled('_canto-dam-assets')) {
+            $returnDescription = Translation::prep('_canto-dam-assets', 'Updating Canto Album id {id}', [
+                'id' => $this->id,
+            ]);
+        }
+        return $returnDescription;
     }
 }

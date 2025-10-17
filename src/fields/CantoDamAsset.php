@@ -32,8 +32,13 @@ class CantoDamAsset extends Field implements PreviewableFieldInterface
 
     public static function displayName(): string
     {
-        return Craft::t('_canto-dam-assets', 'Canto Dam Asset');
+        $returnDescription = "Canto DAM Assets";
+        if (Craft::$app->plugins->isPluginEnabled('_canto-dam-assets')) {
+            $returnDescription = Craft::t('_canto-dam-assets', 'Canto Dam Asset');
+        }
+        return $returnDescription;
     }
+
 
     public static function valueType(): string
     {
