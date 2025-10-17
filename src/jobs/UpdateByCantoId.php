@@ -31,8 +31,12 @@ class UpdateByCantoId extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Translation::prep('_canto-dam-assets', 'Updating Canto Asset id {id}', [
-            'id' => $this->id,
-        ]);
+        $returnDescription = "";
+        if (Craft::$app->plugins->isPluginEnabled('_canto-dam-assets')) {
+            $returnDescription = Translation::prep('_canto-dam-assets', 'Updating Canto Asset id {id}', [
+                'id' => $this->id,
+            ]);
+        }
+        return $returnDescription;
     }
 }
