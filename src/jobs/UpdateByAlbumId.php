@@ -2,6 +2,7 @@
 
 namespace lsst\cantodamassets\jobs;
 
+use Craft;
 use craft\i18n\Translation;
 use craft\queue\BaseJob;
 use lsst\cantodamassets\CantoDamAssets;
